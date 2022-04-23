@@ -1,7 +1,35 @@
-# Project exclude paths
-/auth.api/target/
-/auth.business/target/
-/auth.common/target/
-/auth.core/target/
-/auth.db/target/
-/auth.e2e/target/
+target/
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### Database files ###
+/tsp.db/*.db
+
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
