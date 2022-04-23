@@ -1,0 +1,7 @@
+# Project exclude paths
+/auth.api/target/
+/auth.business/target/
+/auth.common/target/
+/auth.core/target/
+/auth.db/target/
+/auth.e2e/target/

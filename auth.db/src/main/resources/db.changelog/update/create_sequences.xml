@@ -1,0 +1,141 @@
+<!--
+  ~ MIT License
+  ~
+  ~ Copyright (c) 2021 Przemysław Płóciennik
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
+  ~ of this software and associated documentation files (the "Software"), to deal
+  ~ in the Software without restriction, including without limitation the rights
+  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  ~ copies of the Software, and to permit persons to whom the Software is
+  ~ furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in all
+  ~ copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  ~ SOFTWARE.
+  -->
+
+<!-- ########################################################################################################### -->
+<!--                                        ### Authentication ###                                               -->
+<!-- ########################################################################################################### -->
+
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
+
+    <changeSet id="2021.09.17 20:46:00" author="pplociennik" dbms="mssql" context="ctx.auth">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="SEQ_AUTH_ACCOUNT"/>
+            </not>
+        </preConditions>
+        <comment>Creates a sequence SEQ_AUTH_ACCOUNT.</comment>
+        <createSequence sequenceName="SEQ_AUTH_ACCOUNT" incrementBy="1" startValue="1"/>
+    </changeSet>
+
+    <changeSet id="2021.10.15 18:25:00" author="pplociennik" dbms="h2" context="ctx.auth">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="SEQ_AUTH_ACCOUNT"/>
+            </not>
+        </preConditions>
+        <comment>Creates a sequence SEQ_AUTH_ACCOUNT.</comment>
+        <createSequence sequenceName="SEQ_AUTH_ACCOUNT" incrementBy="1" startValue="1"/>
+    </changeSet>
+
+    <!-- ########################################################################################################### -->
+    <!--                                        ### Authorization ###                                                -->
+    <!-- ########################################################################################################### -->
+
+    <changeSet id="2021.09.17 20:50:00" author="pplociennik" dbms="mssql" context="ctx.auth">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="SEQ_AUTH_AUTHORITY"/>
+            </not>
+        </preConditions>
+        <comment>Creates a sequence SEQ_AUTH_AUTHORITY.</comment>
+        <createSequence sequenceName="SEQ_AUTH_AUTHORITY" incrementBy="1" startValue="1"/>
+    </changeSet>
+
+    <changeSet id="2021.10.15 18:26:00" author="pplociennik" dbms="h2" context="ctx.auth">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="SEQ_AUTH_AUTHORITY"/>
+            </not>
+        </preConditions>
+        <comment>Creates a sequence SEQ_AUTH_AUTHORITY.</comment>
+        <createSequence sequenceName="SEQ_AUTH_AUTHORITY" incrementBy="1" startValue="1"/>
+    </changeSet>
+
+    <!-- ACL -->
+
+    <changeSet id="2022.02.01 22:30:00" author="pplociennik" dbms="mssql" context="ctx.auth">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="SEQ_ACL_CLASS"/>
+            </not>
+        </preConditions>
+        <comment>Creates a sequence SEQ_ACL_CLASS.</comment>
+        <createSequence sequenceName="SEQ_ACL_CLASS" incrementBy="1" startValue="1"/>
+    </changeSet>
+
+    <changeSet id="2022.02.01 22:32:00" author="pplociennik" dbms="h2" context="ctx.auth">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="SEQ_ACL_CLASS"/>
+            </not>
+        </preConditions>
+        <comment>Creates a sequence SEQ_ACL_CLASS.</comment>
+        <createSequence sequenceName="SEQ_ACL_CLASS" incrementBy="1" startValue="1"/>
+    </changeSet>
+
+    <changeSet id="2022.02.01 22:33:00" author="pplociennik" dbms="mssql" context="ctx.auth">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="SEQ_ACL_SID"/>
+            </not>
+        </preConditions>
+        <comment>Creates a sequence SEQ_ACL_SID.</comment>
+        <createSequence sequenceName="SEQ_ACL_SID" incrementBy="1" startValue="1"/>
+    </changeSet>
+
+    <changeSet id="2022.02.01 22:34:00" author="pplociennik" dbms="h2" context="ctx.auth">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="SEQ_ACL_SID"/>
+            </not>
+        </preConditions>
+        <comment>Creates a sequence SEQ_ACL_SID.</comment>
+        <createSequence sequenceName="SEQ_ACL_SID" incrementBy="1" startValue="1"/>
+    </changeSet>
+
+    <changeSet id="2022.02.01 22:35:00" author="pplociennik" dbms="mssql" context="ctx.auth">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="SEQ_ACL_SID"/>
+            </not>
+        </preConditions>
+        <comment>Creates a sequence SEQ_ACL_OBJECT_IDENTITY.</comment>
+        <createSequence sequenceName="SEQ_ACL_OBJECT_IDENTITY" incrementBy="1" startValue="1"/>
+    </changeSet>
+
+    <changeSet id="2022.02.01 22:35:10" author="pplociennik" dbms="h2" context="ctx.auth">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="SEQ_ACL_OBJECT_IDENTITY"/>
+            </not>
+        </preConditions>
+        <comment>Creates a sequence SEQ_ACL_OBJECT_IDENTITY.</comment>
+        <createSequence sequenceName="SEQ_ACL_OBJECT_IDENTITY" incrementBy="1" startValue="1"/>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,406 @@
+<!--
+  ~ MIT License
+  ~
+  ~ Copyright (c) 2021 Przemysław Płóciennik
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
+  ~ of this software and associated documentation files (the "Software"), to deal
+  ~ in the Software without restriction, including without limitation the rights
+  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  ~ copies of the Software, and to permit persons to whom the Software is
+  ~ furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in all
+  ~ copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  ~ SOFTWARE.
+  -->
+
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
+
+    <!-- ########################################################################################################### -->
+    <!--                                        ### Authentication ###                                               -->
+    <!-- ########################################################################################################### -->
+
+    <changeSet id="2021.09.27 19:03:00" author="pplociennik" dbms="mssql" context="ctx.auth">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="AUTH_ACCOUNTS"/>
+            </not>
+        </preConditions>
+        <createTable tableName="AUTH_ACCOUNTS">
+            <column name="ID" type="BIGINT">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="USERNAME" type="VARCHAR(25)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="EMAIL" type="VARCHAR(30)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="PASSWORD" type="CHAR(60)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ENABLED" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ACC_NON_EXPIRED" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREDS_NON_EXPIRED" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ACC_NON_LOCKED" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <comment>Creates a table AUTH_USERS for authentication data storing.</comment>
+    </changeSet>
+
+    <changeSet id="2021.10.15 18:24:00" author="pplociennik" dbms="h2" context="ctx.auth">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="AUTH_ACCOUNTS"/>
+            </not>
+        </preConditions>
+        <createTable tableName="AUTH_ACCOUNTS">
+            <column name="ID" type="BIGINT">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="USERNAME" type="VARCHAR(25)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="EMAIL" type="VARCHAR(30)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="PASSWORD" type="CHAR(76)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ENABLED" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ACC_NON_EXPIRED" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREDS_NON_EXPIRED" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ACC_NON_LOCKED" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <comment>Creates a table AUTH_USERS for authentication data storing.</comment>
+    </changeSet>
+
+    <!-- ########################################################################################################### -->
+    <!--                                        ### Authorization ###                                                -->
+    <!-- ########################################################################################################### -->
+
+    <changeSet id="2021.09.17 22:06:00" author="pplociennik" dbms="mssql" context="ctx.auth">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="AUTH_AUTHORITIES"/>
+            </not>
+        </preConditions>
+        <createTable tableName="AUTH_AUTHORITIES">
+            <column name="ID" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" unique="true"/>
+            </column>
+            <column name="AUTHORITY_NAME" type="VARCHAR(15)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="AUTHORITIES_OWNER" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="FOREIGN_KEY_AUTHORITY_OWNER"
+                             references="AUTH_ACCOUNTS(ID)"/>
+            </column>
+        </createTable>
+        <comment>Creates a table AUTH_AUTHORITIES for authorization data storing.</comment>
+    </changeSet>
+
+    <changeSet id="2021.10.15 18:24:10" author="pplociennik" dbms="h2" context="ctx.auth">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="AUTH_AUTHORITIES"/>
+            </not>
+        </preConditions>
+        <createTable tableName="AUTH_AUTHORITIES">
+            <column name="ID" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" unique="true"/>
+            </column>
+            <column name="AUTHORITY_NAME" type="VARCHAR(15)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="AUTHORITIES_OWNER" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="FOREIGN_KEY_AUTHORITY_OWNER"
+                             references="AUTH_ACCOUNTS(ID)"/>
+            </column>
+        </createTable>
+        <comment>Creates a table AUTH_AUTHORITIES for authorization data storing.</comment>
+    </changeSet>
+
+    <!-- ACL -->
+
+    <changeSet id="2022.02.01 22:10:00" author="pplociennik" dbms="mssql" context="ctx.auth">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ACL_CLASS"/>
+            </not>
+        </preConditions>
+        <createTable tableName="ACL_CLASS">
+            <column name="ID" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" unique="true"/>
+            </column>
+            <column name="CLASS" type="NVARCHAR(450)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+        <comment>Creates a table ACL_CLASS for authorization data storing.</comment>
+    </changeSet>
+
+    <changeSet id="2022.02.01 22:16:00" author="pplociennik" dbms="mssql" context="ctx.auth">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ACL_SID"/>
+            </not>
+        </preConditions>
+        <createTable tableName="ACL_SID">
+            <column name="ID" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" unique="true"/>
+            </column>
+            <column name="SID" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PRINCIPAL" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <comment>Creates a table ACL_SID for authorization data storing.</comment>
+    </changeSet>
+
+    <changeSet id="2022.02.01 22:20:00" author="pplociennik" dbms="mssql" context="ctx.auth">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ACL_OBJECT_IDENTITY"/>
+            </not>
+        </preConditions>
+        <createTable tableName="ACL_OBJECT_IDENTITY">
+            <column name="ID" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" unique="true"/>
+            </column>
+            <column name="OBJECT_ID_CLASS" type="BIGINT">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="OBJECT_ID_IDENTITY" type="VARCHAR(36)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="PARENT_OBJECT" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="OWNER_SID" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="ENTRIES_INHERITING" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint constraintName="FK_ACL_OBJECT_IDENTITY_PARENT"
+                                 baseTableName="ACL_OBJECT_IDENTITY"
+                                 baseColumnNames="PARENT_OBJECT"
+                                 referencedTableName="ACL_OBJECT_IDENTITY"
+                                 referencedColumnNames="ID"/>
+        <addForeignKeyConstraint constraintName="FK_ACL_OBJECT_IDENTITY_CLASS"
+                                 baseTableName="ACL_OBJECT_IDENTITY"
+                                 baseColumnNames="OBJECT_ID_CLASS"
+                                 referencedTableName="ACL_CLASS"
+                                 referencedColumnNames="ID"/>
+        <addForeignKeyConstraint constraintName="FK_ACL_OBJECT_IDENTITY_OWNER"
+                                 baseTableName="ACL_OBJECT_IDENTITY"
+                                 baseColumnNames="OWNER_SID"
+                                 referencedTableName="ACL_SID"
+                                 referencedColumnNames="ID"/>
+        <comment>Creates a table ACL_OBJECT_IDENTITY for authorization data storing.</comment>
+    </changeSet>
+
+    <changeSet id="2022.02.01 22:36:00" author="pplociennik" dbms="mssql" context="ctx.auth">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ACL_ENTRY"/>
+            </not>
+        </preConditions>
+        <createTable tableName="ACL_ENTRY">
+            <column name="ID" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" unique="true"/>
+            </column>
+            <column name="ACL_OBJECT_IDENTITY" type="BIGINT">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="ACE_ORDER" type="INTEGER">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="SID" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="MASK" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="GRANTING" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="AUDIT_SUCCESS" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="AUDIT_FAILURE" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint constraintName="FK_ACL_ENTRY_OBJECT"
+                                 baseTableName="ACL_OBJECT_IDENTITY"
+                                 baseColumnNames="PARENT_OBJECT"
+                                 referencedTableName="ACL_OBJECT_IDENTITY"
+                                 referencedColumnNames="ID"/>
+        <addForeignKeyConstraint constraintName="FK_ACL_ENTRY_ACL"
+                                 baseTableName="ACL_ENTRY"
+                                 baseColumnNames="SID"
+                                 referencedTableName="ACL_SID"
+                                 referencedColumnNames="ID"/>
+        <comment>Creates a table ACL_ENTRY for authorization data storing.</comment>
+    </changeSet>
+
+
+    <changeSet id="2022.02.01 23:04:00" author="pplociennik" dbms="h2" context="ctx.auth">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ACL_CLASS"/>
+            </not>
+        </preConditions>
+        <createTable tableName="ACL_CLASS">
+            <column name="ID" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" unique="true"/>
+            </column>
+            <column name="CLASS" type="NVARCHAR(450)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+        <comment>Creates a table ACL_CLASS for authorization data storing.</comment>
+    </changeSet>
+
+    <changeSet id="2022.02.01 23:04:10" author="pplociennik" dbms="h2" context="ctx.auth">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ACL_SID"/>
+            </not>
+        </preConditions>
+        <createTable tableName="ACL_SID">
+            <column name="ID" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" unique="true"/>
+            </column>
+            <column name="SID" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PRINCIPAL" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <comment>Creates a table ACL_SID for authorization data storing.</comment>
+    </changeSet>
+
+    <changeSet id="2022.02.01 23:04:20" author="pplociennik" dbms="h2" context="ctx.auth">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ACL_OBJECT_IDENTITY"/>
+            </not>
+        </preConditions>
+        <createTable tableName="ACL_OBJECT_IDENTITY">
+            <column name="ID" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" unique="true"/>
+            </column>
+            <column name="OBJECT_ID_CLASS" type="BIGINT">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="OBJECT_ID_IDENTITY" type="VARCHAR(36)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="PARENT_OBJECT" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="OWNER_SID" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="ENTRIES_INHERITING" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint constraintName="FK_ACL_OBJECT_IDENTITY_PARENT"
+                                 baseTableName="ACL_OBJECT_IDENTITY"
+                                 baseColumnNames="PARENT_OBJECT"
+                                 referencedTableName="ACL_OBJECT_IDENTITY"
+                                 referencedColumnNames="ID"/>
+        <addForeignKeyConstraint constraintName="FK_ACL_OBJECT_IDENTITY_CLASS"
+                                 baseTableName="ACL_OBJECT_IDENTITY"
+                                 baseColumnNames="OBJECT_ID_CLASS"
+                                 referencedTableName="ACL_CLASS"
+                                 referencedColumnNames="ID"/>
+        <addForeignKeyConstraint constraintName="FK_ACL_OBJECT_IDENTITY_OWNER"
+                                 baseTableName="ACL_OBJECT_IDENTITY"
+                                 baseColumnNames="OWNER_SID"
+                                 referencedTableName="ACL_SID"
+                                 referencedColumnNames="ID"/>
+        <comment>Creates a table ACL_OBJECT_IDENTITY for authorization data storing.</comment>
+    </changeSet>
+
+    <changeSet id="2022.02.01 23:04:30" author="pplociennik" dbms="h2" context="ctx.auth">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ACL_ENTRY"/>
+            </not>
+        </preConditions>
+        <createTable tableName="ACL_ENTRY">
+            <column name="ID" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" unique="true"/>
+            </column>
+            <column name="ACL_OBJECT_IDENTITY" type="BIGINT">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="ACE_ORDER" type="INTEGER">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="SID" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="MASK" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="GRANTING" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="AUDIT_SUCCESS" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="AUDIT_FAILURE" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint constraintName="FK_ACL_ENTRY_OBJECT"
+                                 baseTableName="ACL_ENTRY"
+                                 baseColumnNames="ACL_OBJECT_IDENTITY"
+                                 referencedTableName="ACL_OBJECT_IDENTITY"
+                                 referencedColumnNames="ID"/>
+        <addForeignKeyConstraint constraintName="FK_ACL_ENTRY_ACL"
+                                 baseTableName="ACL_ENTRY"
+                                 baseColumnNames="SID"
+                                 referencedTableName="ACL_SID"
+                                 referencedColumnNames="ID"/>
+        <comment>Creates a table ACL_ENTRY for authorization data storing.</comment>
+    </changeSet>
+
+</databaseChangeLog>
