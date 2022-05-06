@@ -25,9 +25,9 @@
 package com.github.pplociennik.auth.core.configuration;
 
 import com.github.pplociennik.auth.business.authentication.ports.AccountSecurityDataService;
-import com.github.pplociennik.auth.business.shared.authentication.JsonAuthenticationFilter;
-import com.github.pplociennik.auth.business.shared.authentication.RestAuthenticationFailureHandler;
-import com.github.pplociennik.auth.business.shared.authentication.RestAuthenticationSuccessHandler;
+import com.github.pplociennik.auth.core.filter.JsonAuthenticationFilter;
+import com.github.pplociennik.auth.core.filter.RestAuthenticationFailureHandler;
+import com.github.pplociennik.auth.core.filter.RestAuthenticationSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

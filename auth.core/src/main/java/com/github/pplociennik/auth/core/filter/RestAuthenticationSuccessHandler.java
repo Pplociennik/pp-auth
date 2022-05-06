@@ -22,26 +22,24 @@
  * SOFTWARE.
  */
 
-package com.github.pplociennik.auth.business.shared.authentication;
+package com.github.pplociennik.auth.core.filter;
 
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 /**
- * Handler for failure rest authentication.
+ * Handler for successful rest authentication.
  *
- * @author Created by: Pplociennik at 29.01.2022 22:56
+ * @author Created by: Pplociennik at 29.01.2022 22:53
  */
-public class RestAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
+public class RestAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     @Override
-    public void onAuthenticationFailure( HttpServletRequest request, HttpServletResponse response,
-                                         AuthenticationException exception ) throws ServletException, IOException {
-        super.onAuthenticationFailure( request, response, exception );
+    public void onAuthenticationSuccess( HttpServletRequest request, HttpServletResponse response,
+                                         Authentication authentication ) {
+        clearAuthenticationAttributes( request );
     }
 }

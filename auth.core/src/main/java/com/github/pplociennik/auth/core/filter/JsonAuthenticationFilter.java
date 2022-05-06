@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.github.pplociennik.auth.business.shared.authentication;
+package com.github.pplociennik.auth.core.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pplociennik.auth.common.dto.auth.LoginDto;
