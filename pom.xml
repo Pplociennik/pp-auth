@@ -35,7 +35,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.github.pplociennik.auth</groupId>
-    <artifactId>auth-parent</artifactId>
+    <artifactId>pp-auth</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
