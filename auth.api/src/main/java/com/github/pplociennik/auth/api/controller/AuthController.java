@@ -25,14 +25,15 @@
 package com.github.pplociennik.auth.api.controller;
 
 import com.github.pplociennik.auth.business.authentication.AuthenticationFacade;
-import com.github.pplociennik.auth.common.dto.auth.RegistrationDto;
+import com.github.pplociennik.auth.common.auth.dto.RegistrationDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.github.pplociennik.auth.api.mapping.ApiMappingsConstants.AUTH_CONTROLLER_FULL_REGISTRATION_MAPPING_VALUE;
-import static com.github.pplociennik.auth.api.mapping.ApiMappingsConstants.AUTH_CONTROLLER_MAPPING_VALUE;
+import static com.github.pplociennik.auth.api.controller.ApiMappingsConstants.*;
 import static com.github.pplociennik.auth.business.authentication.domain.map.RegistrationMapper.mapToDO;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -44,17 +45,23 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController( value = AUTH_CONTROLLER_MAPPING_VALUE )
 class AuthController {
 
-    private AuthenticationFacade authenticationFacade;
+    private final AuthenticationFacade authenticationFacade;
 
     @Autowired
-    AuthController( final AuthenticationFacade aAuthenticationFacade ) {
+    AuthController( AuthenticationFacade aAuthenticationFacade ) {
         authenticationFacade = aAuthenticationFacade;
     }
 
+    @Transactional
     @PostMapping( path = AUTH_CONTROLLER_FULL_REGISTRATION_MAPPING_VALUE, consumes = APPLICATION_JSON_VALUE )
     void registerNewUserAccount( @RequestBody RegistrationDto aRegistrationDto ) {
         var registrationDO = mapToDO( aRegistrationDto );
         authenticationFacade.registerNewAccount( registrationDO );
+    }
 
+    @Transactional
+    @PostMapping( path = AUTH_CONTROLLER_ACCOUNT_CONFIRMATION_MAPPING_VALUE, consumes = APPLICATION_JSON_VALUE )
+    void confirmRegistration( @RequestParam String aToken ) {
+        authenticationFacade.confirmRegistration(aToken);
     }
 }

@@ -24,13 +24,14 @@
 
 package com.github.pplociennik.auth.business.authentication;
 
-import com.github.pplociennik.auth.business.authentication.infrastructure.AuthAuthenticationInfrastructureBeans;
 import com.github.pplociennik.auth.business.authentication.ports.AccountRepository;
 import com.github.pplociennik.auth.business.authentication.ports.AuthenticationValidationRepository;
+import com.github.pplociennik.auth.business.authentication.ports.VerificationTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
@@ -39,25 +40,31 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  * @author Created by: Pplociennik at 31.01.2022 00:32
  */
 @Configuration
-@Import( value = {
-        AuthAuthenticationInfrastructureBeans.class
-} )
-public class AuthAuthenticationBeansConfig {
+class AuthAuthenticationBeansConfig {
 
     private final AccountRepository accountRepository;
     private final AuthenticationValidationRepository authenticationValidationRepository;
     private final PasswordEncoder encoder;
+    private final ApplicationEventPublisher eventPublisher;
+    private final Environment environment;
+    private final VerificationTokenRepository verificationTokenRepository;
 
     @Autowired
-    public AuthAuthenticationBeansConfig( AccountRepository aAccountRepository, AuthenticationValidationRepository aAuthenticationValidationRepository, PasswordEncoder aEncoder ) {
+    AuthAuthenticationBeansConfig(
+            AccountRepository aAccountRepository, AuthenticationValidationRepository aAuthenticationValidationRepository,
+            PasswordEncoder aEncoder, ApplicationEventPublisher aEventPublisher, Environment aEnvironment,
+            VerificationTokenRepository aVerificationTokenRepository ) {
         accountRepository = aAccountRepository;
         authenticationValidationRepository = aAuthenticationValidationRepository;
         encoder = aEncoder;
+        eventPublisher = aEventPublisher;
+        environment = aEnvironment;
+        verificationTokenRepository = aVerificationTokenRepository;
     }
 
     @Bean
-    public AuthenticationFacade authenticationFacade() {
-        return new AuthenticationFacade( authService(), authenticationValidator() );
+    AuthenticationFacade authenticationFacade() {
+        return new AuthenticationFacade( authService(), authenticationValidator(), eventPublisher );
     }
 
     @Bean
@@ -67,6 +74,16 @@ public class AuthAuthenticationBeansConfig {
 
     @Bean
     AuthService authService() {
-        return new AuthService( encoder, accountRepository );
+        return new AuthService( encoder, accountRepository, verificationUrlResolver(), verificationTokenRepository );
+    }
+
+    @Bean
+    SystemPropertiesProvider systemPropertiesProvider() {
+        return new SystemPropertiesProvider( environment );
+    }
+
+    @Bean
+    VerificationUrlResolver verificationUrlResolver() {
+        return new VerificationUrlResolver( verificationTokenRepository, systemPropertiesProvider() );
     }
 }

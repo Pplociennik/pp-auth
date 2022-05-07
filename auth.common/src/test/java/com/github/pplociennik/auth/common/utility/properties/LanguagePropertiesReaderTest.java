@@ -27,6 +27,8 @@ package com.github.pplociennik.auth.common.utility.properties;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import static com.github.pplociennik.auth.common.utility.properties.LanguagePropertiesReader.EXCEPTIONS_TRANSLATIONS_BASENAME_PROPERTY;
+
 /**
  * Unit tests for {@link LanguagePropertiesReader} class.
  *
@@ -39,7 +41,7 @@ class LanguagePropertiesReaderTest {
     @Test
     void shouldReturnValidPropertyValue() {
         var expectedValue = "lang/AuthResExcMsg";
-        var result = READER.getBasename();
+        var result = READER.getTranslationsBasename( EXCEPTIONS_TRANSLATIONS_BASENAME_PROPERTY );
 
         Assertions.assertThat( result ).isEqualTo( expectedValue );
     }

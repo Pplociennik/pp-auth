@@ -24,10 +24,10 @@
 
 package com.github.pplociennik.auth.business.authorization;
 
-import com.github.pplociennik.auth.business.authorization.infrastructure.AuthAuthorizationInfrastructureBeans;
+import com.github.pplociennik.auth.business.authorization.ports.PermissionsService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 
 /**
  * A Spring's configuration class for authorization beans definition.
@@ -35,13 +35,17 @@ import org.springframework.context.annotation.Import;
  * @author Created by: Pplociennik at 31.01.2022 00:32
  */
 @Configuration
-@Import( value = {
-        AuthAuthorizationInfrastructureBeans.class
-} )
-public class AuthAuthorizationBeansConfig {
+class AuthAuthorizationBeansConfig {
+
+    private final PermissionsService permissionsService;
+
+    @Autowired
+    AuthAuthorizationBeansConfig( PermissionsService aPermissionsService ) {
+        permissionsService = aPermissionsService;
+    }
 
     @Bean
-    public AuthorizationFacade authorizationFacade() {
-        return new AuthorizationFacade();
+    AuthorizationFacade authorizationFacade() {
+        return new AuthorizationFacade( permissionsService );
     }
 }

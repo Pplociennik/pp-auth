@@ -25,6 +25,11 @@
 package com.github.pplociennik.auth.business.authentication.ports;
 
 import com.github.pplociennik.auth.db.entity.authentication.Account;
+import com.github.pplociennik.auth.db.entity.authorization.Authority;
+
+import java.util.Set;
+
+import static com.github.pplociennik.auth.business.shared.authorization.RolesDefinition.AUTH_USER_ROLE;
 
 /**
  * A test data supplier for {@link AccountRepositoryTest}.
@@ -44,8 +49,18 @@ class AccountRepositoryTestDataSupplier {
         account.setId( 1L );
         account.setPassword( "example_pass_1" );
         account.setUsername( "example_username_1" );
+        account.setAuthorities( getDummyAuthorities( account ) );
 
         return account;
+    }
+
+    private static Set< Authority > getDummyAuthorities( Account aAccount ) {
+        var authority = Authority.builder()
+                .name( AUTH_USER_ROLE.getName() )
+                .authoritiesOwner( aAccount )
+                .build();
+
+        return Set.of( authority );
     }
 
     static Account prepareSimpleAccountDataTwo() {
@@ -59,6 +74,7 @@ class AccountRepositoryTestDataSupplier {
         account.setId( 2L );
         account.setPassword( "example_pass_2" );
         account.setUsername( "example_username_2" );
+        account.setAuthorities( getDummyAuthorities( account ) );
 
         return account;
     }

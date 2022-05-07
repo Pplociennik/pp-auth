@@ -26,6 +26,8 @@ package com.github.pplociennik.auth.business.authentication;
 
 import com.github.pplociennik.auth.business.authentication.domain.model.RegistrationDO;
 import com.github.pplociennik.auth.business.authentication.ports.AccountRepository;
+import com.github.pplociennik.auth.business.authentication.ports.VerificationTokenRepository;
+import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryVerificationTokenRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -48,6 +50,8 @@ class AuthServiceTest {
 
     private AccountRepository accountRepository;
     private PasswordEncoder encoder;
+    private VerificationUrlResolver urlResolver;
+    private VerificationTokenRepository verificationTokenRepository;
 
     private AuthService underTest;
 
@@ -55,10 +59,12 @@ class AuthServiceTest {
     void prepareMocks() {
         accountRepository = mock( AccountRepository.class );
         encoder = mock( PasswordEncoder.class );
+        urlResolver = mock( VerificationUrlResolver.class );
+        verificationTokenRepository = new InMemoryVerificationTokenRepository();
 
         when( encoder.encode( TEST_VALID_PASSWORD ) ).thenReturn( TEST_ENCODED_PASSWORD );
 
-        underTest = new AuthService( encoder, accountRepository );
+        underTest = new AuthService( encoder, accountRepository, urlResolver, verificationTokenRepository );
     }
 
     @Test

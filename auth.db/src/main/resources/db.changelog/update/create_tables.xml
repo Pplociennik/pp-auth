@@ -102,6 +102,62 @@
         <comment>Creates a table AUTH_USERS for authentication data storing.</comment>
     </changeSet>
 
+    <!-- Tokens -->
+
+    <changeSet id="2022.07.01 13:33:00" author="pplociennik" dbms="mssql" context="ctx.auth">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="AUTH_TOKENS"/>
+            </not>
+        </preConditions>
+        <createTable tableName="AUTH_TOKENS">
+            <column name="ID" type="BIGINT">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="TOKEN_TYPE" type="VARCHAR(25)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TOKEN_VALUE" type="VARCHAR(76)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="EXPIRATION_DATETIME" type="VARCHAR(60)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TOKEN_OWNER" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="FOREIGN_KEY_TOKEN_OWNER"
+                             references="AUTH_ACCOUNTS(ID)"/>
+            </column>
+        </createTable>
+        <comment>Creates a table AUTH_TOKENS for authentication data storing.</comment>
+    </changeSet>
+
+    <changeSet id="2022.07.01 13:45:00" author="pplociennik" dbms="h2" context="ctx.auth">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="AUTH_TOKENS"/>
+            </not>
+        </preConditions>
+        <createTable tableName="AUTH_TOKENS">
+            <column name="ID" type="BIGINT">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="TOKEN_TYPE" type="VARCHAR(25)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TOKEN_VALUE" type="VARCHAR(76)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="EXPIRATION_DATETIME" type="VARCHAR(60)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TOKEN_OWNER" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="FOREIGN_KEY_TOKEN_OWNER"
+                             references="AUTH_ACCOUNTS(ID)"/>
+            </column>
+        </createTable>
+        <comment>Creates a table AUTH_TOKENS for authentication data storing.</comment>
+    </changeSet>
+
     <!-- ########################################################################################################### -->
     <!--                                        ### Authorization ###                                                -->
     <!-- ########################################################################################################### -->

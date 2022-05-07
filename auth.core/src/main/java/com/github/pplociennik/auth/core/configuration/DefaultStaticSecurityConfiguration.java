@@ -24,13 +24,12 @@
 
 package com.github.pplociennik.auth.core.configuration;
 
-import com.github.pplociennik.auth.core.configuration.SecurityConfiguration;
-import com.github.pplociennik.auth.core.configuration.SpringModulesConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
@@ -45,6 +44,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableJpaRepositories
 @EnableWebSecurity
 @EnableSwagger2
+@EnableAsync
 @Import( {
         SpringModulesConfiguration.class,
         SecurityConfiguration.class

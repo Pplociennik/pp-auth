@@ -24,16 +24,16 @@
 
 package com.github.pplociennik.auth.business.authentication.testimpl;
 
-import com.github.pplociennik.auth.business.authentication.ports.AccountRepository;
 import com.github.pplociennik.auth.business.authentication.ports.AccountSecurityDataService;
+import com.github.pplociennik.auth.db.repository.authentication.AccountDao;
 import org.springframework.lang.NonNull;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import static com.github.pplociennik.auth.business.authentication.domain.map.AccountMapper.mapToSecurityCoreDO;
 import static com.github.pplociennik.auth.common.lang.AuthResExcMsgTranslationKey.AUTHENTICATION_USERNAME_NOT_FOUND;
-import static com.github.pplociennik.auth.common.utility.CustomObjects.arrayOf;
-import static com.github.pplociennik.auth.common.utility.LanguageUtil.getLocalizedMessage;
+import static com.github.pplociennik.util.utility.CustomObjects.arrayOf;
+import static com.github.pplociennik.util.utility.LanguageUtil.getLocalizedMessage;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -43,9 +43,9 @@ import static java.util.Objects.requireNonNull;
  */
 public class InMemoryAccountSecurityDataService implements AccountSecurityDataService {
 
-    private AccountRepository accountRepository;
+    private AccountDao accountRepository;
 
-    public InMemoryAccountSecurityDataService( @NonNull AccountRepository aAccountRepository ) {
+    public InMemoryAccountSecurityDataService( @NonNull AccountDao aAccountRepository ) {
         accountRepository = aAccountRepository;
     }
 

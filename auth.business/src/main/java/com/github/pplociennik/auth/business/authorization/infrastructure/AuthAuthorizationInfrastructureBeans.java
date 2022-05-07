@@ -24,7 +24,11 @@
 
 package com.github.pplociennik.auth.business.authorization.infrastructure;
 
+import com.github.pplociennik.auth.business.authorization.ports.PermissionsService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.acls.model.MutableAclService;
 
 /**
  * A Spring's configuration class for authorization beans definition. Infrastructure package part.
@@ -32,5 +36,17 @@ import org.springframework.context.annotation.Configuration;
  * @author Created by: Pplociennik at 13.10.2021 17:42
  */
 @Configuration
-public class AuthAuthorizationInfrastructureBeans {
+class AuthAuthorizationInfrastructureBeans {
+
+    private final MutableAclService mutableAclService;
+
+    @Autowired
+    AuthAuthorizationInfrastructureBeans( MutableAclService aMutableAclService ) {
+        mutableAclService = aMutableAclService;
+    }
+
+    @Bean
+    PermissionsService permissionsService() {
+        return new PermissionServiceImpl( mutableAclService );
+    }
 }

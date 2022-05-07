@@ -26,6 +26,7 @@ package com.github.pplociennik.auth.business.authentication.ports;
 
 import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryAccountSecurityDataService;
 import com.github.pplociennik.auth.db.entity.authentication.Account;
+import com.github.pplociennik.auth.db.repository.authentication.AccountDao;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -55,7 +56,7 @@ class AccountSecurityDataServiceTest {
     private static Account TEST_ACCOUNT_2;
     private static Account TEST_ACCOUNT_3;
 
-    private AccountRepository repository = mock( AccountRepository.class );
+    private AccountDao repository = mock( AccountDao.class );
     private AccountSecurityDataService underTest = new InMemoryAccountSecurityDataService( repository );
 
     @BeforeEach

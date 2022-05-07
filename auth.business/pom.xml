@@ -51,6 +51,12 @@
             <artifactId>auth.db</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
+
+        <!--    Additional dependencies    -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

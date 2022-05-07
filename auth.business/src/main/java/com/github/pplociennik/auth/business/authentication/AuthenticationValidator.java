@@ -24,9 +24,11 @@
 
 package com.github.pplociennik.auth.business.authentication;
 
+import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
 import com.github.pplociennik.auth.business.authentication.domain.model.RegistrationDO;
 import com.github.pplociennik.auth.business.authentication.ports.AuthenticationValidationRepository;
-import com.github.pplociennik.auth.business.shared.validation.ValidatorIf;
+import com.github.pplociennik.util.validation.ValidatorIf;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 
@@ -50,13 +52,11 @@ class AuthenticationValidator {
     private final AuthenticationValidationRepository authenticationValidationRepository;
 
     @Autowired
-    public AuthenticationValidator( @NonNull AuthenticationValidationRepository aAuthenticationValidationRepository ) {
+    AuthenticationValidator( @NonNull AuthenticationValidationRepository aAuthenticationValidationRepository ) {
         authenticationValidationRepository = aAuthenticationValidationRepository;
     }
 
-    public void validateRegistration( @NonNull RegistrationDO aRegistrationDO ) {
-
-        requireNonNull( aRegistrationDO );
+    void validateRegistration( @NonNull RegistrationDO aRegistrationDO ) {
 
         ValidatorIf.of( aRegistrationDO )
                 .validate( Objects::nonNull, AUTHENTICATION_NO_REGISTRATION_DATA )
@@ -64,17 +64,36 @@ class AuthenticationValidator {
                 .validate( RegistrationDO::getPassword, this::checkIfPasswordCorrect, AUTHENTICATION_PASSWORD_NOT_MATCHING_PATTERN )
                 .validate( RegistrationDO::getEmail, this::checkIfEmailCorrect, AUTHENTICATION_EMAIL_NOT_MATCHING_PATTERN )
                 .validate( this::checkIfPasswordsEqual, AUTHENTICATION_PASSWORDS_NOT_EQUAL )
-                .validate( RegistrationDO::getUsername, this::checkIfUsernameExists, AUTHENTICATION_USERNAME_ALREADY_IN_USE )
-                .validate( RegistrationDO::getEmail, this::checkIfEmailExists, AUTHENTICATION_EMAIL_ALREADY_IN_USE )
+                .validate( RegistrationDO::getUsername, this::checkIfUsernameNotExists, AUTHENTICATION_USERNAME_ALREADY_IN_USE )
+                .validate( RegistrationDO::getEmail, this::checkIfEmailNotExists, AUTHENTICATION_EMAIL_ALREADY_IN_USE )
                 .perform();
     }
 
-    private boolean checkIfEmailExists( String aEmail ) {
+    void validateConfirmationLinkGeneration( @NonNull AccountDO aAccountDO ) {
+
+        ValidatorIf.of( aAccountDO )
+                .validate( Objects::nonNull, NO_DATA_PROVIDED )
+                .validate( AccountDO::getEmailAddress, this::checkIfUserExists, AUTHENTICATION_USER_DOES_NOT_EXIST )
+                .perform();
+    }
+
+    public void validateRegistrationConfirmation( String aToken ) {
+
+        ValidatorIf.of( aToken )
+                .validate( StringUtils::isNotBlank, NO_DATA_PROVIDED )
+                .perform();
+    }
+
+    private boolean checkIfUserExists( String aEmail ) {
+        return authenticationValidationRepository.checkIfEmailExists( aEmail );
+    }
+
+    private boolean checkIfEmailNotExists( String aEmail ) {
         requireNonNull( aEmail );
         return ! authenticationValidationRepository.checkIfEmailExists( aEmail );
     }
 
-    private boolean checkIfUsernameExists( String aUsername ) {
+    private boolean checkIfUsernameNotExists( String aUsername ) {
         requireNonNull( aUsername );
         return ! authenticationValidationRepository.checkIfUsernameExists( aUsername );
     }

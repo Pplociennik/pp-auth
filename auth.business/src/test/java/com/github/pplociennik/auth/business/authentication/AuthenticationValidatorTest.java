@@ -26,7 +26,7 @@ package com.github.pplociennik.auth.business.authentication;
 
 import com.github.pplociennik.auth.business.authentication.domain.model.RegistrationDO;
 import com.github.pplociennik.auth.business.authentication.ports.AuthenticationValidationRepository;
-import com.github.pplociennik.auth.common.exc.ValidationException;
+import com.github.pplociennik.util.exc.ValidationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

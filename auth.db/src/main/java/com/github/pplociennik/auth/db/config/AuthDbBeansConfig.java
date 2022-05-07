@@ -26,7 +26,7 @@ package com.github.pplociennik.auth.db.config;
 
 import com.github.pplociennik.auth.db.entity.authentication.Account;
 import com.github.pplociennik.auth.db.entity.authorization.Authority;
-import com.github.pplociennik.auth.db.repository.authentication.SpringAccountRepository;
+import com.github.pplociennik.auth.db.repository.authentication.AccountDao;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -38,7 +38,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  */
 @Configuration
 @EnableJpaRepositories( basePackageClasses = {
-        SpringAccountRepository.class
+        AccountDao.class
 } )
 @EntityScan( basePackageClasses = {
         Account.class,

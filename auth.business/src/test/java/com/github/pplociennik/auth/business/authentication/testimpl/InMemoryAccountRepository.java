@@ -24,6 +24,8 @@
 
 package com.github.pplociennik.auth.business.authentication.testimpl;
 
+import com.github.pplociennik.auth.business.authentication.domain.map.AccountMapper;
+import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
 import com.github.pplociennik.auth.business.authentication.ports.AccountRepository;
 import com.github.pplociennik.auth.db.entity.authentication.Account;
 import org.springframework.lang.NonNull;
@@ -31,7 +33,7 @@ import org.springframework.lang.NonNull;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.github.pplociennik.auth.common.utility.CustomCollectors.toSingleton;
+import static com.github.pplociennik.util.utility.CustomCollectors.toSingleton;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -48,17 +50,20 @@ public class InMemoryAccountRepository implements AccountRepository {
     }
 
     @Override
-    public void save( @NonNull Account aAccount ) {
+    public AccountDO save( @NonNull Account aAccount ) {
         requireNonNull( aAccount );
         database.add( aAccount );
+        return AccountMapper.mapToDomain( aAccount );
     }
 
     @Override
-    public Account findAccountByUsername( @NonNull String aUsername ) {
+    public AccountDO findAccountByUsername( @NonNull String aUsername ) {
         requireNonNull( aUsername );
-        return database.stream()
-                .filter( account -> account.getUsername().equals( aUsername ) )
+        var account = database.stream()
+                .filter( acc -> acc.getUsername().equals( aUsername ) )
                 .collect( toSingleton() );
+
+        return AccountMapper.mapToDomain( account );
     }
 
     @Override
@@ -73,5 +78,10 @@ public class InMemoryAccountRepository implements AccountRepository {
         requireNonNull( aEmail );
         return database.stream()
                 .anyMatch( account -> account.getEmailAddress().equals( aEmail ) );
+    }
+
+    @Override
+    public void enableAccount( AccountDO aAccountToBeConfirmed ) {
+        return;
     }
 }

@@ -52,6 +52,28 @@
         <createSequence sequenceName="SEQ_AUTH_ACCOUNT" incrementBy="1" startValue="1"/>
     </changeSet>
 
+    <!-- Tokens -->
+
+    <changeSet id="2022.07.01 13:50:00" author="pplociennik" dbms="mssql" context="ctx.auth">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="SEQ_AUTH_TOKEN"/>
+            </not>
+        </preConditions>
+        <comment>Creates a sequence SEQ_AUTH_TOKEN.</comment>
+        <createSequence sequenceName="SEQ_AUTH_TOKEN" incrementBy="1" startValue="1"/>
+    </changeSet>
+
+    <changeSet id="2022.07.01 13:51:00" author="pplociennik" dbms="h2" context="ctx.auth">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="SEQ_AUTH_TOKEN"/>
+            </not>
+        </preConditions>
+        <comment>Creates a sequence SEQ_AUTH_TOKEN.</comment>
+        <createSequence sequenceName="SEQ_AUTH_TOKEN" incrementBy="1" startValue="1"/>
+    </changeSet>
+
     <!-- ########################################################################################################### -->
     <!--                                        ### Authorization ###                                                -->
     <!-- ########################################################################################################### -->

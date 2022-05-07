@@ -24,24 +24,23 @@
 
 package com.github.pplociennik.auth.core.configuration;
 
-import com.github.pplociennik.auth.api.AuthApiBeansConfig;
-import com.github.pplociennik.auth.business.config.AuthBusinessBeansConfig;
-import com.github.pplociennik.auth.common.config.AuthCommonBeansConfig;
-import com.github.pplociennik.auth.db.config.AuthDbBeansConfig;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 
 /**
- * A Spring's configuration class for modules configs import.
+ * A Spring's configuration class for modules configs scan.
  *
  * @author Created by: Pplociennik at 13.10.2021 17:18
  */
 @Configuration
-@Import( {
-        AuthCommonBeansConfig.class,
-        AuthBusinessBeansConfig.class,
-        AuthApiBeansConfig.class,
-        AuthDbBeansConfig.class
-} )
+@ComponentScan(
+        basePackages = {
+                "com.github.pplociennik.auth.mailing",
+                "com.github.pplociennik.auth.business",
+                "com.github.pplociennik.auth.common",
+                "com.github.pplociennik.auth.api",
+                "com.github.pplociennik.auth.db"
+        }
+)
 class SpringModulesConfiguration {
 }
