@@ -30,9 +30,8 @@ import org.springframework.lang.NonNull;
 import org.springframework.security.acls.domain.ObjectIdentityImpl;
 import org.springframework.security.acls.domain.PrincipalSid;
 import org.springframework.security.acls.model.*;
-import org.springframework.stereotype.Service;
 
-import static com.github.pplociennik.auth.common.utility.CustomObjects.requireNonEmpty;
+import static com.github.pplociennik.util.utility.CustomObjects.requireNonEmpty;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -40,7 +39,6 @@ import static java.util.Objects.requireNonNull;
  *
  * @author Created by: Pplociennik at 12.04.2022 21:29
  */
-@Service
 class PermissionServiceImpl implements PermissionsService {
 
     private final MutableAclService aclService;

@@ -24,30 +24,51 @@
 
 package com.github.pplociennik.auth.business.authentication;
 
+import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
 import com.github.pplociennik.auth.business.authentication.domain.model.RegistrationDO;
+import com.github.pplociennik.auth.common.auth.dto.AccountDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.lang.NonNull;
-import org.springframework.stereotype.Service;
+
+import static com.github.pplociennik.auth.business.authentication.domain.map.AccountMapper.mapToDto;
 
 /**
  * A facade sharing functionalities for authentication process.
  *
  * @author Created by: Pplociennik at 26.10.2021 19:18
  */
-@Service
 public class AuthenticationFacade {
 
-    private AuthService authService;
-    private AuthenticationValidator validationService;
+    private final AuthService authService;
+    private final AuthenticationValidator validationService;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Autowired
-    public AuthenticationFacade( @NonNull AuthService aAuthService, @NonNull AuthenticationValidator aValidationService ) {
+    public AuthenticationFacade( @NonNull AuthService aAuthService, @NonNull AuthenticationValidator aValidationService, @NonNull ApplicationEventPublisher aEventPublisher ) {
         authService = aAuthService;
         validationService = aValidationService;
+        eventPublisher = aEventPublisher;
     }
 
-    public void registerNewAccount( @NonNull RegistrationDO aRegistrationDO ) {
+    /**
+     * Creates a new user account.
+     *
+     * @param aRegistrationDO
+     *         a registration data necessary for a new account creation. The data is being validated before the process starts.
+     */
+    public AccountDto registerNewAccount( @NonNull RegistrationDO aRegistrationDO ) {
         validationService.validateRegistration( aRegistrationDO );
-        authService.registerNewAccount( aRegistrationDO );
+        return mapToDto( authService.registerNewAccount( aRegistrationDO ) );
+    }
+
+    public String createNewAccountConfirmationLink( @NonNull AccountDO aAccount ) {
+        validationService.validateConfirmationLinkGeneration( aAccount );
+        return authService.generateConfirmationLink( aAccount );
+    }
+
+    public void confirmRegistration( @NonNull String aToken ) {
+        validationService.validateRegistrationConfirmation( aToken );
+        authService.confirmRegistration( aToken );
     }
 }

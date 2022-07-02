@@ -24,13 +24,56 @@
 
 package com.github.pplociennik.auth.business.authorization;
 
-import org.springframework.stereotype.Service;
+import com.github.pplociennik.auth.business.authorization.ports.PermissionsService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
+import org.springframework.security.acls.model.Permission;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A facade sharing functionalities for authorization process.
  *
  * @author Created by: Pplociennik at 12.04.2022 21:23
  */
-@Service
 public class AuthorizationFacade {
+
+    private final PermissionsService permissionsService;
+
+    @Autowired
+    public AuthorizationFacade( @NonNull PermissionsService aPermissionsService ) {
+        permissionsService = requireNonNull( aPermissionsService );
+    }
+
+    /**
+     * Adds specified permission for the user to the specific typed object.
+     *
+     * @param aUsername
+     *         a user for which the permissions will be granted.
+     * @param aType
+     *         a type of object for which the permissions are being resolved.
+     * @param aId
+     *         an identifier od the specified object.
+     * @param aPermission
+     *         a permission which will be granted.
+     */
+    void addPermission( @NonNull String aUsername, @NonNull Class< ? > aType, Long aId, @NonNull Permission aPermission ) {
+        permissionsService.addPermission( aUsername, aType, aId, aPermission );
+    }
+
+    /**
+     * Adds specified permission for the user to the specific object.
+     *
+     * @param aUsername
+     *         a user for which the permissions will be granted.
+     * @param aObject
+     *         an object for which the permission is going to be granted.
+     * @param aPermission
+     *         a permission which will be granted.
+     */
+    void addPermission( @NonNull String aUsername, @NonNull Object aObject, @NonNull Permission aPermission ) {
+        permissionsService.addPermission( aUsername, aObject, aPermission );
+    }
+
+
 }

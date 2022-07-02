@@ -24,27 +24,33 @@
 
 package com.github.pplociennik.auth.common.utility.properties;
 
-import com.github.pplociennik.auth.common.exc.ReadingPropertiesException;
+import com.github.pplociennik.util.exc.ReadingPropertiesException;
+import com.github.pplociennik.util.utility.properties.PropertiesReader;
+import org.springframework.lang.NonNull;
 
 /**
- * A util for reading language properties.
+ * An util for reading language properties.
  *
  * @author Created by: Pplociennik at 29.01.2022 20:14
  */
 public final class LanguagePropertiesReader extends PropertiesReader {
 
-    private static final String LANGUAGE_PROPERTIES_FILE = "lang/properties/translation.properties";
+    public static final String LANGUAGE_PROPERTIES_FILE = "lang/properties/translation.properties";
+    public static final String EXCEPTIONS_TRANSLATIONS_BASENAME_PROPERTY = "message.exc.language.basename";
+    public static final String EMAILS_TRANSLATIONS_BASENAME_PROPERTY = "message.email.language.basename";
 
     /**
      * Returns a basename for translations file.
      *
-     * @return a value of the 'basename' property
+     * @param aProperty
+     *         a property which needs to be read.
+     * @return a value of the 'BASENAME' property.
      */
-    public String getBasename() {
+    public String getTranslationsBasename( @NonNull String aProperty ) {
         String baseNameProperty;
 
         try {
-            baseNameProperty = readProperty( LANGUAGE_PROPERTIES_FILE, "message.language.basename" );
+            baseNameProperty = readProperty( LANGUAGE_PROPERTIES_FILE, aProperty );
         } catch ( ReadingPropertiesException aE ) {
             throw new ReadingPropertiesException( "Could not find 'BASENAME' property." );
         }

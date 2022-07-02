@@ -24,9 +24,9 @@
 
 package com.github.pplociennik.auth.business.authentication.infrastructure;
 
-import com.github.pplociennik.auth.business.authentication.ports.AccountRepository;
 import com.github.pplociennik.auth.business.authentication.ports.AccountSecurityDataService;
 import com.github.pplociennik.auth.db.entity.authentication.Account;
+import com.github.pplociennik.auth.db.repository.authentication.AccountDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,8 +34,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import static com.github.pplociennik.auth.business.authentication.domain.map.AccountMapper.mapToSecurityCoreDO;
 import static com.github.pplociennik.auth.common.lang.AuthResExcMsgTranslationKey.AUTHENTICATION_USERNAME_NOT_FOUND;
-import static com.github.pplociennik.auth.common.utility.CustomObjects.arrayOf;
-import static com.github.pplociennik.auth.common.utility.LanguageUtil.getLocalizedMessage;
+import static com.github.pplociennik.util.utility.CustomObjects.arrayOf;
+import static com.github.pplociennik.util.utility.LanguageUtil.getLocalizedMessage;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -45,10 +45,10 @@ import static java.util.Objects.requireNonNull;
  */
 class AccountSecurityDataServiceImpl implements AccountSecurityDataService {
 
-    private final AccountRepository accountRepository;
+    private final AccountDao accountRepository;
 
     @Autowired
-    public AccountSecurityDataServiceImpl( @NonNull final AccountRepository aAccountRepository ) {
+    public AccountSecurityDataServiceImpl( @NonNull final AccountDao aAccountRepository ) {
         accountRepository = aAccountRepository;
     }
 

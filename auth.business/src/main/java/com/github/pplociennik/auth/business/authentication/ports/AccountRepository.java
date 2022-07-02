@@ -24,6 +24,7 @@
 
 package com.github.pplociennik.auth.business.authentication.ports;
 
+import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
 import com.github.pplociennik.auth.db.entity.authentication.Account;
 import org.springframework.lang.NonNull;
 
@@ -40,7 +41,7 @@ public interface AccountRepository {
      * @param aAccount
      *         a user account.
      */
-    void save( @NonNull Account aAccount );
+    AccountDO save( @NonNull Account aAccount );
 
     /**
      * Returns an account with the specified username if it exists in the database.
@@ -49,7 +50,7 @@ public interface AccountRepository {
      *         a username.
      * @return a user account.
      */
-    Account findAccountByUsername( @NonNull String aUsername );
+    AccountDO findAccountByUsername( @NonNull String aUsername );
 
     /**
      * Returns true if an account with the specified username exists in the database.
@@ -68,4 +69,12 @@ public interface AccountRepository {
      * @return TRUE if the account exists and FALSE if it does noe.
      */
     boolean existsAccountByEmailAddress( @NonNull String aEmail );
+
+    /**
+     * Enables the specified account. Sets 'enabled' flag to true.
+     *
+     * @param aAccountToBeConfirmed
+     *         an account to be updated.
+     */
+    void enableAccount( @NonNull AccountDO aAccountToBeConfirmed );
 }

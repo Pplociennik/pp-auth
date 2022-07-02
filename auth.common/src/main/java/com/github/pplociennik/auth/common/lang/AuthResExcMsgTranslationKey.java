@@ -24,12 +24,14 @@
 
 package com.github.pplociennik.auth.common.lang;
 
+import com.github.pplociennik.util.lang.TranslationKey;
+
 /**
- * An enum holding keys for identifying translation messages.
+ * An enum holding keys for identifying exceptions' translation messages.
  *
  * @author Created by: Pplociennik at 22.12.2021 20:07
  */
-public enum AuthResExcMsgTranslationKey {
+public enum AuthResExcMsgTranslationKey implements TranslationKey {
 
     /**
      * Authentication process: Username does not match pattern.
@@ -67,9 +69,24 @@ public enum AuthResExcMsgTranslationKey {
     AUTHENTICATION_EMAIL_ALREADY_IN_USE,
 
     /**
+     * Generating confirmation link: User with such an email does not exist in the database.
+     */
+    AUTHENTICATION_USER_DOES_NOT_EXIST,
+
+    /**
      * Authentication process: Username not found in database.
      */
     AUTHENTICATION_USERNAME_NOT_FOUND,
+
+    /**
+     * Account confirmation: Account does not exist!
+     */
+    ACCOUNT_CONFIRMATION_USER_NOT_EXISTS,
+
+    /**
+     * Account confirmation: Token expired!
+     */
+    ACCOUNT_CONFIRMATION_TOKEN_EXPIRED,
 
     /**
      * Reading properties: Process failed.
@@ -77,12 +94,24 @@ public enum AuthResExcMsgTranslationKey {
     READING_PROPERTIES_FAILED,
 
     /**
+     * All: No data has been provided.
+     */
+    NO_DATA_PROVIDED,
+
+    /**
      * Unexpected exception being thrown.
      */
     UNEXPECTED_EXCEPTION;
 
+    private static final String EXCEPTIONS_TRANSLATIONS_BASENAME_PROPERTY = "lang/AuthResExcMsg";
+
     @Override
     public String toString() {
         return super.toString();
+    }
+
+    @Override
+    public String getTranslationsSourcePropertyName() {
+        return EXCEPTIONS_TRANSLATIONS_BASENAME_PROPERTY;
     }
 }

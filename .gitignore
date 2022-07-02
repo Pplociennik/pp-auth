@@ -33,3 +33,4 @@ build/
 
 ### VS Code ###
 .vscode/
+/auth.e2e/src/main/resources/

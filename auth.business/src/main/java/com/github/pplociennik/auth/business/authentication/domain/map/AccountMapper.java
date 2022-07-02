@@ -24,9 +24,11 @@
 
 package com.github.pplociennik.auth.business.authentication.domain.map;
 
+import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
 import com.github.pplociennik.auth.business.authentication.domain.model.AccountSecurityCoreDO;
 import com.github.pplociennik.auth.business.authentication.domain.model.RegistrationDO;
 import com.github.pplociennik.auth.business.authorization.domain.model.AuthorityDetails;
+import com.github.pplociennik.auth.common.auth.dto.AccountDto;
 import com.github.pplociennik.auth.db.entity.authentication.Account;
 import com.github.pplociennik.auth.db.entity.authorization.Authority;
 import org.springframework.lang.NonNull;
@@ -36,7 +38,7 @@ import java.util.List;
 import java.util.Set;
 
 import static com.github.pplociennik.auth.business.shared.authorization.RolesDefinition.AUTH_USER_ROLE;
-import static com.github.pplociennik.auth.common.utility.CustomObjects.requireNonEmpty;
+import static com.github.pplociennik.util.utility.CustomObjects.requireNonEmpty;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toUnmodifiableList;
 
@@ -59,10 +61,6 @@ public class AccountMapper {
         requireNonNull( aRegistrationDO );
         requireNonEmpty( aHashedPassword );
         var newAccount = Account.builder()
-                .accountNonExpired( true )
-                .accountNonLocked( true )
-                .credentialsNonExpired( true )
-                .enabled( true )
                 .emailAddress( aRegistrationDO.getEmail() )
                 .password( aHashedPassword )
                 .username( aRegistrationDO.getUsername() )
@@ -71,6 +69,70 @@ public class AccountMapper {
         newAccount.setAuthorities( createNewUserAuthority( newAccount ) );
 
         return newAccount;
+    }
+
+    public static Account mapToEntity( @NonNull AccountDO aAccount, Set< Authority > aAuthorities ) {
+        requireNonNull( aAccount );
+        return Account.builder()
+                .emailAddress( aAccount.getEmailAddress() )
+                .password( aAccount.getPassword() )
+                .accountNonExpired( aAccount.isAccountNonExpired() )
+                .accountNonLocked( aAccount.isAccountNonLocked() )
+                .username( aAccount.getUsername() )
+                .credentialsNonExpired( aAccount.isCredentialsNonExpired() )
+                .authorities( aAuthorities )
+                .enabled( aAccount.isEnabled() )
+                .build();
+    }
+
+    public static AccountDO mapToDomain( @NonNull Account aAccount ) {
+        requireNonNull( aAccount );
+
+        var authorities = aAccount.getAuthorities().stream()
+                .map( Authority::getName )
+                .collect( toUnmodifiableList() );
+
+        return AccountDO.builder()
+                .accountNonExpired( aAccount.isAccountNonExpired() )
+                .accountNonLocked( aAccount.isAccountNonLocked() )
+                .password( aAccount.getPassword() )
+                .enabled( aAccount.isEnabled() )
+                .emailAddress( aAccount.getEmailAddress() )
+                .username( aAccount.getUsername() )
+                .credentialsNonExpired( aAccount.isCredentialsNonExpired() )
+                .id( aAccount.getId() )
+                .authorities( authorities )
+                .build();
+    }
+
+    public static AccountDO mapToDomain( @NonNull AccountDto aDto ) {
+        requireNonNull( aDto );
+
+        return AccountDO.builder()
+                .accountNonExpired( aDto.isAccountNonExpired() )
+                .accountNonLocked( aDto.isAccountNonLocked() )
+                .authorities( aDto.getAuthorities() )
+                .emailAddress( aDto.getEmailAddress() )
+                .enabled( aDto.isEnabled() )
+                .credentialsNonExpired( aDto.isCredentialsNonExpired() )
+                .password( aDto.getPassword() )
+                .username( aDto.getUsername() )
+                .build();
+    }
+
+    public static AccountDto mapToDto( @NonNull AccountDO aAccountDO ) {
+        requireNonNull( aAccountDO );
+
+        return AccountDto.builder()
+                .emailAddress( aAccountDO.getEmailAddress() )
+                .password( aAccountDO.getPassword() )
+                .accountNonExpired( aAccountDO.isAccountNonExpired() )
+                .accountNonLocked( aAccountDO.isAccountNonLocked() )
+                .authorities( aAccountDO.getAuthorities() )
+                .username( aAccountDO.getUsername() )
+                .credentialsNonExpired( aAccountDO.isCredentialsNonExpired() )
+                .enabled( aAccountDO.isEnabled() )
+                .build();
     }
 
     private static List< AuthorityDetails > getAuthorities( Collection< Authority > aAuthorities ) {

@@ -24,9 +24,11 @@
 
 package com.github.pplociennik.auth.business.authentication.infrastructure;
 
+import com.github.pplociennik.auth.business.authentication.domain.map.AccountMapper;
+import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
 import com.github.pplociennik.auth.business.authentication.ports.AccountRepository;
 import com.github.pplociennik.auth.db.entity.authentication.Account;
-import com.github.pplociennik.auth.db.repository.authentication.SpringAccountRepository;
+import com.github.pplociennik.auth.db.repository.authentication.AccountDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 
@@ -39,29 +41,29 @@ import static java.util.Objects.requireNonNull;
  */
 class AccountRepositoryImpl implements AccountRepository {
 
-    private SpringAccountRepository springAccountRepository;
+    private final AccountDao accountDao;
 
     @Autowired
-    public AccountRepositoryImpl( @NonNull SpringAccountRepository aSpringAccountRepository ) {
-        springAccountRepository = aSpringAccountRepository;
+    public AccountRepositoryImpl( @NonNull AccountDao aAccountDao ) {
+        accountDao = aAccountDao;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void save( @NonNull Account aAccount ) {
+    public AccountDO save( @NonNull Account aAccount ) {
         requireNonNull( aAccount );
-        springAccountRepository.save( aAccount );
+        return AccountMapper.mapToDomain( accountDao.save( aAccount ) );
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Account findAccountByUsername( @NonNull String aUsername ) {
+    public AccountDO findAccountByUsername( @NonNull String aUsername ) {
         requireNonNull( aUsername );
-        return springAccountRepository.findAccountByUsername( aUsername );
+        return AccountMapper.mapToDomain( accountDao.findAccountByUsername( aUsername ) );
     }
 
     /**
@@ -70,7 +72,7 @@ class AccountRepositoryImpl implements AccountRepository {
     @Override
     public boolean existsAccountByUsername( @NonNull String aUsername ) {
         requireNonNull( aUsername );
-        return springAccountRepository.existsAccountByUsername( aUsername );
+        return accountDao.existsAccountByUsername( aUsername );
     }
 
     /**
@@ -79,6 +81,22 @@ class AccountRepositoryImpl implements AccountRepository {
     @Override
     public boolean existsAccountByEmailAddress( @NonNull String aEmail ) {
         requireNonNull( aEmail );
-        return springAccountRepository.existsAccountByUsername( aEmail );
+        return accountDao.existsAccountByUsername( aEmail );
+    }
+
+    /**
+     * Updates the specified account.
+     *
+     * @param aAccount
+     *         an account to be updated.
+     */
+    @Override
+    public void enableAccount( @NonNull AccountDO aAccount ) {
+        requireNonNull( aAccount );
+
+        var toUpdate = accountDao.findAccountByEmailAddress( aAccount.getEmailAddress() );
+        toUpdate.setEnabled( true );
+
+        accountDao.save( toUpdate );
     }
 }

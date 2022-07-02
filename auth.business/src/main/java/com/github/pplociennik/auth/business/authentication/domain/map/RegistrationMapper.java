@@ -25,7 +25,7 @@
 package com.github.pplociennik.auth.business.authentication.domain.map;
 
 import com.github.pplociennik.auth.business.authentication.domain.model.RegistrationDO;
-import com.github.pplociennik.auth.common.dto.auth.RegistrationDto;
+import com.github.pplociennik.auth.common.auth.dto.RegistrationDto;
 import org.springframework.lang.NonNull;
 
 import static java.util.Objects.requireNonNull;

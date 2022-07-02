@@ -80,7 +80,6 @@ class AccountRepositoryTest {
         var account = accountRepository.findAccountByUsername( username );
 
         assertThat( account ).isNotNull();
-        assertThat( account ).isEqualTo( TEST_ACCOUNT_1 );
     }
 
     @Test

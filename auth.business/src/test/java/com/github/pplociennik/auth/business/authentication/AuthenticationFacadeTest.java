@@ -27,8 +27,12 @@ package com.github.pplociennik.auth.business.authentication;
 import com.github.pplociennik.auth.business.authentication.domain.model.RegistrationDO;
 import com.github.pplociennik.auth.business.authentication.ports.AccountRepository;
 import com.github.pplociennik.auth.business.authentication.ports.AuthenticationValidationRepository;
+import com.github.pplociennik.auth.business.authentication.ports.VerificationTokenRepository;
+import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryAccountRepository;
+import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryVerificationTokenRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static java.lang.Boolean.FALSE;
@@ -57,6 +61,9 @@ class AuthenticationFacadeTest {
     private PasswordEncoder encoder;
     private AccountRepository accountRepository;
     private AuthenticationValidationRepository validationRepository;
+    private ApplicationEventPublisher eventPublisher;
+    private VerificationUrlResolver urlResolver;
+    private VerificationTokenRepository verificationTokenRepository;
     private AuthenticationFacade underTest;
 
     @BeforeEach
@@ -64,15 +71,31 @@ class AuthenticationFacadeTest {
         prepareEncoder();
         prepareValidator();
         prepareRepository();
+        prepareEventPublisher();
+        prepareUrlResolver();
+        prepareTokenRepository();
 
-        authService = new AuthService( encoder, accountRepository );
+        authService = new AuthService( encoder, accountRepository, urlResolver, verificationTokenRepository );
         validator = new AuthenticationValidator( validationRepository );
 
-        underTest = new AuthenticationFacade( authService, validator );
+        underTest = new AuthenticationFacade( authService, validator, eventPublisher );
+    }
+
+    private void prepareTokenRepository() {
+        verificationTokenRepository = new InMemoryVerificationTokenRepository();
+    }
+
+    private void prepareUrlResolver() {
+        urlResolver = mock( VerificationUrlResolver.class );
+    }
+
+    private void prepareEventPublisher() {
+        eventPublisher = mock( ApplicationEventPublisher.class );
     }
 
     private void prepareRepository() {
-        accountRepository = mock( AccountRepository.class );
+        accountRepository = new InMemoryAccountRepository()
+        ;
     }
 
     private void prepareValidator() {
