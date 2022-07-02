@@ -35,16 +35,16 @@ class EmailService {
     /**
      * Prepares and sends an email message being an account confirmation request.
      *
-     * @param aSendingDO
+     * @param aDataDO
      *         a domain object containing the information necessary for preparing and sending message.
      */
-    void prepareAndSendEmailConfirmationRequest( @NonNull EmailConfirmationDataDO aSendingDO ) {
-        requireNonNull( aSendingDO );
+    void prepareAndSendEmailConfirmationRequest( @NonNull EmailConfirmationDataDO aDataDO ) {
+        requireNonNull( aDataDO );
 
         var senderAddress = propertiesProvider.getSenderAddress();
-        var recipientAddress = aSendingDO.getRecipientAddress();
+        var recipientAddress = aDataDO.getRecipientAddress();
 
-        var contentData = getContentData( EMAIL_CONFIRMATION_MESSAGE, aSendingDO );
+        var contentData = getContentData( EMAIL_CONFIRMATION_MESSAGE, aDataDO );
         var content = templateEngine.process( contentData.getTemplateFile(), contentData.getContext() );
 
         var message = prepareMessage( senderAddress, recipientAddress, content, getLocalizedMessage( EMAIL_ACCOUNT_CONFIRMATION_SUBJECT ) );
