@@ -3,6 +3,7 @@ package com.github.pplociennik.auth.business.shared.listeners;
 import com.github.pplociennik.auth.business.authentication.AuthenticationFacade;
 import com.github.pplociennik.auth.business.mailing.EmailFacade;
 import com.github.pplociennik.auth.business.shared.events.OnRegistrationCompleteEvent;
+import com.github.pplociennik.auth.common.auth.dto.AccountDto;
 import com.github.pplociennik.auth.common.auth.dto.mailing.EmailConfirmationDataDto;
 import org.springframework.context.ApplicationListener;
 import org.springframework.lang.NonNull;
@@ -30,7 +31,7 @@ public class RegistrationListener implements ApplicationListener< OnRegistration
 
         requireNonNull( event );
 
-        var account = event.getAccount();
+        var account = ( ( AccountDto ) event.getSource() );
 
         var recipientAddress = account.getEmailAddress();
         var confirmationLink = authenticationFacade.createNewAccountConfirmationLink( mapToDomain( account ) );

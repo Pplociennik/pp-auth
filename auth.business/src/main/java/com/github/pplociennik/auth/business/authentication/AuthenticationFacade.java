@@ -26,12 +26,15 @@ package com.github.pplociennik.auth.business.authentication;
 
 import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
 import com.github.pplociennik.auth.business.authentication.domain.model.RegistrationDO;
+import com.github.pplociennik.auth.business.shared.events.OnRegistrationCompleteEvent;
 import com.github.pplociennik.auth.common.auth.dto.AccountDto;
+import com.github.pplociennik.util.utility.LanguageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.lang.NonNull;
 
 import static com.github.pplociennik.auth.business.authentication.domain.map.AccountMapper.mapToDto;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A facade sharing functionalities for authentication process.
@@ -59,7 +62,9 @@ public class AuthenticationFacade {
      */
     public AccountDto registerNewAccount( @NonNull RegistrationDO aRegistrationDO ) {
         validationService.validateRegistration( aRegistrationDO );
-        return mapToDto( authService.registerNewAccount( aRegistrationDO ) );
+        var registeredAccount = mapToDto( authService.registerNewAccount( aRegistrationDO ) );
+        publishEventOnRegistrationFinished( registeredAccount );
+        return registeredAccount;
     }
 
     public String createNewAccountConfirmationLink( @NonNull AccountDO aAccount ) {
@@ -70,5 +75,12 @@ public class AuthenticationFacade {
     public void confirmRegistration( @NonNull String aToken ) {
         validationService.validateRegistrationConfirmation( aToken );
         authService.confirmRegistration( aToken );
+    }
+
+    private void publishEventOnRegistrationFinished( @NonNull AccountDto aRegisteredAccount ) {
+        requireNonNull( aRegisteredAccount );
+
+        var event = new OnRegistrationCompleteEvent( aRegisteredAccount, LanguageUtil.getLocale() );
+        eventPublisher.publishEvent( event );
     }
 }

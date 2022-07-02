@@ -1,6 +1,5 @@
 package com.github.pplociennik.auth.business.shared.events;
 
-import com.github.pplociennik.auth.common.auth.dto.AccountDto;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.context.ApplicationEvent;
@@ -18,16 +17,11 @@ import static java.util.Objects.requireNonNull;
 @Setter
 @Getter
 public class OnRegistrationCompleteEvent extends ApplicationEvent {
-
-    private final String appUrl;
     private final Locale locale;
-    private final AccountDto account;
 
-    public OnRegistrationCompleteEvent( @NonNull Object source, @NonNull String aAppUrl, @NonNull Locale aLocale, @NonNull AccountDto aAccount ) {
+    public OnRegistrationCompleteEvent( @NonNull Object source, @NonNull Locale aLocale ) {
         super( source );
 
-        appUrl = requireNonNull( aAppUrl );
         locale = requireNonNull( aLocale );
-        account = requireNonNull( aAccount );
     }
 }
