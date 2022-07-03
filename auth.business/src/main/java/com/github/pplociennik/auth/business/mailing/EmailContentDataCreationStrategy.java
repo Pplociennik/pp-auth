@@ -2,6 +2,8 @@ package com.github.pplociennik.auth.business.mailing;
 
 import com.github.pplociennik.auth.business.mailing.domain.model.AddressableDataDO;
 import com.github.pplociennik.auth.business.mailing.domain.model.EmailConfirmationDataDO;
+import com.github.pplociennik.auth.common.lang.AuthResEmailMsgTranslationKey;
+import com.github.pplociennik.auth.common.lang.AuthResUnitTranslationKey;
 import org.springframework.lang.NonNull;
 import org.thymeleaf.context.Context;
 
@@ -9,7 +11,7 @@ import java.util.Optional;
 
 import static com.github.pplociennik.auth.common.lang.AuthResEmailMsgTranslationKey.EMAIL_ACCOUNT_CONFIRMATION_DISCLAIMER;
 import static com.github.pplociennik.auth.common.lang.AuthResEmailMsgTranslationKey.EMAIL_ACCOUNT_CONFIRMATION_MESSAGE;
-import static com.github.pplociennik.util.utility.CustomObjects.arrayOf;
+import static com.github.pplociennik.auth.common.lang.AuthResUnitTranslationKey.MINUTES;
 import static com.github.pplociennik.util.utility.LanguageUtil.getLocalizedMessage;
 import static java.util.Objects.requireNonNull;
 
@@ -33,7 +35,7 @@ enum EmailContentDataCreationStrategy {
 
             context.setVariable( "message", getLocalizedMessage( EMAIL_ACCOUNT_CONFIRMATION_MESSAGE ) );
             context.setVariable( "confirmationLink", emailData.getConfirmationLink() );
-            context.setVariable( "disclaimer", getLocalizedMessage( EMAIL_ACCOUNT_CONFIRMATION_DISCLAIMER, arrayOf( 15 ) ) );
+            context.setVariable( "disclaimer", EmailContentDataCreationStrategy.getLocalizedDisclaimer( EMAIL_ACCOUNT_CONFIRMATION_DISCLAIMER, 15L, MINUTES ) );
 
             return EmailContentData.of( context, templateFile );
         }
@@ -42,7 +44,8 @@ enum EmailContentDataCreationStrategy {
 
     abstract EmailContentData prepare( @NonNull AddressableDataDO aDataDO );
 
-    < T > T getProperTypeOfDataDO( @NonNull AddressableDataDO aDataDO, @NonNull Class< T > aType ) {
+    // ### Private helper methods.
+    private static < T > T getProperTypeOfDataDO( @NonNull AddressableDataDO aDataDO, @NonNull Class< T > aType ) {
         requireNonNull( aDataDO );
         requireNonNull( aType );
 
@@ -51,5 +54,14 @@ enum EmailContentDataCreationStrategy {
                 .findAny()
                 .orElseThrow( () -> new IllegalArgumentException( "Wrong type!" ) );
         return aType.cast( checkedObject );
+    }
+
+    private static String getLocalizedDisclaimer( @NonNull AuthResEmailMsgTranslationKey aBaseMessage, long aAmount, @NonNull AuthResUnitTranslationKey aUnit ) {
+        requireNonNull( aBaseMessage );
+        requireNonNull( aUnit );
+
+        var localizedUnit = getLocalizedMessage( aUnit );
+        var parametersForFullLocalization = new Object[]{ aAmount, localizedUnit };
+        return getLocalizedMessage( aBaseMessage, parametersForFullLocalization );
     }
 }

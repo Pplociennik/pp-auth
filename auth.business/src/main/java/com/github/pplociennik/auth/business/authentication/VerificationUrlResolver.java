@@ -56,8 +56,8 @@ class VerificationUrlResolver {
     }
 
 
-    private Instant getExpirationDateForImmediateToken( TokenExpirationDateCalculationStrategy aAccountConfirmationRequest ) {
-        return getExpirationDateForToken( Instant.now(), aAccountConfirmationRequest );
+    private Instant getExpirationDateForImmediateToken( TokenExpirationDateCalculationStrategy aCalculationStrategy ) {
+        return getExpirationDateForToken( Instant.now(), aCalculationStrategy );
     }
 
     private Instant getExpirationDateForToken( @NonNull Instant aStartDate, TokenExpirationDateCalculationStrategy aAccountConfirmationRequest ) {

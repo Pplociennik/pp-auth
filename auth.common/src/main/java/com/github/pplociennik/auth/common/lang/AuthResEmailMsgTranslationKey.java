@@ -22,7 +22,7 @@ public enum AuthResEmailMsgTranslationKey implements TranslationKey {
     EMAIL_ACCOUNT_CONFIRMATION_MESSAGE,
 
     /**
-     * The link expires in {0} minutes.
+     * The link expires in {0} {1}.
      */
     EMAIL_ACCOUNT_CONFIRMATION_DISCLAIMER;
 
