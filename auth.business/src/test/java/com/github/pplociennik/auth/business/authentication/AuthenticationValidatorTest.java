@@ -29,6 +29,8 @@ import com.github.pplociennik.auth.business.authentication.ports.AuthenticationV
 import com.github.pplociennik.util.exc.ValidationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
@@ -47,10 +49,17 @@ class AuthenticationValidatorTest {
     private static final String TEST_VALID_PASSWORD = "TestPass1!";
     private static final String TEST_NOT_EQUAL_PASSWORD = "TestPassDifferent1!";
     private static final String TEST_VALID_EMAIL = "testEmail@gmail.com";
+    private static final String TEST_VALID_EMAIL_SPEC_CHARS = "test#ema!il$^%@testdomain.com";
+    private static final String TEST_VALID_EMAIL_NUMBERS = "testemail9548@testdomain.com";
+    private static final String TEST_VALID_EMAIL_PERMITTED_SPEC_CHAR_DOMAIN = "testemail@test-domain.com";
 
     private static final String TEST_INVALID_USERNAME = "a";
     private static final String TEST_INVALID_PASSWORD = "i";
     private static final String TEST_INVALID_EMAIL = "invalidEmail";
+    private static final String TEST_INVALID_EMAIL_LOCAL_SPACE = "test email@mail.com";
+    private static final String TEST_INVALID_EMAIL_DOMAIN_SPACE = "testemail@test domain.com";
+    private static final String TEST_INVALID_EMAIL_NOT_PERMITTED_SPEC_CHAR_DOMAIN = "testmail@test#domain.com";
+    private static final String TEST_INVALID_EMAIL_TOO_LESS_CHARS_DOMAIN = "testemail@s.s";
 
     private static final String TEST_OCCUPIED_USERNAME = "InvalidUserName";
     private static final String TEST_OCCUPIED_EMAIL = "occupied@email.com";
@@ -90,14 +99,6 @@ class AuthenticationValidatorTest {
     void shouldThrowValidationException_whenUsernameInvalid() {
 
         var registrationDO = new RegistrationDO( TEST_VALID_EMAIL, TEST_INVALID_USERNAME, TEST_VALID_PASSWORD, TEST_VALID_PASSWORD );
-
-        assertThatThrownBy( () -> underTest.validateRegistration( registrationDO ) ).isInstanceOf( ValidationException.class );
-    }
-
-    @Test
-    void shouldThrowValidationException_whenEmailInvalid() {
-
-        var registrationDO = new RegistrationDO( TEST_INVALID_EMAIL, TEST_VALID_USERNAME, TEST_VALID_PASSWORD, TEST_VALID_PASSWORD );
 
         assertThatThrownBy( () -> underTest.validateRegistration( registrationDO ) ).isInstanceOf( ValidationException.class );
     }
@@ -155,6 +156,24 @@ class AuthenticationValidatorTest {
     void shouldThrowValidationException_whenSecondPasswordIsNull() {
 
         var registrationDO = new RegistrationDO( TEST_VALID_EMAIL, TEST_VALID_USERNAME, TEST_VALID_PASSWORD, null );
+
+        assertThatThrownBy( () -> underTest.validateRegistration( registrationDO ) ).isInstanceOf( ValidationException.class );
+    }
+
+    @ParameterizedTest
+    @ValueSource( strings = { TEST_VALID_EMAIL, TEST_VALID_EMAIL_NUMBERS, TEST_VALID_EMAIL_SPEC_CHARS, TEST_VALID_EMAIL_PERMITTED_SPEC_CHAR_DOMAIN } )
+    void shouldNotFail_whenThereIsCorrectEmailAddressAndTheRestOfDataValid( String aEmailAddress ) {
+        var registrationDO = new RegistrationDO( aEmailAddress, TEST_VALID_USERNAME, TEST_VALID_PASSWORD, TEST_VALID_PASSWORD );
+
+        underTest.validateRegistration( registrationDO );
+    }
+
+    @ParameterizedTest
+    @ValueSource( strings = { TEST_INVALID_EMAIL, TEST_INVALID_EMAIL_DOMAIN_SPACE, TEST_INVALID_EMAIL_LOCAL_SPACE,
+            TEST_INVALID_EMAIL_TOO_LESS_CHARS_DOMAIN, TEST_INVALID_EMAIL_NOT_PERMITTED_SPEC_CHAR_DOMAIN } )
+    void shouldThrowValidationException_whenEmailInvalid( String aEmailAddress ) {
+
+        var registrationDO = new RegistrationDO( aEmailAddress, TEST_VALID_USERNAME, TEST_VALID_PASSWORD, TEST_VALID_PASSWORD );
 
         assertThatThrownBy( () -> underTest.validateRegistration( registrationDO ) ).isInstanceOf( ValidationException.class );
     }

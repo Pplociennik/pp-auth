@@ -48,7 +48,7 @@ class AuthenticationValidator {
 
     private static final Pattern USERNAME_PATTERN = compile( "^[a-zA-Z0-9]{6,15}$" );
     private static final Pattern PASSWORD_PATTERN = compile( "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$&+,:;=?@#|'<>.^*()%!-]).{8,128}$" );
-    private static final Pattern EMAIL_PATTERN = compile( "[a-zA-Z0-9]{1,}[@]{1}[a-z]{5,}[.]{1}+[a-z]{3}", Pattern.CASE_INSENSITIVE );
+    private static final Pattern EMAIL_PATTERN = compile( "[a-zA-Z0-9!#$%&'*+-\\/=?^_`{|}~]+@[a-z0-9-]{2,}\\.[a-z]{2,}", Pattern.CASE_INSENSITIVE );
     private final AuthenticationValidationRepository authenticationValidationRepository;
 
     @Autowired
