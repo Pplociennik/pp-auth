@@ -3,7 +3,6 @@ package com.github.pplociennik.auth.business.authentication;
 import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
 import com.github.pplociennik.auth.business.authentication.domain.model.VerificationTokenDO;
 import com.github.pplociennik.auth.business.authentication.ports.VerificationTokenRepository;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 
@@ -71,13 +70,13 @@ class VerificationUrlResolver {
     }
 
     private String generateUniqueToken() {
-        var token = StringUtils.EMPTY;
 
-        do {
-            token = UUID.randomUUID().toString();
-        }
-        while ( tokenRepository.findByToken( token ) != null );
+        var token = UUID.randomUUID().toString();
 
-        return token;
+        var foundToken = tokenRepository.findByToken( token );
+
+        return foundToken == null
+                ? token
+                : generateUniqueToken();
     }
 }
