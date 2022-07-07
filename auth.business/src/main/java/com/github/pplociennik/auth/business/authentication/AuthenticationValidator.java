@@ -85,7 +85,7 @@ class AuthenticationValidator {
     }
 
     private boolean checkIfUserExists( String aEmail ) {
-        return authenticationValidationRepository.checkIfEmailExists( aEmail );
+        return ! authenticationValidationRepository.checkIfEmailExists( aEmail );
     }
 
     private boolean checkIfEmailNotExists( String aEmail ) {
