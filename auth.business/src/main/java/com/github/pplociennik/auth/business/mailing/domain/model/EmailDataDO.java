@@ -3,6 +3,7 @@ package com.github.pplociennik.auth.business.mailing.domain.model;
 import org.springframework.lang.NonNull;
 
 import java.io.Serializable;
+import java.util.Locale;
 
 import static java.util.Objects.requireNonNull;
 
@@ -15,8 +16,10 @@ import static java.util.Objects.requireNonNull;
 abstract class EmailDataDO implements Serializable {
 
     protected final String recipientAddress;
+    protected final Locale locale;
 
-    protected EmailDataDO( @NonNull String aRecipientAddress ) {
+    protected EmailDataDO( @NonNull String aRecipientAddress, Locale aLocale ) {
         recipientAddress = requireNonNull( aRecipientAddress );
+        locale = requireNonNull( aLocale );
     }
 }

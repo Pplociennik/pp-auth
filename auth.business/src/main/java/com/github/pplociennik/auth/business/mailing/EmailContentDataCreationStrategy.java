@@ -7,6 +7,7 @@ import com.github.pplociennik.auth.common.lang.AuthResUnitTranslationKey;
 import org.springframework.lang.NonNull;
 import org.thymeleaf.context.Context;
 
+import java.util.Locale;
 import java.util.Optional;
 
 import static com.github.pplociennik.auth.common.lang.AuthResEmailMsgTranslationKey.EMAIL_ACCOUNT_CONFIRMATION_DISCLAIMER;
@@ -30,19 +31,18 @@ enum EmailContentDataCreationStrategy {
             final String templateFile = "confirmationRequestEmailTemplate";
 
             var emailData = getProperTypeOfDataDO( aDataDO, EmailConfirmationDataDO.class );
+            var locale = emailData.getLocale();
 
             var context = new Context();
 
-            context.setVariable( "message", getLocalizedMessage( EMAIL_ACCOUNT_CONFIRMATION_MESSAGE ) );
+            context.setVariable( "message", getLocalizedMessage( EMAIL_ACCOUNT_CONFIRMATION_MESSAGE, locale ) );
             context.setVariable( "confirmationLink", emailData.getConfirmationLink() );
-            context.setVariable( "disclaimer", EmailContentDataCreationStrategy.getLocalizedDisclaimer( EMAIL_ACCOUNT_CONFIRMATION_DISCLAIMER, 15L, MINUTES ) );
+            context.setVariable( "disclaimer", EmailContentDataCreationStrategy.getLocalizedDisclaimer( EMAIL_ACCOUNT_CONFIRMATION_DISCLAIMER, locale, 15L, MINUTES ) );
 
-            return EmailContentData.of( context, templateFile );
+            return EmailContentData.of( context, templateFile, locale );
         }
 
     };
-
-    abstract EmailContentData prepare( @NonNull AddressableDataDO aDataDO );
 
     // ### Private helper methods.
     private static < T > T getProperTypeOfDataDO( @NonNull AddressableDataDO aDataDO, @NonNull Class< T > aType ) {
@@ -56,12 +56,14 @@ enum EmailContentDataCreationStrategy {
         return aType.cast( checkedObject );
     }
 
-    private static String getLocalizedDisclaimer( @NonNull AuthResEmailMsgTranslationKey aBaseMessage, long aAmount, @NonNull AuthResUnitTranslationKey aUnit ) {
+    private static String getLocalizedDisclaimer( @NonNull AuthResEmailMsgTranslationKey aBaseMessage, Locale aLocale, long aAmount, @NonNull AuthResUnitTranslationKey aUnit ) {
         requireNonNull( aBaseMessage );
         requireNonNull( aUnit );
 
-        var localizedUnit = getLocalizedMessage( aUnit );
+        var localizedUnit = getLocalizedMessage( aUnit, aLocale );
         var parametersForFullLocalization = new Object[]{ aAmount, localizedUnit };
-        return getLocalizedMessage( aBaseMessage, parametersForFullLocalization );
+        return getLocalizedMessage( aBaseMessage, aLocale, parametersForFullLocalization );
     }
+
+    abstract EmailContentData prepare( @NonNull AddressableDataDO aDataDO );
 }
