@@ -32,11 +32,12 @@ public class RegistrationListener implements ApplicationListener< OnRegistration
         requireNonNull( event );
 
         var account = ( ( AccountDto ) event.getSource() );
+        var locale = event.getLocale();
 
         var recipientAddress = account.getEmailAddress();
         var confirmationLink = authenticationFacade.createNewAccountConfirmationLink( mapToDomain( account ) );
 
-        var emailData = new EmailConfirmationDataDto( recipientAddress, confirmationLink );
+        var emailData = new EmailConfirmationDataDto( recipientAddress, confirmationLink, locale );
         emailFacade.sendEmailConfirmationRequest( emailData );
 
     }

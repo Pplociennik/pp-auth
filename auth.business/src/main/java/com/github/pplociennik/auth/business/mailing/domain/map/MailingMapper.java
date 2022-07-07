@@ -18,7 +18,8 @@ public class MailingMapper {
 
         var recipientAddress = aDto.getRecipientAddress();
         var confirmationLink = aDto.getConfirmationLink();
+        var locale = aDto.getLocale();
 
-        return new EmailConfirmationDataDO( recipientAddress, confirmationLink );
+        return new EmailConfirmationDataDO( recipientAddress, confirmationLink, locale );
     }
 }

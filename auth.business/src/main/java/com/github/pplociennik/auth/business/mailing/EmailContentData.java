@@ -4,6 +4,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.lang.NonNull;
 import org.thymeleaf.context.Context;
 
+import java.util.Locale;
+
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -16,6 +18,14 @@ class EmailContentData {
     private final Context context;
     private final String templateFile;
 
+    private final Locale locale;
+
+    private EmailContentData( @NonNull Context aContext, @NonNull String aTemplateFile, @NonNull Locale aLocale ) {
+        context = requireNonNull( aContext );
+        templateFile = requireNonNull( aTemplateFile );
+        locale = requireNonNull( aLocale );
+    }
+
     /**
      * A factory method returning a new {@link EmailContentData} typed object.
      *
@@ -23,8 +33,8 @@ class EmailContentData {
      *         a context of a message.
      * @return a new {@link EmailContentData} object containing information necessary to create a new email message to be sent.
      */
-    static EmailContentData of( @NonNull Context aContext ) {
-        return new EmailContentData( aContext, StringUtils.EMPTY );
+    static EmailContentData of( @NonNull Context aContext, @NonNull Locale aLocale ) {
+        return new EmailContentData( aContext, StringUtils.EMPTY, aLocale );
     }
 
     /**
@@ -36,8 +46,8 @@ class EmailContentData {
      *         a name of the template file.
      * @return a new {@link EmailContentData} object containing information necessary to create a new email message to be sent.
      */
-    static EmailContentData of( @NonNull Context aContext, @NonNull String aTemplateFile ) {
-        return new EmailContentData( aContext, aTemplateFile );
+    static EmailContentData of( @NonNull Context aContext, @NonNull String aTemplateFile, @NonNull Locale aLocale ) {
+        return new EmailContentData( aContext, aTemplateFile, aLocale );
     }
 
     Context getContext() {
@@ -48,8 +58,7 @@ class EmailContentData {
         return templateFile;
     }
 
-    private EmailContentData( @NonNull Context aContext, @NonNull String aTemplateFile ) {
-        context = requireNonNull( aContext );
-        templateFile = requireNonNull( aTemplateFile );
+    Locale getLocale() {
+        return locale;
     }
 }

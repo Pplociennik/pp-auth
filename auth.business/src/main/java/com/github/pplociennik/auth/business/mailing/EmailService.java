@@ -45,9 +45,10 @@ class EmailService {
         var recipientAddress = aDataDO.getRecipientAddress();
 
         var contentData = getContentData( EMAIL_CONFIRMATION_MESSAGE, aDataDO );
+        var locale = contentData.getLocale();
         var content = templateEngine.process( contentData.getTemplateFile(), contentData.getContext() );
 
-        var message = prepareMessage( senderAddress, recipientAddress, content, getLocalizedMessage( EMAIL_ACCOUNT_CONFIRMATION_SUBJECT ), true );
+        var message = prepareMessage( senderAddress, recipientAddress, content, getLocalizedMessage( EMAIL_ACCOUNT_CONFIRMATION_SUBJECT, locale ), true );
 
         send( message );
     }

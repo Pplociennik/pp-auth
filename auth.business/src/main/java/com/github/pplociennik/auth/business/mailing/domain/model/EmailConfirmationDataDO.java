@@ -2,6 +2,8 @@ package com.github.pplociennik.auth.business.mailing.domain.model;
 
 import org.springframework.lang.NonNull;
 
+import java.util.Locale;
+
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -13,8 +15,8 @@ public final class EmailConfirmationDataDO extends EmailDataDO implements Addres
 
     private final String confirmationLink;
 
-    public EmailConfirmationDataDO( @NonNull String aRecipientAddress, @NonNull String aConfirmationLink ) {
-        super( aRecipientAddress );
+    public EmailConfirmationDataDO( @NonNull String aRecipientAddress, @NonNull String aConfirmationLink, @NonNull Locale aLocale ) {
+        super( aRecipientAddress, aLocale );
         confirmationLink = requireNonNull( aConfirmationLink );
     }
 
@@ -23,7 +25,14 @@ public final class EmailConfirmationDataDO extends EmailDataDO implements Addres
         return recipientAddress;
     }
 
+    @Override
+    public Locale getLocale() {
+        return locale;
+    }
+
     public String getConfirmationLink() {
         return confirmationLink;
     }
+
+
 }

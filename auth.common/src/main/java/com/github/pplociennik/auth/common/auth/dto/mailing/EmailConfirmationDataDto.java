@@ -2,6 +2,8 @@ package com.github.pplociennik.auth.common.auth.dto.mailing;
 
 import org.springframework.lang.NonNull;
 
+import java.util.Locale;
+
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -13,8 +15,8 @@ public final class EmailConfirmationDataDto extends EmailDataDto implements Addr
 
     private final String confirmationLink;
 
-    public EmailConfirmationDataDto( @NonNull String aRecipientAddress, @NonNull String aConfirmationLink ) {
-        super( aRecipientAddress );
+    public EmailConfirmationDataDto( @NonNull String aRecipientAddress, @NonNull String aConfirmationLink, Locale aLocale ) {
+        super( aRecipientAddress, aLocale );
         confirmationLink = requireNonNull( aConfirmationLink );
     }
 
@@ -23,7 +25,13 @@ public final class EmailConfirmationDataDto extends EmailDataDto implements Addr
         return recipientAddress;
     }
 
+    @Override
+    public Locale getLocale() {
+        return locale;
+    }
+
     public String getConfirmationLink() {
         return confirmationLink;
     }
+
 }

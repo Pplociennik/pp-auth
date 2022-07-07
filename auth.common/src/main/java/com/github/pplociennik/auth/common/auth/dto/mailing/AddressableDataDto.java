@@ -1,6 +1,7 @@
 package com.github.pplociennik.auth.common.auth.dto.mailing;
 
 import java.io.Serializable;
+import java.util.Locale;
 
 /**
  * A single method markup interface for classes extending {@link EmailDataDto}.
@@ -10,4 +11,6 @@ import java.io.Serializable;
 public interface AddressableDataDto extends Serializable {
 
     String getRecipientAddress();
+
+    Locale getLocale();
 }

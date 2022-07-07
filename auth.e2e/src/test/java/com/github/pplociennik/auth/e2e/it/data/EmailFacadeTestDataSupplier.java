@@ -3,6 +3,8 @@ package com.github.pplociennik.auth.e2e.it.data;
 import com.github.pplociennik.auth.business.mailing.EmailFacade;
 import com.github.pplociennik.auth.common.auth.dto.mailing.EmailConfirmationDataDto;
 
+import java.util.Locale;
+
 /**
  * A data supplier for {@link EmailFacade} tests.
  *
@@ -14,6 +16,6 @@ public class EmailFacadeTestDataSupplier {
     public static final String TEST_CONFIRMATION_LINK = "http://localhost/aToken=dummyToken";
 
     public static EmailConfirmationDataDto getDummyEmailConfirmationSendingDto() {
-        return new EmailConfirmationDataDto( TEST_RECIPIENT_ADDRESS, TEST_CONFIRMATION_LINK );
+        return new EmailConfirmationDataDto( TEST_RECIPIENT_ADDRESS, TEST_CONFIRMATION_LINK, Locale.ENGLISH );
     }
 }
