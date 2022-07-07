@@ -4,6 +4,8 @@ import com.github.pplociennik.auth.db.entity.authentication.VerificationToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.CrudRepository;
 
+import java.util.Optional;
+
 /**
  * A DAO object for Token data transfer.
  *
@@ -18,5 +20,5 @@ public interface VerificationTokenDao extends JpaRepository< VerificationToken, 
      *         a token.
      * @return a {@link VerificationToken} typed object.
      */
-    VerificationToken findByToken( String aToken );
+    Optional< VerificationToken > findByToken( String aToken );
 }
