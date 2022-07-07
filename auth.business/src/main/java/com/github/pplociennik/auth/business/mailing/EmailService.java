@@ -47,12 +47,12 @@ class EmailService {
         var contentData = getContentData( EMAIL_CONFIRMATION_MESSAGE, aDataDO );
         var content = templateEngine.process( contentData.getTemplateFile(), contentData.getContext() );
 
-        var message = prepareMessage( senderAddress, recipientAddress, content, getLocalizedMessage( EMAIL_ACCOUNT_CONFIRMATION_SUBJECT ) );
+        var message = prepareMessage( senderAddress, recipientAddress, content, getLocalizedMessage( EMAIL_ACCOUNT_CONFIRMATION_SUBJECT ), true );
 
         send( message );
     }
 
-    private MimeMessagePreparator prepareMessage( @NonNull String aSenderAddress, @NonNull String aRecipientAddress, @NonNull String aContent, @NonNull String aSubject ) {
+    private MimeMessagePreparator prepareMessage( @NonNull String aSenderAddress, @NonNull String aRecipientAddress, @NonNull String aContent, @NonNull String aSubject, boolean aHtml ) {
         requireNonEmpty( aSenderAddress );
         requireNonEmpty( aRecipientAddress );
         requireNonEmpty( aContent );
@@ -64,7 +64,7 @@ class EmailService {
             messageHelper.setFrom( aSenderAddress );
             messageHelper.setTo( aRecipientAddress );
             messageHelper.setSubject( aSubject );
-            messageHelper.setText( aContent );
+            messageHelper.setText( aContent, aHtml );
         };
     }
 
