@@ -60,8 +60,8 @@ class AuthController {
     }
 
     @Transactional
-    @PostMapping( path = AUTH_CONTROLLER_ACCOUNT_CONFIRMATION_MAPPING_VALUE, consumes = APPLICATION_JSON_VALUE )
+    @PostMapping( path = AUTH_CONTROLLER_ACCOUNT_CONFIRMATION_MAPPING_VALUE )
     void confirmRegistration( @RequestParam String aToken ) {
-        authenticationFacade.confirmRegistration(aToken);
+        authenticationFacade.confirmRegistration( aToken );
     }
 }

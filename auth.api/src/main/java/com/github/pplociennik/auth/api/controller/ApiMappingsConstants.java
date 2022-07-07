@@ -36,7 +36,7 @@ class ApiMappingsConstants {
     // ### AuthController ---
     public static final String AUTH_CONTROLLER_MAPPING_VALUE = "/auth";
     public static final String AUTH_CONTROLLER_FULL_REGISTRATION_MAPPING_VALUE = AUTH_CONTROLLER_MAPPING_VALUE + "/register";
-    public static final String AUTH_CONTROLLER_ACCOUNT_CONFIRMATION_MAPPING_VALUE = "/confirmAccount";
+    public static final String AUTH_CONTROLLER_ACCOUNT_CONFIRMATION_MAPPING_VALUE = AUTH_CONTROLLER_MAPPING_VALUE + "/confirmAccount";
 
     private ApiMappingsConstants() {
         throw new RuntimeException( format( "The class \"%s\" is not instantiable!", this ) );

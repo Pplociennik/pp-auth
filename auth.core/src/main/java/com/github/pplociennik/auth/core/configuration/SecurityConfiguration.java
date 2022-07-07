@@ -24,10 +24,10 @@
 
 package com.github.pplociennik.auth.core.configuration;
 
-import com.github.pplociennik.auth.business.authentication.ports.AccountSecurityDataService;
 import com.github.pplociennik.auth.business.authentication.filter.JsonAuthenticationFilter;
 import com.github.pplociennik.auth.business.authentication.filter.RestAuthenticationFailureHandler;
 import com.github.pplociennik.auth.business.authentication.filter.RestAuthenticationSuccessHandler;
+import com.github.pplociennik.auth.business.authentication.ports.AccountSecurityDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -45,6 +45,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import static com.github.pplociennik.auth.business.shared.authorization.RolesDefinition.AUTH_ADMIN_ROLE;
 import static com.github.pplociennik.auth.business.shared.authorization.RolesDefinition.AUTH_USER_ROLE;
+import static com.github.pplociennik.auth.core.configuration.AuthSecurityConstants.*;
 
 
 /**
@@ -192,9 +193,9 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure( final HttpSecurity http ) throws Exception {
-        http.authorizeRequests().antMatchers( AuthSecurityConstants.ROOT_URI, AuthSecurityConstants.AUTH_LOGIN_URI, AuthSecurityConstants.AUTH_LOGOUT_URI, AuthSecurityConstants.AUTH_REGISTRATION_URI ).permitAll();
-        http.authorizeRequests().antMatchers( AuthSecurityConstants.AUTH_ADMIN_URI ).hasRole( AUTH_ADMIN_ROLE.getName() );
-        http.authorizeRequests().antMatchers( AuthSecurityConstants.AUTH_USER_URI ).hasAnyRole( AUTH_ADMIN_ROLE.getName(), AUTH_USER_ROLE.getName() );
+        http.authorizeRequests().antMatchers( ROOT_URI, AUTH_LOGIN_URI, AUTH_LOGOUT_URI, AUTH_REGISTRATION_URI, AUTH_ACCOUNT_CONFIRMATION_URI ).permitAll();
+        http.authorizeRequests().antMatchers( AUTH_ADMIN_URI ).hasRole( AUTH_ADMIN_ROLE.getName() );
+        http.authorizeRequests().antMatchers( AUTH_USER_URI ).hasAnyRole( AUTH_ADMIN_ROLE.getName(), AUTH_USER_ROLE.getName() );
         http.addFilterBefore( authenticationFilter(), UsernamePasswordAuthenticationFilter.class )
                 .exceptionHandling()
                 .authenticationEntryPoint( new HttpStatusEntryPoint( HttpStatus.UNAUTHORIZED ) );
