@@ -2,9 +2,7 @@ package com.github.pplociennik.auth.business.authentication;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.springframework.lang.NonNull;
 
-import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
 
@@ -15,20 +13,13 @@ import java.time.temporal.TemporalUnit;
  */
 @Getter
 @AllArgsConstructor
-enum TokenExpirationDateCalculationStrategy {
+enum TokenExpirationDateAmount {
 
     /**
      * Account confirmation request token.
      */
-    ACCOUNT_CONFIRMATION_REQUEST( 15, ChronoUnit.MINUTES ) {
-        @Override
-        ZonedDateTime calculate( ZonedDateTime aStartDateTime ) {
-            return aStartDateTime.plus( getAmount(), getUnit() );
-        }
-    };
+    ACCOUNT_CONFIRMATION_REQUEST( 15, ChronoUnit.MINUTES );
 
     private final long amount;
     private final TemporalUnit unit;
-
-    abstract ZonedDateTime calculate( @NonNull ZonedDateTime aStartDateTime );
 }

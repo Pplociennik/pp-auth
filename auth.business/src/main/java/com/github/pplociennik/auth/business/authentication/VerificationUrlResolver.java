@@ -10,7 +10,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.util.UUID;
 
-import static com.github.pplociennik.auth.business.authentication.TokenExpirationDateCalculationStrategy.ACCOUNT_CONFIRMATION_REQUEST;
+import static com.github.pplociennik.auth.business.authentication.TokenExpirationDateAmount.ACCOUNT_CONFIRMATION_REQUEST;
 import static com.github.pplociennik.auth.common.auth.AuthVerificationTokenType.EMAIL_CONFIRMATION_TOKEN;
 import static java.util.Objects.requireNonNull;
 
@@ -55,17 +55,20 @@ class VerificationUrlResolver {
     }
 
 
-    private Instant getExpirationDateForImmediateToken( TokenExpirationDateCalculationStrategy aCalculationStrategy ) {
-        return getExpirationDateForToken( Instant.now(), aCalculationStrategy );
+    private Instant getExpirationDateForImmediateToken( TokenExpirationDateAmount aExpDateAmount ) {
+        return getExpirationDateForToken( Instant.now(), aExpDateAmount );
     }
 
-    private Instant getExpirationDateForToken( @NonNull Instant aStartDate, TokenExpirationDateCalculationStrategy aAccountConfirmationRequest ) {
+    private Instant getExpirationDateForToken( @NonNull Instant aStartDate, TokenExpirationDateAmount aTokenExpirationDateAmount ) {
         requireNonNull( aStartDate );
 
         var zoneId = ZoneId.systemDefault();
         var startDateTime = aStartDate.atZone( zoneId );
 
-        var expirationDateTime = aAccountConfirmationRequest.calculate( startDateTime );
+        var amountToAdd = aTokenExpirationDateAmount.getAmount();
+        var unit = aTokenExpirationDateAmount.getUnit();
+
+        var expirationDateTime = startDateTime.plus( amountToAdd, unit );
         return expirationDateTime.toInstant();
     }
 
