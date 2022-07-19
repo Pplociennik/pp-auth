@@ -16,12 +16,12 @@ import static java.util.Objects.requireNonNull;
  *
  * @author Created by: Pplociennik at 01.07.2022 12:33
  */
-public class RegistrationListener implements ApplicationListener< OnRegistrationCompleteEvent > {
+class OnRegistrationCompleteListener implements ApplicationListener< OnRegistrationCompleteEvent > {
 
     private final AuthenticationFacade authenticationFacade;
     private final EmailFacade emailFacade;
 
-    public RegistrationListener( @NonNull AuthenticationFacade aAuthenticationFacade, @NonNull EmailFacade aEmailFacade ) {
+    OnRegistrationCompleteListener( @NonNull AuthenticationFacade aAuthenticationFacade, @NonNull EmailFacade aEmailFacade ) {
         authenticationFacade = requireNonNull( aAuthenticationFacade );
         emailFacade = requireNonNull( aEmailFacade );
     }
@@ -31,11 +31,11 @@ public class RegistrationListener implements ApplicationListener< OnRegistration
 
         requireNonNull( event );
 
-        var account = ( ( AccountDto ) event.getSource() );
+        var accountDto = ( ( AccountDto ) event.getSource() );
         var locale = event.getLocale();
 
-        var recipientAddress = account.getEmailAddress();
-        var confirmationLink = authenticationFacade.createNewAccountConfirmationLink( mapToDomain( account ) );
+        var recipientAddress = accountDto.getEmailAddress();
+        var confirmationLink = authenticationFacade.createNewAccountConfirmationLink( mapToDomain( accountDto ) );
 
         var emailData = new EmailConfirmationDataDto( recipientAddress, confirmationLink, locale );
         emailFacade.sendEmailConfirmationRequest( emailData );

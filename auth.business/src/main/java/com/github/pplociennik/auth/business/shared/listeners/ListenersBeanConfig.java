@@ -25,7 +25,7 @@ class ListenersBeanConfig {
     }
 
     @Bean
-    public RegistrationListener registrationListener() {
-        return new RegistrationListener( authenticationFacade, emailFacade );
+    public OnRegistrationCompleteListener registrationListener() {
+        return new OnRegistrationCompleteListener( authenticationFacade, emailFacade );
     }
 }
