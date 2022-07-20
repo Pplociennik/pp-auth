@@ -24,19 +24,18 @@
 
 package com.github.pplociennik.auth.business.authentication;
 
+import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
 import com.github.pplociennik.auth.business.authentication.domain.model.RegistrationDO;
-import com.github.pplociennik.auth.business.authentication.ports.AuthenticationValidationRepository;
+import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryAuthenticationValidationRepository;
 import com.github.pplociennik.util.exc.ValidationException;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static java.lang.Boolean.FALSE;
-import static java.lang.Boolean.TRUE;
+import java.util.LinkedList;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for {@link AuthenticationValidator};
@@ -63,36 +62,35 @@ class AuthenticationValidatorTest {
 
     private static final String TEST_OCCUPIED_USERNAME = "InvalidUserName";
     private static final String TEST_OCCUPIED_EMAIL = "occupied@email.com";
+    private List< AccountDO > TEST_DATABASE = new LinkedList<>();
 
-    private AuthenticationValidationRepository validationRepository;
-    private AuthenticationValidator underTest;
-
-    @BeforeEach
-    void prepareMocks() {
-        validationRepository = mock( AuthenticationValidationRepository.class );
-
-        when( validationRepository.checkIfUsernameExists( TEST_OCCUPIED_USERNAME ) ).thenReturn( TRUE );
-        when( validationRepository.checkIfEmailExists( TEST_OCCUPIED_EMAIL ) ).thenReturn( TRUE );
-        when( validationRepository.checkIfUsernameExists( TEST_VALID_USERNAME ) ).thenReturn( FALSE );
-        when( validationRepository.checkIfEmailExists( TEST_VALID_EMAIL ) ).thenReturn( FALSE );
-
-        underTest = new AuthenticationValidator( validationRepository );
-    }
+    private InMemoryAuthenticationValidationRepository validationRepository = new InMemoryAuthenticationValidationRepository( TEST_DATABASE );
+    private AuthenticationValidator sut = new AuthenticationValidator( validationRepository );
 
     @Test
     void shouldThrowValidationException_whenUsernameOccupied() {
 
+        // GIVEN
+        validationRepository.setUsernameExists( true );
+
+        // WHEN
         var registrationDO = new RegistrationDO( TEST_VALID_EMAIL, TEST_OCCUPIED_USERNAME, TEST_VALID_PASSWORD, TEST_VALID_PASSWORD );
 
-        assertThatThrownBy( () -> underTest.validateRegistration( registrationDO ) ).isInstanceOf( ValidationException.class );
+        // THEN
+        assertThatThrownBy( () -> sut.validateRegistration( registrationDO ) ).isInstanceOf( ValidationException.class );
     }
 
     @Test
     void shouldThrowValidationException_whenEmailOccupied() {
 
+        // GIVEN
+        validationRepository.setEmailExists( true );
+
+        // WHEN
         var registrationDO = new RegistrationDO( TEST_OCCUPIED_EMAIL, TEST_VALID_USERNAME, TEST_VALID_PASSWORD, TEST_VALID_PASSWORD );
 
-        assertThatThrownBy( () -> underTest.validateRegistration( registrationDO ) ).isInstanceOf( ValidationException.class );
+        // THEN
+        assertThatThrownBy( () -> sut.validateRegistration( registrationDO ) ).isInstanceOf( ValidationException.class );
     }
 
     @Test
@@ -100,7 +98,7 @@ class AuthenticationValidatorTest {
 
         var registrationDO = new RegistrationDO( TEST_VALID_EMAIL, TEST_INVALID_USERNAME, TEST_VALID_PASSWORD, TEST_VALID_PASSWORD );
 
-        assertThatThrownBy( () -> underTest.validateRegistration( registrationDO ) ).isInstanceOf( ValidationException.class );
+        assertThatThrownBy( () -> sut.validateRegistration( registrationDO ) ).isInstanceOf( ValidationException.class );
     }
 
     @Test
@@ -108,7 +106,7 @@ class AuthenticationValidatorTest {
 
         var registrationDO = new RegistrationDO( TEST_VALID_EMAIL, TEST_VALID_USERNAME, TEST_INVALID_PASSWORD, TEST_VALID_PASSWORD );
 
-        assertThatThrownBy( () -> underTest.validateRegistration( registrationDO ) ).isInstanceOf( ValidationException.class );
+        assertThatThrownBy( () -> sut.validateRegistration( registrationDO ) ).isInstanceOf( ValidationException.class );
     }
 
     @Test
@@ -116,7 +114,7 @@ class AuthenticationValidatorTest {
 
         var registrationDO = new RegistrationDO( TEST_VALID_EMAIL, TEST_VALID_USERNAME, TEST_VALID_PASSWORD, TEST_NOT_EQUAL_PASSWORD );
 
-        assertThatThrownBy( () -> underTest.validateRegistration( registrationDO ) ).isInstanceOf( ValidationException.class );
+        assertThatThrownBy( () -> sut.validateRegistration( registrationDO ) ).isInstanceOf( ValidationException.class );
     }
 
 
@@ -125,7 +123,7 @@ class AuthenticationValidatorTest {
 
         RegistrationDO registrationDO = null;
 
-        assertThatThrownBy( () -> underTest.validateRegistration( registrationDO ) ).isInstanceOf( NullPointerException.class );
+        assertThatThrownBy( () -> sut.validateRegistration( registrationDO ) ).isInstanceOf( NullPointerException.class );
     }
 
     @Test
@@ -133,7 +131,7 @@ class AuthenticationValidatorTest {
 
         var registrationDO = new RegistrationDO( TEST_VALID_EMAIL, null, TEST_VALID_PASSWORD, TEST_VALID_PASSWORD );
 
-        assertThatThrownBy( () -> underTest.validateRegistration( registrationDO ) ).isInstanceOf( NullPointerException.class );
+        assertThatThrownBy( () -> sut.validateRegistration( registrationDO ) ).isInstanceOf( NullPointerException.class );
     }
 
     @Test
@@ -141,7 +139,7 @@ class AuthenticationValidatorTest {
 
         var registrationDO = new RegistrationDO( null, TEST_VALID_USERNAME, TEST_VALID_PASSWORD, TEST_VALID_PASSWORD );
 
-        assertThatThrownBy( () -> underTest.validateRegistration( registrationDO ) ).isInstanceOf( NullPointerException.class );
+        assertThatThrownBy( () -> sut.validateRegistration( registrationDO ) ).isInstanceOf( NullPointerException.class );
     }
 
     @Test
@@ -149,7 +147,7 @@ class AuthenticationValidatorTest {
 
         var registrationDO = new RegistrationDO( TEST_VALID_EMAIL, TEST_VALID_USERNAME, null, TEST_VALID_PASSWORD );
 
-        assertThatThrownBy( () -> underTest.validateRegistration( registrationDO ) ).isInstanceOf( NullPointerException.class );
+        assertThatThrownBy( () -> sut.validateRegistration( registrationDO ) ).isInstanceOf( NullPointerException.class );
     }
 
     @Test
@@ -157,7 +155,7 @@ class AuthenticationValidatorTest {
 
         var registrationDO = new RegistrationDO( TEST_VALID_EMAIL, TEST_VALID_USERNAME, TEST_VALID_PASSWORD, null );
 
-        assertThatThrownBy( () -> underTest.validateRegistration( registrationDO ) ).isInstanceOf( ValidationException.class );
+        assertThatThrownBy( () -> sut.validateRegistration( registrationDO ) ).isInstanceOf( ValidationException.class );
     }
 
     @ParameterizedTest
@@ -165,7 +163,7 @@ class AuthenticationValidatorTest {
     void shouldNotFail_whenThereIsCorrectEmailAddressAndTheRestOfDataValid( String aEmailAddress ) {
         var registrationDO = new RegistrationDO( aEmailAddress, TEST_VALID_USERNAME, TEST_VALID_PASSWORD, TEST_VALID_PASSWORD );
 
-        underTest.validateRegistration( registrationDO );
+        sut.validateRegistration( registrationDO );
     }
 
     @ParameterizedTest
@@ -175,6 +173,6 @@ class AuthenticationValidatorTest {
 
         var registrationDO = new RegistrationDO( aEmailAddress, TEST_VALID_USERNAME, TEST_VALID_PASSWORD, TEST_VALID_PASSWORD );
 
-        assertThatThrownBy( () -> underTest.validateRegistration( registrationDO ) ).isInstanceOf( ValidationException.class );
+        assertThatThrownBy( () -> sut.validateRegistration( registrationDO ) ).isInstanceOf( ValidationException.class );
     }
 }

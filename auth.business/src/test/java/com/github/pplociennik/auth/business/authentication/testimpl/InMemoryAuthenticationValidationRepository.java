@@ -24,8 +24,8 @@
 
 package com.github.pplociennik.auth.business.authentication.testimpl;
 
+import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
 import com.github.pplociennik.auth.business.authentication.ports.AuthenticationValidationRepository;
-import com.github.pplociennik.auth.db.entity.authentication.Account;
 import org.springframework.lang.NonNull;
 
 import java.util.List;
@@ -39,78 +39,37 @@ import static java.util.Objects.requireNonNull;
  */
 public class InMemoryAuthenticationValidationRepository implements AuthenticationValidationRepository {
 
-    private List< Account > database;
+    private List< AccountDO > database;
+    private boolean usernameExists;
+    private boolean emailExists;
 
-    public InMemoryAuthenticationValidationRepository() {
-        prepareTestDatabase();
+    public InMemoryAuthenticationValidationRepository( List< AccountDO > aDatabase ) {
+        database = aDatabase;
     }
 
-    public void prepareTestDatabase() {
-        var account_1 = prepareAccount_1();
-        var account_2 = prepareAccount_2();
-        var account_3 = prepareAccount_3();
+    public void setDatabase( List< AccountDO > aDatabase ) {
+        database = aDatabase;
+    }
 
-        database = List.of( account_1, account_2, account_3 );
+    public void setUsernameExists( boolean aUsernameExists ) {
+        usernameExists = aUsernameExists;
+    }
+
+    public void setEmailExists( boolean aEmailExists ) {
+        emailExists = aEmailExists;
     }
 
     @Override
     public boolean checkIfUsernameExists( @NonNull String aUsername ) {
         requireNonNull( aUsername );
 
-        return database.stream()
-                .anyMatch( account -> account.getUsername().equals( aUsername ) );
+        return usernameExists;
     }
 
     @Override
     public boolean checkIfEmailExists( @NonNull String aEmail ) {
         requireNonNull( aEmail );
 
-        return database.stream()
-                .anyMatch( account -> account.getEmailAddress().equals( aEmail ) );
-    }
-
-    private Account prepareAccount_1() {
-
-        var account = new Account();
-        account.setAccountNonExpired( true );
-        account.setAccountNonLocked( true );
-        account.setEnabled( true );
-        account.setCredentialsNonExpired( true );
-        account.setEmailAddress( "test1@testMail.com" );
-        account.setId( 1L );
-        account.setPassword( "test_pass_1" );
-        account.setUsername( "test_username_1" );
-
-        return account;
-    }
-
-    private Account prepareAccount_2() {
-
-        var account = new Account();
-        account.setAccountNonExpired( true );
-        account.setAccountNonLocked( true );
-        account.setEnabled( true );
-        account.setCredentialsNonExpired( true );
-        account.setEmailAddress( "test2@testMail.com" );
-        account.setId( 1L );
-        account.setPassword( "test_pass_1" );
-        account.setUsername( "test_username_2" );
-
-        return account;
-    }
-
-    private Account prepareAccount_3() {
-
-        var account = new Account();
-        account.setAccountNonExpired( true );
-        account.setAccountNonLocked( true );
-        account.setEnabled( true );
-        account.setCredentialsNonExpired( true );
-        account.setEmailAddress( "test3@testMail.com" );
-        account.setId( 1L );
-        account.setPassword( "test_pass_1" );
-        account.setUsername( "test_username_3" );
-
-        return account;
+        return emailExists;
     }
 }
