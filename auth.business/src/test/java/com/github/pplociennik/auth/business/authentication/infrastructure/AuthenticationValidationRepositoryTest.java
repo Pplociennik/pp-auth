@@ -24,11 +24,10 @@
 
 package com.github.pplociennik.auth.business.authentication.infrastructure;
 
+import com.github.pplociennik.auth.business.authentication.ports.AccountRepository;
 import com.github.pplociennik.auth.business.authentication.ports.AuthenticationValidationRepository;
-import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryAuthenticationValidationRepository;
+import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryAccountRepository;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -40,57 +39,27 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  * @author Created by: Pplociennik at 22.04.2022 17:15
  */
 class AuthenticationValidationRepositoryTest {
-
-    public static final String TEST_USERNAME_1 = "test_username_1";
-    public static final String TEST_USERNAME_2 = "test_username_2";
-    public static final String TEST_USERNAME_3 = "test_username_3";
-    public static final String TEST_EMAIL_1 = "test1@testMail.com";
-    public static final String TEST_EMAIL_2 = "test2@testMail.com";
-    public static final String TEST_EMAIL_3 = "test3@testMail.com";
-    public static final String NOT_EXISTING_TEST_USERNAME = "dokad_noca_tupta_jez?";
-    public static final String NOT_EXISTING_TEST_EMAIL = "wrong@email.com";
-
-    private final AuthenticationValidationRepository underTest = new InMemoryAuthenticationValidationRepository();
-
-    @ParameterizedTest
-    @ValueSource( strings = { TEST_USERNAME_1, TEST_USERNAME_2, TEST_USERNAME_3 } )
-    void shouldReturnTrue_whenUsernameExists( String aUsername ) {
-        assertThat( underTest.checkIfUsernameExists( aUsername ) ).isTrue();
-    }
-
-    @ParameterizedTest
-    @ValueSource( strings = { TEST_EMAIL_1, TEST_EMAIL_2, TEST_EMAIL_3 } )
-    void shouldReturnTrue_whenEmailExists( String aEmail ) {
-        assertThat( underTest.checkIfEmailExists( aEmail ) ).isTrue();
-    }
+    private AccountRepository accountRepository = new InMemoryAccountRepository();
+    private final AuthenticationValidationRepository sut = new AuthenticationValidationRepositoryImpl( accountRepository );
 
     @Test
     void shouldThrowNullPointerException_whenUsernameNull() {
-        assertThatThrownBy( () -> underTest.checkIfUsernameExists( null ) ).isInstanceOf( NullPointerException.class );
+        assertThatThrownBy( () -> sut.checkIfUsernameExists( null ) ).isInstanceOf( NullPointerException.class );
     }
 
     @Test
     void shouldThrowNullPointerException_whenEmailNull() {
-        assertThatThrownBy( () -> underTest.checkIfEmailExists( null ) ).isInstanceOf( NullPointerException.class );
+        assertThatThrownBy( () -> sut.checkIfEmailExists( null ) ).isInstanceOf( NullPointerException.class );
     }
 
     @Test
     void shouldReturnFalse_whenUsernameEmpty() {
-        assertThat( underTest.checkIfUsernameExists( EMPTY ) ).isFalse();
+        assertThat( sut.checkIfUsernameExists( EMPTY ) ).isFalse();
     }
 
     @Test
     void shouldReturnFalse_whenEmailEmpty() {
-        assertThat( underTest.checkIfEmailExists( EMPTY ) ).isFalse();
+        assertThat( sut.checkIfEmailExists( EMPTY ) ).isFalse();
     }
 
-    @Test
-    void shouldReturnFalse_whenUsernameDoesNotExist() {
-        assertThat( underTest.checkIfUsernameExists( NOT_EXISTING_TEST_USERNAME ) ).isFalse();
-    }
-
-    @Test
-    void shouldReturnFalse_whenEmailDoesNotExist() {
-        assertThat( underTest.checkIfEmailExists( NOT_EXISTING_TEST_EMAIL ) ).isFalse();
-    }
 }
