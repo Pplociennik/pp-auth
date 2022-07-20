@@ -44,9 +44,23 @@ import static java.util.Objects.requireNonNull;
 public class InMemoryAccountRepository implements AccountRepository {
 
     private List< Account > database;
+    private boolean existsAccountByUsername;
+    private boolean existsAccountByEmail;
 
     public InMemoryAccountRepository() {
         database = new LinkedList<>();
+    }
+
+    public void setDatabase( List< Account > aDatabase ) {
+        database = aDatabase;
+    }
+
+    public void setExistsAccountByUsername( boolean aExistsAccountByUsername ) {
+        existsAccountByUsername = aExistsAccountByUsername;
+    }
+
+    public void setExistsAccountByEmail( boolean aExistsAccountByEmail ) {
+        existsAccountByEmail = aExistsAccountByEmail;
     }
 
     @Override
@@ -69,15 +83,13 @@ public class InMemoryAccountRepository implements AccountRepository {
     @Override
     public boolean existsAccountByUsername( @NonNull String aUsername ) {
         requireNonNull( aUsername );
-        return database.stream()
-                .anyMatch( account -> account.getUsername().equals( aUsername ) );
+        return existsAccountByUsername;
     }
 
     @Override
     public boolean existsAccountByEmailAddress( @NonNull String aEmail ) {
         requireNonNull( aEmail );
-        return database.stream()
-                .anyMatch( account -> account.getEmailAddress().equals( aEmail ) );
+        return existsAccountByEmail;
     }
 
     @Override
