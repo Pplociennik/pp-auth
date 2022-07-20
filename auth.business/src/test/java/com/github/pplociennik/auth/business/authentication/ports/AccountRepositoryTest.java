@@ -25,13 +25,9 @@
 package com.github.pplociennik.auth.business.authentication.ports;
 
 import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryAccountRepository;
-import com.github.pplociennik.auth.db.entity.authentication.Account;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static com.github.pplociennik.auth.business.authentication.ports.AccountRepositoryTestDataSupplier.prepareSimpleAccountDataOne;
-import static com.github.pplociennik.auth.business.authentication.ports.AccountRepositoryTestDataSupplier.prepareSimpleAccountDataTwo;
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * Unit tests for {@link AccountRepository}.
@@ -40,51 +36,35 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 class AccountRepositoryTest {
 
-    private final AccountRepository accountRepository;
-    private Account TEST_ACCOUNT_1;
-    private Account TEST_ACCOUNT_2;
+    private final AccountRepository sut;
 
     AccountRepositoryTest() {
-        accountRepository = new InMemoryAccountRepository();
-    }
-
-    @BeforeEach
-    void setUp() {
-        TEST_ACCOUNT_1 = prepareSimpleAccountDataOne();
-        TEST_ACCOUNT_2 = prepareSimpleAccountDataTwo();
-        accountRepository.save( TEST_ACCOUNT_1 );
+        sut = new InMemoryAccountRepository();
     }
 
     @Test
-    void shouldReturnTrue_whenThereExistsAccountWithUsername() {
-
-        var username = TEST_ACCOUNT_1.getUsername();
-        boolean result = accountRepository.existsAccountByUsername( username );
-
-        assertThat( result ).isTrue();
+    void shouldThrowNullPointerException_whenTryingToSaveAndNullPassedViaParameter() {
+        assertThatThrownBy( () -> sut.save( null ) ).isInstanceOf( NullPointerException.class );
     }
 
     @Test
-    void shouldReturnTrue_whenThereExistsAccountWithEmailAddress() {
-
-        var emailAddress = TEST_ACCOUNT_1.getEmailAddress();
-        boolean result = accountRepository.existsAccountByEmailAddress( emailAddress );
-
-        assertThat( result ).isTrue();
+    void shouldThrowNullPointerException_whenTryingToFindByUsernameAndNullPassedViaParameter() {
+        assertThatThrownBy( () -> sut.findAccountByUsername( null ) ).isInstanceOf( NullPointerException.class );
     }
 
     @Test
-    void shouldReturnNonNullAccount_whenThereExistsAccountWithUsername() {
-
-        var username = TEST_ACCOUNT_1.getUsername();
-        var account = accountRepository.findAccountByUsername( username );
-
-        assertThat( account ).isNotNull();
+    void shouldThrowNullPointerException_whenTryingToCheckExistenceByUsernameAndNullPassedViaParameter() {
+        assertThatThrownBy( () -> sut.existsAccountByUsername( null ) ).isInstanceOf( NullPointerException.class );
     }
 
     @Test
-    void shouldSaveNewAccountToDatabase() {
-        accountRepository.save( TEST_ACCOUNT_2 );
+    void shouldThrowNullPointerException_whenTryingToCheckExistenceByEmailAndNullPassedViaParameter() {
+        assertThatThrownBy( () -> sut.existsAccountByEmailAddress( null ) ).isInstanceOf( NullPointerException.class );
+    }
+
+    @Test
+    void shouldThrowNullPointerException_whenTryingToEnableAccountAndNullPassedViaParameter() {
+        assertThatThrownBy( () -> sut.enableAccount( null ) ).isInstanceOf( NullPointerException.class );
     }
 
 }

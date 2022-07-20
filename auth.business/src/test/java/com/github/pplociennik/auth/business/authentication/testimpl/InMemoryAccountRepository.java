@@ -81,7 +81,7 @@ public class InMemoryAccountRepository implements AccountRepository {
     }
 
     @Override
-    public void enableAccount( AccountDO aAccountToBeConfirmed ) {
-        return;
+    public void enableAccount( @NonNull AccountDO aAccountToBeConfirmed ) {
+        requireNonNull( aAccountToBeConfirmed );
     }
 }
