@@ -45,11 +45,11 @@ import static java.util.Objects.requireNonNull;
  */
 class AccountSecurityDataServiceImpl implements AccountSecurityDataService {
 
-    private final AccountDao accountRepository;
+    private final AccountDao AccountDao;
 
     @Autowired
-    public AccountSecurityDataServiceImpl( @NonNull final AccountDao aAccountRepository ) {
-        accountRepository = aAccountRepository;
+    public AccountSecurityDataServiceImpl( @NonNull final AccountDao aAccountDao ) {
+        AccountDao = aAccountDao;
     }
 
     /**
@@ -59,13 +59,11 @@ class AccountSecurityDataServiceImpl implements AccountSecurityDataService {
     public UserDetails loadUserByUsername( @NonNull final String aUsername ) {
         requireNonNull( aUsername );
 
-        var account = accountRepository.findAccountByUsername( aUsername );
+        var account = AccountDao.findAccountByUsername( aUsername );
+        var toReturn = account.orElseThrow(
+                () -> new UsernameNotFoundException( getLocalizedMessage( AUTHENTICATION_USERNAME_NOT_FOUND, arrayOf( aUsername ) ) ) );
 
-        if ( account == null ) {
-            throw new UsernameNotFoundException( getLocalizedMessage( AUTHENTICATION_USERNAME_NOT_FOUND, arrayOf( aUsername ) ) );
-        }
-
-        return mapToSecurityCoreDO( account );
+        return mapToSecurityCoreDO( toReturn );
     }
 }
 

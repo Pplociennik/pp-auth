@@ -4,7 +4,7 @@ import org.springframework.lang.NonNull;
 
 import java.util.Locale;
 
-import static java.util.Objects.requireNonNull;
+import static com.github.pplociennik.util.utility.CustomObjects.requireNonEmpty;
 
 /**
  * A domain object holding all the information necessary for email confirmation request message creation and sending.
@@ -17,7 +17,7 @@ public final class EmailConfirmationDataDO extends EmailDataDO implements Addres
 
     public EmailConfirmationDataDO( @NonNull String aRecipientAddress, @NonNull String aConfirmationLink, @NonNull Locale aLocale ) {
         super( aRecipientAddress, aLocale );
-        confirmationLink = requireNonNull( aConfirmationLink );
+        confirmationLink = requireNonEmpty( aConfirmationLink );
     }
 
     @Override

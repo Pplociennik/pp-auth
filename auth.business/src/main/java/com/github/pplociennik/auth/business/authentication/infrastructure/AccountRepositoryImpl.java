@@ -27,11 +27,14 @@ package com.github.pplociennik.auth.business.authentication.infrastructure;
 import com.github.pplociennik.auth.business.authentication.domain.map.AccountMapper;
 import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
 import com.github.pplociennik.auth.business.authentication.ports.AccountRepository;
-import com.github.pplociennik.auth.db.entity.authentication.Account;
+import com.github.pplociennik.auth.common.exc.AccountConfirmationException;
 import com.github.pplociennik.auth.db.repository.authentication.AccountDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 
+import static com.github.pplociennik.auth.business.authentication.domain.map.AccountMapper.mapToDomain;
+import static com.github.pplociennik.auth.business.authentication.domain.map.AccountMapper.mapToEntity;
+import static com.github.pplociennik.auth.common.lang.AuthResExcMsgTranslationKey.ACCOUNT_CONFIRMATION_USER_NOT_EXISTS;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -52,9 +55,11 @@ class AccountRepositoryImpl implements AccountRepository {
      * {@inheritDoc}
      */
     @Override
-    public AccountDO save( @NonNull Account aAccount ) {
-        requireNonNull( aAccount );
-        return AccountMapper.mapToDomain( accountDao.save( aAccount ) );
+    public AccountDO save( @NonNull AccountDO aAccountDO ) {
+        requireNonNull( aAccountDO );
+
+        var account = mapToEntity( aAccountDO );
+        return mapToDomain( accountDao.save( account ) );
     }
 
     /**
@@ -63,7 +68,8 @@ class AccountRepositoryImpl implements AccountRepository {
     @Override
     public AccountDO findAccountByUsername( @NonNull String aUsername ) {
         requireNonNull( aUsername );
-        return AccountMapper.mapToDomain( accountDao.findAccountByUsername( aUsername ) );
+        var account = accountDao.findAccountByUsername( aUsername );
+        return account.map( AccountMapper::mapToDomain ).orElse( null );
     }
 
     /**
@@ -94,7 +100,8 @@ class AccountRepositoryImpl implements AccountRepository {
     public void enableAccount( @NonNull AccountDO aAccount ) {
         requireNonNull( aAccount );
 
-        var toUpdate = accountDao.findAccountByEmailAddress( aAccount.getEmailAddress() );
+        var account = accountDao.findAccountByEmailAddress( aAccount.getEmailAddress() );
+        var toUpdate = account.orElseThrow( () -> new AccountConfirmationException( ACCOUNT_CONFIRMATION_USER_NOT_EXISTS ) );
         toUpdate.setEnabled( true );
 
         accountDao.save( toUpdate );

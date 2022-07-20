@@ -41,7 +41,7 @@ public interface AccountRepository {
      * @param aAccount
      *         a user account.
      */
-    AccountDO save( @NonNull Account aAccount );
+    AccountDO save( @NonNull AccountDO aAccount );
 
     /**
      * Returns an account with the specified username if it exists in the database.

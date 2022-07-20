@@ -30,6 +30,8 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 /**
  * A DAO object for Account data transfer.
  *
@@ -45,7 +47,7 @@ public interface AccountDao extends JpaRepository< Account, Long >, CrudReposito
      *         an email address
      * @return an {@link Account} object
      */
-    Account getAccountByEmailAddress( String aEmailAddress );
+    Optional< Account > getAccountByEmailAddress( String aEmailAddress );
 
     /**
      * Returns an {@link Account} linked to the given username.
@@ -54,7 +56,7 @@ public interface AccountDao extends JpaRepository< Account, Long >, CrudReposito
      *         a Username.
      * @return an {@link Account} object.
      */
-    Account findAccountByUsername( String aUsername );
+    Optional< Account > findAccountByUsername( String aUsername );
 
     /**
      * Returns a {@link Account} linked to the specified email address;
@@ -63,7 +65,7 @@ public interface AccountDao extends JpaRepository< Account, Long >, CrudReposito
      *         an email address.
      * @return an {@link Account} object.
      */
-    Account findAccountByEmailAddress( @NonNull String aEmailAddress );
+    Optional< Account > findAccountByEmailAddress( @NonNull String aEmailAddress );
 
     /**
      * Returns a {@link Account} with the specified identifier.
@@ -72,7 +74,7 @@ public interface AccountDao extends JpaRepository< Account, Long >, CrudReposito
      *         an id.
      * @return an {@link Account} object.
      */
-    Account findAccountById( @NonNull long aId );
+    Optional< Account > findAccountById( @NonNull long aId );
 
     /**
      * Checks if there is already a username in the database with the specified username.

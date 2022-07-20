@@ -29,6 +29,8 @@ import com.github.pplociennik.auth.business.authentication.domain.model.Registra
 import com.github.pplociennik.auth.business.authentication.domain.model.VerificationTokenDO;
 import com.github.pplociennik.auth.business.authentication.ports.AccountRepository;
 import com.github.pplociennik.auth.business.authentication.ports.VerificationTokenRepository;
+import com.github.pplociennik.auth.business.authorization.domain.model.AuthorityDO;
+import com.github.pplociennik.auth.business.shared.system.EnvironmentPropertiesProvider;
 import com.github.pplociennik.auth.common.exc.AccountConfirmationException;
 import com.github.pplociennik.auth.db.entity.authentication.Account;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,14 +38,18 @@ import org.springframework.lang.NonNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Predicate;
 
-import static com.github.pplociennik.auth.business.authentication.domain.map.AccountMapper.mapToEntity;
+import static com.github.pplociennik.auth.business.shared.authorization.RolesDefinition.AUTH_USER_ROLE;
+import static com.github.pplociennik.auth.business.shared.system.SystemProperty.GLOBAL_CLIENT_URL;
+import static com.github.pplociennik.auth.common.auth.AuthVerificationTokenType.EMAIL_CONFIRMATION_TOKEN;
 import static com.github.pplociennik.auth.common.lang.AuthResExcMsgTranslationKey.ACCOUNT_CONFIRMATION_TOKEN_EXPIRED;
 import static com.github.pplociennik.auth.common.lang.AuthResExcMsgTranslationKey.ACCOUNT_CONFIRMATION_USER_NOT_EXISTS;
 import static com.github.pplociennik.util.utility.CustomObjects.requireNonEmpty;
 import static java.time.Instant.now;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toUnmodifiableSet;
 
 /**
  * A service sharing methods for basic authentication process.
@@ -52,17 +58,23 @@ import static java.util.Objects.requireNonNull;
  */
 class AuthService {
 
+    private static final Set< String > BASE_USER_AUTHORITIES = Set.of( AUTH_USER_ROLE.getName() );
     private final PasswordEncoder encoder;
     private final AccountRepository accountRepository;
-    private final VerificationUrlResolver tokenResolver;
+    private final VerificationTokenResolver tokenResolver;
     private final VerificationTokenRepository tokenRepository;
+    private final EnvironmentPropertiesProvider propertiesProvider;
 
     @Autowired
-    public AuthService( @NonNull PasswordEncoder aEncoder, @NonNull AccountRepository aAccountRepository, @NonNull VerificationUrlResolver aUrlResolver, @NonNull VerificationTokenRepository aTokenRepository ) {
+    public AuthService(
+            @NonNull PasswordEncoder aEncoder, @NonNull AccountRepository aAccountRepository,
+            @NonNull VerificationTokenResolver aUrlResolver, @NonNull VerificationTokenRepository aTokenRepository,
+            @NonNull EnvironmentPropertiesProvider aPropertiesProvider ) {
         encoder = aEncoder;
         accountRepository = aAccountRepository;
         tokenResolver = aUrlResolver;
         tokenRepository = aTokenRepository;
+        propertiesProvider = aPropertiesProvider;
     }
 
     /**
@@ -76,7 +88,7 @@ class AuthService {
         requireNonNull( aRegistrationDO );
 
         String hashedPassword = encoder.encode( aRegistrationDO.getPassword() );
-        var newAccount = mapToEntity( aRegistrationDO, hashedPassword );
+        var newAccount = createNewAccount( aRegistrationDO, hashedPassword );
         addNewAccountBasePrivilidges( newAccount );
 
         return accountRepository.save( newAccount );
@@ -85,13 +97,19 @@ class AuthService {
     /**
      * Returns a link containing token for registered account confirmation.
      *
-     * @param aAccount
+     * @param aAccountDO
      *         an account for which the token is being generated.
      * @return a confirmation link needed to be sent via email message.
      */
-    String generateConfirmationLink( @NonNull AccountDO aAccount ) {
-        requireNonNull( aAccount );
-        return tokenResolver.resolveAccountConfirmationLink( aAccount );
+    String generateConfirmationLink( @NonNull AccountDO aAccountDO ) {
+        requireNonNull( aAccountDO );
+
+        final var parameter = "aToken";
+
+        var verificationToken = tokenResolver.resolveUniqueToken( aAccountDO, EMAIL_CONFIRMATION_TOKEN );
+        var url = propertiesProvider.getPropertyValue( GLOBAL_CLIENT_URL );
+
+        return url + "/?" + parameter + "=" + verificationToken.getToken();
     }
 
     /**
@@ -107,12 +125,25 @@ class AuthService {
         var tokenOwner = verificationToken.getOwner();
 
         var accountByUsername = accountRepository.findAccountByUsername( tokenOwner.getUsername() );
-        var accountToBeConfirmed = Optional.of( accountByUsername )
+        var accountToBeConfirmed = Optional.ofNullable( accountByUsername )
                 .orElseThrow( () -> new AccountConfirmationException( ACCOUNT_CONFIRMATION_USER_NOT_EXISTS ) );
 
         throwIf( verificationToken, this::isTokenExpired );
         accountRepository.enableAccount( accountToBeConfirmed );
         deactivateToken( verificationToken );
+    }
+
+    private AccountDO createNewAccount( @NonNull RegistrationDO aRegistrationDO, @NonNull String aHashedPassword ) {
+        requireNonNull( aRegistrationDO );
+        requireNonNull( aHashedPassword );
+
+        return AccountDO.builder()
+                .username( aRegistrationDO.getUsername() )
+                .password( aHashedPassword )
+                .emailAddress( aRegistrationDO.getEmail() )
+                .authorities( createBaseUserAuthorities() )
+                .build();
+
     }
 
     private void deactivateToken( VerificationTokenDO aVerificationToken ) {
@@ -125,7 +156,11 @@ class AuthService {
         requireNonNull( aPredicate );
 
         var result = aPredicate.test( aVerificationToken );
-        return Optional.of( result ).orElseThrow( () -> new AccountConfirmationException( ACCOUNT_CONFIRMATION_TOKEN_EXPIRED ) );
+        if ( result ) {
+            throw new AccountConfirmationException( ACCOUNT_CONFIRMATION_TOKEN_EXPIRED );
+        }
+
+        return result;
     }
 
     private boolean isTokenExpired( @NonNull VerificationTokenDO aVerificationTokenDO ) {
@@ -133,7 +168,7 @@ class AuthService {
         return aVerificationTokenDO.getExpirationDate().isBefore( now() );
     }
 
-    private Account addNewAccountBasePrivilidges( Account aNewAccount ) {
+    private AccountDO addNewAccountBasePrivilidges( AccountDO aNewAccount ) {
 
         aNewAccount.setEnabled( false );
         aNewAccount.setAccountNonLocked( true );
@@ -141,5 +176,18 @@ class AuthService {
         aNewAccount.setCredentialsNonExpired( true );
 
         return aNewAccount;
+    }
+
+    private Set< AuthorityDO > createBaseUserAuthorities() {
+        return BASE_USER_AUTHORITIES.stream()
+                .map( this::createNewOrphanAuthority )
+                .collect( toUnmodifiableSet() );
+    }
+
+    private AuthorityDO createNewOrphanAuthority( String aAuthorityName ) {
+        var authorityDO = new AuthorityDO();
+        authorityDO.setAuthorityName( aAuthorityName );
+
+        return authorityDO;
     }
 }

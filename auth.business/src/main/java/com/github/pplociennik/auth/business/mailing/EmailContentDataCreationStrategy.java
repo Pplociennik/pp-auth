@@ -4,6 +4,8 @@ import com.github.pplociennik.auth.business.mailing.domain.model.AddressableData
 import com.github.pplociennik.auth.business.mailing.domain.model.EmailConfirmationDataDO;
 import com.github.pplociennik.auth.common.lang.AuthResEmailMsgTranslationKey;
 import com.github.pplociennik.auth.common.lang.AuthResUnitTranslationKey;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.springframework.lang.NonNull;
 import org.thymeleaf.context.Context;
 
@@ -21,14 +23,14 @@ import static java.util.Objects.requireNonNull;
  *
  * @author Created by: Pplociennik at 30.06.2022 21:00
  */
+@AllArgsConstructor
+@Getter
 enum EmailContentDataCreationStrategy {
 
-    EMAIL_CONFIRMATION_MESSAGE {
+    EMAIL_CONFIRMATION_MESSAGE( "confirmationRequestEmailTemplate" ) {
         @Override
         EmailContentData prepare( @NonNull AddressableDataDO aDataDO ) {
             requireNonNull( aDataDO );
-
-            final String templateFile = "confirmationRequestEmailTemplate";
 
             var emailData = getProperTypeOfDataDO( aDataDO, EmailConfirmationDataDO.class );
             var locale = emailData.getLocale();
@@ -37,12 +39,14 @@ enum EmailContentDataCreationStrategy {
 
             context.setVariable( "message", getLocalizedMessage( EMAIL_ACCOUNT_CONFIRMATION_MESSAGE, locale ) );
             context.setVariable( "confirmationLink", emailData.getConfirmationLink() );
-            context.setVariable( "disclaimer", EmailContentDataCreationStrategy.getLocalizedDisclaimer( EMAIL_ACCOUNT_CONFIRMATION_DISCLAIMER, locale, 15L, MINUTES ) );
+            context.setVariable( "disclaimer", getLocalizedDisclaimer( EMAIL_ACCOUNT_CONFIRMATION_DISCLAIMER, locale, 15L, MINUTES ) );
 
-            return EmailContentData.of( context, templateFile, locale );
+            return EmailContentData.of( context, getTemplateFile(), locale );
         }
 
     };
+
+    private final String templateFile;
 
     // ### Private helper methods.
     private static < T > T getProperTypeOfDataDO( @NonNull AddressableDataDO aDataDO, @NonNull Class< T > aType ) {

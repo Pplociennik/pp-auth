@@ -24,9 +24,10 @@
 
 package com.github.pplociennik.auth.business.authentication.domain.model;
 
+import com.github.pplociennik.auth.business.authorization.domain.model.AuthorityDO;
 import lombok.*;
 
-import java.util.Collection;
+import java.util.Set;
 
 /**
  * A Domain Object responsible for holding information being used during the authentication process.
@@ -75,5 +76,5 @@ public class AccountDO {
     /**
      * Account's authorities.
      */
-    private Collection< String > authorities;
+    private Set< AuthorityDO > authorities;
 }

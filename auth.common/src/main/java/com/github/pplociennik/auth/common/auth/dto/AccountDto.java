@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.Set;
 
 /**
  * A Data Transfer Object representing data of the account object.
@@ -48,5 +48,5 @@ public class AccountDto implements Serializable {
     /**
      * Account's authorities.
      */
-    private Collection< String > authorities;
+    private Set< String > authorities;
 }

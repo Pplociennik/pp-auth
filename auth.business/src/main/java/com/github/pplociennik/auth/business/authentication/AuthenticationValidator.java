@@ -73,7 +73,7 @@ class AuthenticationValidator {
 
         ValidatorIf.of( aAccountDO )
                 .validate( Objects::nonNull, NO_DATA_PROVIDED )
-                .validate( AccountDO::getEmailAddress, this::checkIfUserNotExists, AUTHENTICATION_USER_DOES_NOT_EXIST )
+                .validate( AccountDO::getEmailAddress, this::checkIfAccountExists, AUTHENTICATION_USER_DOES_NOT_EXIST )
                 .perform();
     }
 
@@ -81,16 +81,21 @@ class AuthenticationValidator {
 
         ValidatorIf.of( aToken )
                 .validate( StringUtils::isNotBlank, NO_DATA_PROVIDED )
-                .validate( this::checkIfTokenNotActive, ACCOUNT_CONFIRMATION_TOKEN_NOT_ACTIVE )
+                .validate( this::checkIfTokenExists, ACCOUNT_CONFIRMATION_TOKEN_NOT_FOUND )
+                .validate( this::checkIfTokenActive, ACCOUNT_CONFIRMATION_TOKEN_NOT_ACTIVE )
                 .perform();
     }
 
-    private boolean checkIfTokenNotActive( String aToken ) {
-        return ! authenticationValidationRepository.checkIfTokenActive( aToken );
+    private boolean checkIfTokenExists( String aToken ) {
+        return authenticationValidationRepository.checkIfTokenExists( aToken );
     }
 
-    private boolean checkIfUserNotExists( String aEmail ) {
-        return ! authenticationValidationRepository.checkIfEmailExists( aEmail );
+    private boolean checkIfTokenActive( String aToken ) {
+        return authenticationValidationRepository.checkIfTokenActive( aToken );
+    }
+
+    private boolean checkIfAccountExists( String aEmail ) {
+        return authenticationValidationRepository.checkIfEmailExists( aEmail );
     }
 
     private boolean checkIfEmailNotExists( String aEmail ) {

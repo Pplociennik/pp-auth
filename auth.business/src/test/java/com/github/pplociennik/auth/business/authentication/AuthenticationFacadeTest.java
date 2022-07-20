@@ -24,19 +24,28 @@
 
 package com.github.pplociennik.auth.business.authentication;
 
-import com.github.pplociennik.auth.business.authentication.domain.model.RegistrationDO;
-import com.github.pplociennik.auth.business.authentication.ports.AccountRepository;
-import com.github.pplociennik.auth.business.authentication.ports.AuthenticationValidationRepository;
-import com.github.pplociennik.auth.business.authentication.ports.VerificationTokenRepository;
+import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
 import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryAccountRepository;
+import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryAuthenticationValidationRepository;
 import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryVerificationTokenRepository;
+import com.github.pplociennik.auth.business.shared.system.EnvironmentPropertiesProvider;
+import com.github.pplociennik.auth.common.auth.dto.AccountDto;
+import com.github.pplociennik.util.utility.LanguageUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import static java.lang.Boolean.FALSE;
-import static java.lang.Boolean.TRUE;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+
+import static com.github.pplociennik.auth.business.authentication.data.AuthenticationFacadeTestDataProvider.prepareDummyRegistrationDO;
+import static com.github.pplociennik.auth.business.shared.authorization.RolesDefinition.AUTH_USER_ROLE;
+import static com.github.pplociennik.auth.business.shared.system.SystemProperty.GLOBAL_CLIENT_URL;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -48,45 +57,188 @@ import static org.mockito.Mockito.when;
  */
 class AuthenticationFacadeTest {
 
-    private static final String TEST_VALID_USERNAME = "ValidUserName";
-    private static final String TEST_VALID_PASSWORD = "TestPass1!";
-    private static final String TEST_ENCODED_VALID_PASSWORD = "EncodedPass";
-    private static final String TEST_VALID_EMAIL = "testEmail@gmail.com";
-
-    private static final String TEST_OCCUPIED_USERNAME = "InvalidUserName";
-    private static final String TEST_OCCUPIED_EMAIL = "occupied@email.com";
-
     private AuthService authService;
     private AuthenticationValidator validator;
     private PasswordEncoder encoder;
-    private AccountRepository accountRepository;
-    private AuthenticationValidationRepository validationRepository;
+    private InMemoryAccountRepository accountRepository;
+    private InMemoryAuthenticationValidationRepository validationRepository;
     private ApplicationEventPublisher eventPublisher;
-    private VerificationUrlResolver urlResolver;
-    private VerificationTokenRepository verificationTokenRepository;
-    private AuthenticationFacade underTest;
+    private VerificationTokenResolver tokenResolver;
+    private InMemoryVerificationTokenRepository verificationTokenRepository;
+    private EnvironmentPropertiesProvider propertiesProvider;
+    private AuthenticationFacade sut;
 
     @BeforeEach
-    void prepareMocks() {
+    void prepare() {
         prepareEncoder();
         prepareValidator();
         prepareRepository();
         prepareEventPublisher();
-        prepareUrlResolver();
+        preparePropertiesProvider();
         prepareTokenRepository();
+        prepareTokenResolver();
 
-        authService = new AuthService( encoder, accountRepository, urlResolver, verificationTokenRepository );
+        authService = new AuthService( encoder, accountRepository, tokenResolver, verificationTokenRepository, propertiesProvider );
         validator = new AuthenticationValidator( validationRepository );
 
-        underTest = new AuthenticationFacade( authService, validator, eventPublisher );
+        sut = new AuthenticationFacade( authService, validator, eventPublisher );
+        LanguageUtil.setLocale( Locale.ENGLISH );
+    }
+
+    // ##############################################
+    // ################ Registration ################
+    // ##############################################
+
+    @Nested
+    class Registration {
+
+        @Test
+        void shouldRegisterNewAccount_whenAllDataValid() {
+
+            // GIVEN
+            final var hashedPass = "encodedPassword";
+            var registrationDO = prepareDummyRegistrationDO();
+            when( encoder.encode( registrationDO.getPassword() ) ).thenReturn( hashedPass );
+
+            // WHEN
+            final var registeredAccount = sut.registerNewAccount( registrationDO );
+
+            // THEN
+            final var expectedAccount = AccountDto.builder()
+                    .username( registrationDO.getUsername() )
+                    .password( hashedPass )
+                    .emailAddress( registrationDO.getEmail() )
+                    .accountNonExpired( true )
+                    .accountNonLocked( true )
+                    .credentialsNonExpired( true )
+                    .enabled( false )
+                    .authorities( Set.of( AUTH_USER_ROLE.getName() ) )
+                    .build();
+            assertThat( expectedAccount ).isEqualTo( registeredAccount );
+        }
+
+        @Test
+        void shouldNewlyRegisteredAccountHaveBasePrivilegesSetProperly() {
+
+            // GIVEN
+            final var hashedPass = "encodedPassword";
+            final var registrationDO = prepareDummyRegistrationDO();
+            when( encoder.encode( registrationDO.getPassword() ) ).thenReturn( hashedPass );
+
+            // WHEN
+            var registeredAccount = sut.registerNewAccount( registrationDO );
+
+            // THEN
+            assertThat( registeredAccount.isAccountNonExpired() ).isTrue();
+            assertThat( registeredAccount.isAccountNonLocked() ).isTrue();
+            assertThat( registeredAccount.isCredentialsNonExpired() ).isTrue();
+            assertThat( registeredAccount.isEnabled() ).isFalse();
+        }
+
+        @Test
+        void shouldNewlyRegisteredAccountHaveBaseAuthoritiesSetProperly() {
+
+            // GIVEN
+            final var hashedPass = "encodedPassword";
+            final var registrationDO = prepareDummyRegistrationDO();
+            when( encoder.encode( registrationDO.getPassword() ) ).thenReturn( hashedPass );
+
+            // WHEN
+            var registeredAccount = sut.registerNewAccount( registrationDO );
+
+            // THEN
+            final var expectedAuthorities = List.of( AUTH_USER_ROLE.getName() );
+            assertThat( registeredAccount.getAuthorities() ).containsAll( expectedAuthorities );
+        }
+
+        @Nested
+        class CornerCases {
+
+            @Test
+            void shouldThrowNullPointerException_whenRegistrationDOIsNull() {
+                assertThatThrownBy( () -> sut.registerNewAccount( null ) ).isInstanceOf( NullPointerException.class );
+            }
+        }
+
+    }
+
+    // ##############################################
+    // ######## Confirmation Link Generation ########
+    // ##############################################
+
+    @Nested
+    class ConfirmationLinkGeneration {
+
+        @Test
+        void shouldReturnValidConfirmationLink_whenDataValid() {
+
+            // GIVEN
+            final var EXPECTED_CLIENT_URL = "http://localhost:8080";
+            var accountDO = AccountDO.builder()
+                    .emailAddress( "test@email.com" )
+                    .build();
+            validationRepository.setEmailExists( true );
+            when( propertiesProvider.getPropertyValue( GLOBAL_CLIENT_URL ) ).thenReturn( EXPECTED_CLIENT_URL );
+
+            // WHEN
+            var result = sut.createNewAccountConfirmationLink( accountDO );
+
+            // THEN
+            final var EXPECTED_URL_PART = "http://localhost:8080/?aToken=";
+            assertThat( result ).contains( EXPECTED_URL_PART );
+        }
+
+        @Nested
+        class CornerCases {
+
+            @Test
+            void shouldThrowNullPointerException_whenNullGivenAsParameter() {
+
+                // WHEN
+                // THEN
+                assertThatThrownBy( () -> sut.createNewAccountConfirmationLink( null ) ).isInstanceOf( NullPointerException.class );
+            }
+        }
+    }
+
+    // ##############################################
+    // ############ Account Confirmation ############
+    // ##############################################
+
+    @Nested
+    class AccountConfirmation {
+
+        @Nested
+        class CornerCases {
+
+            @Test
+            void shouldThrowNullPointerException_whenTokenIsNull() {
+
+                // WHEN
+                // THEN
+                assertThatThrownBy( () -> sut.confirmRegistration( null ) ).isInstanceOf( NullPointerException.class );
+            }
+
+            @Test
+            void shouldThrowNullPointerException_whenTokenIsEmpty() {
+
+                // WHEN
+                // THEN
+                assertThatThrownBy( () -> sut.confirmRegistration( StringUtils.EMPTY ) ).isInstanceOf( NullPointerException.class );
+            }
+        }
+    }
+
+    private void preparePropertiesProvider() {
+        propertiesProvider = mock( EnvironmentPropertiesProvider.class );
     }
 
     private void prepareTokenRepository() {
         verificationTokenRepository = new InMemoryVerificationTokenRepository();
     }
 
-    private void prepareUrlResolver() {
-        urlResolver = mock( VerificationUrlResolver.class );
+    private void prepareTokenResolver() {
+        tokenResolver = new VerificationTokenResolver( verificationTokenRepository );
     }
 
     private void prepareEventPublisher() {
@@ -99,32 +251,11 @@ class AuthenticationFacadeTest {
     }
 
     private void prepareValidator() {
-        validationRepository = mock( AuthenticationValidationRepository.class );
-
-        when( validationRepository.checkIfEmailExists( TEST_VALID_EMAIL ) ).thenReturn( FALSE );
-        when( validationRepository.checkIfUsernameExists( TEST_VALID_USERNAME ) ).thenReturn( FALSE );
-
-        when( validationRepository.checkIfEmailExists( TEST_OCCUPIED_EMAIL ) ).thenReturn( TRUE );
-        when( validationRepository.checkIfUsernameExists( TEST_OCCUPIED_USERNAME ) ).thenReturn( TRUE );
+        validationRepository = new InMemoryAuthenticationValidationRepository();
     }
 
     private void prepareEncoder() {
         encoder = mock( PasswordEncoder.class );
-
-        when( encoder.encode( TEST_VALID_PASSWORD ) ).thenReturn( TEST_ENCODED_VALID_PASSWORD );
-    }
-
-    @Test
-    void shouldRegisterNewAccount_whenAllDataValid() {
-
-        var registrationDO = new RegistrationDO( TEST_VALID_EMAIL, TEST_VALID_USERNAME, TEST_VALID_PASSWORD, TEST_VALID_PASSWORD );
-
-        underTest.registerNewAccount( registrationDO );
-    }
-
-    @Test
-    void shouldThrowNullPointerException_whenRegistrationDOIsNull() {
-        assertThatThrownBy( () -> underTest.registerNewAccount( null ) ).isInstanceOf( NullPointerException.class );
     }
 
 

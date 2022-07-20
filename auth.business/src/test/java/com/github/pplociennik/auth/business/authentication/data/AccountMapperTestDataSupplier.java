@@ -22,60 +22,63 @@
  * SOFTWARE.
  */
 
-package com.github.pplociennik.auth.business.authentication.ports;
+package com.github.pplociennik.auth.business.authentication.data;
 
+import com.github.pplociennik.auth.business.authentication.domain.model.RegistrationDO;
+import com.github.pplociennik.auth.business.authorization.domain.model.AuthorityDetails;
 import com.github.pplociennik.auth.db.entity.authentication.Account;
 import com.github.pplociennik.auth.db.entity.authorization.Authority;
 
+import java.util.List;
 import java.util.Set;
 
 import static com.github.pplociennik.auth.business.shared.authorization.RolesDefinition.AUTH_USER_ROLE;
 
 /**
- * A test data supplier for {@link AccountRepositoryTest}.
+ * A data supplier for AccountMapperTest.
  *
- * @author Created by: Pplociennik at 12.04.2022 22:44
+ * @author Created by: Pplociennik at 23.04.2022 12:21
  */
-class AccountRepositoryTestDataSupplier {
+public class AccountMapperTestDataSupplier {
 
-    static Account prepareSimpleAccountDataOne() {
+    private static final String TEST_USERNAME = "TestUsername";
+    private static final String TEST_EMAIL = "testEmail@gmail.com";
+    private static final String TEST_PASSWORD = "TestPassword1!";
+    private static final String TEST_HASHED_PASSWORD = "VeryLongTestHashedPasswordForConversion";
+
+    public static Account prepareSimpleAccountData() {
 
         var account = new Account();
         account.setAccountNonExpired( true );
         account.setAccountNonLocked( true );
         account.setEnabled( true );
         account.setCredentialsNonExpired( true );
-        account.setEmailAddress( "example_email_#1" );
+        account.setEmailAddress( TEST_EMAIL );
         account.setId( 1L );
-        account.setPassword( "example_pass_1" );
-        account.setUsername( "example_username_1" );
-        account.setAuthorities( getDummyAuthorities( account ) );
+        account.setPassword( TEST_HASHED_PASSWORD );
+        account.setUsername( TEST_USERNAME );
+
+        account.setAuthorities( prepareTestAccountAuthorities( account ) );
 
         return account;
     }
 
-    private static Set< Authority > getDummyAuthorities( Account aAccount ) {
+    public static RegistrationDO prepareSimpleRegistrationDO() {
+
+        return new RegistrationDO( TEST_EMAIL, TEST_USERNAME, TEST_PASSWORD, TEST_PASSWORD );
+    }
+
+    private static List< AuthorityDetails > prepareTestAuthorities() {
+        var authority = new AuthorityDetails( AUTH_USER_ROLE.getName() );
+        return List.of( authority );
+    }
+
+    private static Set< Authority > prepareTestAccountAuthorities( Account aOwner ) {
         var authority = Authority.builder()
+                .authoritiesOwner( aOwner )
                 .name( AUTH_USER_ROLE.getName() )
-                .authoritiesOwner( aAccount )
                 .build();
 
         return Set.of( authority );
-    }
-
-    static Account prepareSimpleAccountDataTwo() {
-
-        var account = new Account();
-        account.setAccountNonExpired( true );
-        account.setAccountNonLocked( true );
-        account.setEnabled( true );
-        account.setCredentialsNonExpired( true );
-        account.setEmailAddress( "example_email_#2" );
-        account.setId( 2L );
-        account.setPassword( "example_pass_2" );
-        account.setUsername( "example_username_2" );
-        account.setAuthorities( getDummyAuthorities( account ) );
-
-        return account;
     }
 }

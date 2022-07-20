@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.github.pplociennik.auth.business.authentication.ports;
+package com.github.pplociennik.auth.business.authentication.data;
 
 import com.github.pplociennik.auth.business.authentication.domain.model.AccountSecurityCoreDO;
 import com.github.pplociennik.auth.business.authorization.domain.model.AuthorityDetails;
@@ -37,13 +37,13 @@ import static com.github.pplociennik.auth.business.shared.authorization.RolesDef
 import static java.lang.Boolean.TRUE;
 
 /**
- * A test data supplier for {@link AccountSecurityDataServiceTest}.
+ * A test data supplier for AccountSecurityDataServiceTest.
  *
  * @author Created by: Pplociennik at 22.04.2022 16:14
  */
-class AccountSecurityDataServiceTestDataSupplier {
+public class AccountSecurityDataServiceTestDataSupplier {
 
-    static UserDetails prepareTestUser_1() {
+    public static UserDetails prepareTestUser_1() {
 
         var accountNonExpired = TRUE;
         var accountNonLocked = TRUE;
@@ -60,7 +60,7 @@ class AccountSecurityDataServiceTestDataSupplier {
 
     }
 
-    static UserDetails prepareTestUser_2() {
+    public static UserDetails prepareTestUser_2() {
 
         var accountNonExpired = TRUE;
         var accountNonLocked = TRUE;
@@ -77,7 +77,7 @@ class AccountSecurityDataServiceTestDataSupplier {
 
     }
 
-    static UserDetails prepareTestUser_3() {
+    public static UserDetails prepareTestUser_3() {
 
         var accountNonExpired = TRUE;
         var accountNonLocked = TRUE;
@@ -94,7 +94,7 @@ class AccountSecurityDataServiceTestDataSupplier {
 
     }
 
-    static Account prepareTestAccount_1() {
+    public static Account prepareTestAccount_1() {
 
         var account = new Account();
         account.setAccountNonExpired( true );
@@ -111,7 +111,7 @@ class AccountSecurityDataServiceTestDataSupplier {
         return account;
     }
 
-    static Account prepareTestAccount_2() {
+    public static Account prepareTestAccount_2() {
 
         var account = new Account();
         account.setAccountNonExpired( true );
@@ -128,7 +128,7 @@ class AccountSecurityDataServiceTestDataSupplier {
         return account;
     }
 
-    static Account prepareTestAccount_3() {
+    public static Account prepareTestAccount_3() {
 
         var account = new Account();
         account.setAccountNonExpired( true );
