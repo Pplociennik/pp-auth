@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.github.pplociennik.auth.business.authentication.domain.map;
+package com.github.pplociennik.auth.business.authentication.data;
 
 import com.github.pplociennik.auth.business.authentication.domain.model.RegistrationDO;
 import com.github.pplociennik.auth.business.authorization.domain.model.AuthorityDetails;
@@ -35,18 +35,18 @@ import java.util.Set;
 import static com.github.pplociennik.auth.business.shared.authorization.RolesDefinition.AUTH_USER_ROLE;
 
 /**
- * A data supplier for {@link AccountMapperTest}.
+ * A data supplier for AccountMapperTest.
  *
  * @author Created by: Pplociennik at 23.04.2022 12:21
  */
-class AccountMapperTestDataSupplier {
+public class AccountMapperTestDataSupplier {
 
     private static final String TEST_USERNAME = "TestUsername";
     private static final String TEST_EMAIL = "testEmail@gmail.com";
     private static final String TEST_PASSWORD = "TestPassword1!";
     private static final String TEST_HASHED_PASSWORD = "VeryLongTestHashedPasswordForConversion";
 
-    static Account prepareSimpleAccountData() {
+    public static Account prepareSimpleAccountData() {
 
         var account = new Account();
         account.setAccountNonExpired( true );
@@ -63,7 +63,7 @@ class AccountMapperTestDataSupplier {
         return account;
     }
 
-    static RegistrationDO prepareSimpleRegistrationDO() {
+    public static RegistrationDO prepareSimpleRegistrationDO() {
 
         return new RegistrationDO( TEST_EMAIL, TEST_USERNAME, TEST_PASSWORD, TEST_PASSWORD );
     }

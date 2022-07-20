@@ -22,22 +22,22 @@
  * SOFTWARE.
  */
 
-package com.github.pplociennik.auth.business.authentication.domain.map;
+package com.github.pplociennik.auth.business.authentication.data;
 
 import com.github.pplociennik.auth.common.auth.dto.RegistrationDto;
 
 /**
- * A data supplier for {@link RegistrationMapperTest}.
+ * A data supplier for RegistrationMapperTest.
  *
  * @author Created by: Pplociennik at 23.04.2022 12:51
  */
-class RegistrationMapperTestDataSupplier {
+public class RegistrationMapperTestDataSupplier {
 
     private static final String TEST_USERNAME = "TestUsername";
     private static final String TEST_PASSWORD = "TestPassword1!";
     private static final String TEST_EMAIL = "testEamail@gmail.com";
 
-    static RegistrationDto prepareSimpleRegistrationDto() {
+    public static RegistrationDto prepareSimpleRegistrationDto() {
 
         return RegistrationDto.builder()
                 .email( TEST_EMAIL )

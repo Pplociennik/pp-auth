@@ -2,6 +2,7 @@ package com.github.pplociennik.auth.business.authentication.infrastructure;
 
 import com.github.pplociennik.auth.business.authentication.domain.map.VerificationTokenMapper;
 import com.github.pplociennik.auth.business.authentication.domain.model.VerificationTokenDO;
+import com.github.pplociennik.auth.business.authentication.ports.AccountRepository;
 import com.github.pplociennik.auth.business.authentication.ports.VerificationTokenRepository;
 import com.github.pplociennik.auth.db.repository.authentication.AccountDao;
 import com.github.pplociennik.auth.db.repository.authentication.VerificationTokenDao;

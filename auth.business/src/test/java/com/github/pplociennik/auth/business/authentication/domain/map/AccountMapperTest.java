@@ -31,8 +31,8 @@ import org.junit.jupiter.api.Test;
 
 import static com.github.pplociennik.auth.business.authentication.domain.map.AccountMapper.mapToEntity;
 import static com.github.pplociennik.auth.business.authentication.domain.map.AccountMapper.mapToSecurityCoreDO;
-import static com.github.pplociennik.auth.business.authentication.domain.map.AccountMapperTestDataSupplier.prepareSimpleAccountData;
-import static com.github.pplociennik.auth.business.authentication.domain.map.AccountMapperTestDataSupplier.prepareSimpleRegistrationDO;
+import static com.github.pplociennik.auth.business.authentication.data.AccountMapperTestDataSupplier.prepareSimpleAccountData;
+import static com.github.pplociennik.auth.business.authentication.data.AccountMapperTestDataSupplier.prepareSimpleRegistrationDO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 

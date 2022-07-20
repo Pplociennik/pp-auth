@@ -22,8 +22,9 @@
  * SOFTWARE.
  */
 
-package com.github.pplociennik.auth.business.authentication.ports;
+package com.github.pplociennik.auth.business.authentication.infrastructure;
 
+import com.github.pplociennik.auth.business.authentication.ports.AccountRepository;
 import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryAccountRepository;
 import org.junit.jupiter.api.Test;
 

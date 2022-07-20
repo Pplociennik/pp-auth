@@ -22,9 +22,11 @@
  * SOFTWARE.
  */
 
-package com.github.pplociennik.auth.business.authentication.ports;
+package com.github.pplociennik.auth.business.authentication.infrastructure;
 
-import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryAccountSecurityDataService;
+import com.github.pplociennik.auth.business.authentication.data.AccountSecurityDataServiceTestDataSupplier;
+import com.github.pplociennik.auth.business.authentication.ports.AccountSecurityDataService;
+import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryAccountDao;
 import com.github.pplociennik.auth.db.entity.authentication.Account;
 import com.github.pplociennik.auth.db.repository.authentication.AccountDao;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,11 +34,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import static com.github.pplociennik.auth.business.authentication.ports.AccountSecurityDataServiceTestDataSupplier.*;
+import java.util.LinkedList;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for {@link AccountSecurityDataService}.
@@ -45,43 +47,38 @@ import static org.mockito.Mockito.when;
  */
 class AccountSecurityDataServiceTest {
 
+    private static final String TEST_INCORRECT_USERNAME = "IncorrectUsername";
     private static final String TEST_USERNAME_1 = "TestUsername_1";
     private static final String TEST_USERNAME_2 = "TestUsername_2";
     private static final String TEST_USERNAME_3 = "TestUsername_3";
-    public static final String TEST_INCORRECT_USERNAME = "IncorrectUsername";
     private static UserDetails TEST_USER_1;
     private static UserDetails TEST_USER_2;
     private static UserDetails TEST_USER_3;
     private static Account TEST_ACCOUNT_1;
     private static Account TEST_ACCOUNT_2;
     private static Account TEST_ACCOUNT_3;
-
-    private AccountDao repository = mock( AccountDao.class );
-    private AccountSecurityDataService underTest = new InMemoryAccountSecurityDataService( repository );
+    private List< Account > TEST_DATABASE = new LinkedList<>();
+    private AccountDao accountDao = new InMemoryAccountDao( TEST_DATABASE );
+    private AccountSecurityDataService sut = new AccountSecurityDataServiceImpl( accountDao );
 
     @BeforeEach
     void prepareMocksAndData() {
-        TEST_USER_1 = prepareTestUser_1();
-        TEST_USER_2 = prepareTestUser_2();
-        TEST_USER_3 = prepareTestUser_3();
+        TEST_USER_1 = AccountSecurityDataServiceTestDataSupplier.prepareTestUser_1();
+        TEST_USER_2 = AccountSecurityDataServiceTestDataSupplier.prepareTestUser_2();
+        TEST_USER_3 = AccountSecurityDataServiceTestDataSupplier.prepareTestUser_3();
 
-        TEST_ACCOUNT_1 = prepareTestAccount_1();
-        TEST_ACCOUNT_2 = prepareTestAccount_2();
-        TEST_ACCOUNT_3 = prepareTestAccount_3();
+        TEST_ACCOUNT_1 = AccountSecurityDataServiceTestDataSupplier.prepareTestAccount_1();
+        TEST_ACCOUNT_2 = AccountSecurityDataServiceTestDataSupplier.prepareTestAccount_2();
+        TEST_ACCOUNT_3 = AccountSecurityDataServiceTestDataSupplier.prepareTestAccount_3();
 
-        when( repository.findAccountByUsername( TEST_USERNAME_1 ) ).thenReturn( TEST_ACCOUNT_1 );
-        when( repository.findAccountByUsername( TEST_USERNAME_2 ) ).thenReturn( TEST_ACCOUNT_2 );
-        when( repository.findAccountByUsername( TEST_USERNAME_3 ) ).thenReturn( TEST_ACCOUNT_3 );
-
-        when( repository.findAccountByUsername( TEST_INCORRECT_USERNAME ) ).thenThrow( UsernameNotFoundException.class );
-        when( repository.findAccountByUsername( null ) ).thenThrow( NullPointerException.class );
+        prepareTestDatabase();
     }
 
     @Test
     void shouldReturnAppropriateUser_whenUsernameCorrect() {
-        var user1 = underTest.loadUserByUsername( TEST_USERNAME_1 );
-        var user2 = underTest.loadUserByUsername( TEST_USERNAME_2 );
-        var user3 = underTest.loadUserByUsername( TEST_USERNAME_3 );
+        var user1 = sut.loadUserByUsername( TEST_USERNAME_1 );
+        var user2 = sut.loadUserByUsername( TEST_USERNAME_2 );
+        var user3 = sut.loadUserByUsername( TEST_USERNAME_3 );
 
         assertThat( user1 ).usingRecursiveComparison().isEqualTo( TEST_USER_1 );
         assertThat( user2 ).usingRecursiveComparison().isEqualTo( TEST_USER_2 );
@@ -90,12 +87,20 @@ class AccountSecurityDataServiceTest {
 
     @Test
     void shouldThrowUsernameNotFoundException_whenThereIsNoSuchAUserInTheDatabase() {
-        assertThatThrownBy( () -> underTest.loadUserByUsername( TEST_INCORRECT_USERNAME ) ).isInstanceOf( UsernameNotFoundException.class );
+        assertThatThrownBy( () -> sut.loadUserByUsername( TEST_INCORRECT_USERNAME ) ).isInstanceOf( UsernameNotFoundException.class );
     }
 
     @Test
     void shouldThrowNullPointerException_whenUsernameIsNull() {
-        assertThatThrownBy( () -> underTest.loadUserByUsername( null ) ).isInstanceOf( NullPointerException.class );
+        assertThatThrownBy( () -> sut.loadUserByUsername( null ) ).isInstanceOf( NullPointerException.class );
+    }
+
+    // PRIVATE HELPER METHODS
+
+    private void prepareTestDatabase() {
+        TEST_DATABASE.add( TEST_ACCOUNT_1 );
+        TEST_DATABASE.add( TEST_ACCOUNT_2 );
+        TEST_DATABASE.add( TEST_ACCOUNT_3 );
     }
 
 }
