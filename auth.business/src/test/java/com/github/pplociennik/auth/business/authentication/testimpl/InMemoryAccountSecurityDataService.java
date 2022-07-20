@@ -54,11 +54,9 @@ public class InMemoryAccountSecurityDataService implements AccountSecurityDataSe
         requireNonNull( aUsername );
 
         var account = accountRepository.findAccountByUsername( aUsername );
+        var toReturn = account.orElseThrow(
+                () -> new UsernameNotFoundException( getLocalizedMessage( AUTHENTICATION_USERNAME_NOT_FOUND, arrayOf( aUsername ) ) ) );
 
-        if ( account == null ) {
-            throw new UsernameNotFoundException( getLocalizedMessage( AUTHENTICATION_USERNAME_NOT_FOUND, arrayOf( aUsername ) ) );
-        }
-
-        return mapToSecurityCoreDO( account );
+        return mapToSecurityCoreDO( toReturn );
     }
 }

@@ -107,7 +107,7 @@ class AuthService {
         var tokenOwner = verificationToken.getOwner();
 
         var accountByUsername = accountRepository.findAccountByUsername( tokenOwner.getUsername() );
-        var accountToBeConfirmed = Optional.of( accountByUsername )
+        var accountToBeConfirmed = Optional.ofNullable( accountByUsername )
                 .orElseThrow( () -> new AccountConfirmationException( ACCOUNT_CONFIRMATION_USER_NOT_EXISTS ) );
 
         throwIf( verificationToken, this::isTokenExpired );

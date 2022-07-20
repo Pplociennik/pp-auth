@@ -18,20 +18,21 @@ public class InMemoryVerificationTokenRepository implements VerificationTokenRep
         database = aDatabase;
     }
 
-    public InMemoryVerificationTokenRepository() {
-    }
-
     public void setDatabase( List< VerificationTokenDO > aDatabase ) {
         database = aDatabase;
     }
 
     @Override
     public VerificationTokenDO findByToken( String aToken ) {
-        return null;
+        return database.stream()
+                .filter( token -> token.getToken().equals( aToken ) )
+                .findAny()
+                .orElse( null );
     }
 
     @Override
     public VerificationTokenDO save( VerificationTokenDO aVerificationToken ) {
-        return null;
+        database.add( aVerificationToken );
+        return aVerificationToken;
     }
 }

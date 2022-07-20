@@ -28,35 +28,31 @@ public class InMemoryAccountDao implements AccountDao {
     }
 
     @Override
-    public Account getAccountByEmailAddress( String aEmailAddress ) {
+    public Optional< Account > getAccountByEmailAddress( String aEmailAddress ) {
         return database.stream()
                 .filter( account -> account.getEmailAddress().equals( aEmailAddress ) )
-                .findAny()
-                .orElse( null );
+                .findAny();
     }
 
     @Override
-    public Account findAccountByUsername( String aUsername ) {
+    public Optional< Account > findAccountByUsername( String aUsername ) {
         return database.stream()
                 .filter( account -> account.getUsername().equals( aUsername ) )
-                .findAny()
-                .orElse( null );
+                .findAny();
     }
 
     @Override
-    public Account findAccountByEmailAddress( String aEmailAddress ) {
+    public Optional< Account > findAccountByEmailAddress( String aEmailAddress ) {
         return database.stream()
                 .filter( account -> account.getEmailAddress().equals( aEmailAddress ) )
-                .findAny()
-                .orElse( null );
+                .findAny();
     }
 
     @Override
-    public Account findAccountById( long aId ) {
+    public Optional< Account > findAccountById( long aId ) {
         return database.stream()
                 .filter( account -> account.getId() == aId )
-                .findAny()
-                .orElse( null );
+                .findAny();
     }
 
     @Override
