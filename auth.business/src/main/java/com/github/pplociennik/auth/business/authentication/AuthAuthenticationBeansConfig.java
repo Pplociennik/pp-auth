@@ -27,6 +27,7 @@ package com.github.pplociennik.auth.business.authentication;
 import com.github.pplociennik.auth.business.authentication.ports.AccountRepository;
 import com.github.pplociennik.auth.business.authentication.ports.AuthenticationValidationRepository;
 import com.github.pplociennik.auth.business.authentication.ports.VerificationTokenRepository;
+import com.github.pplociennik.auth.business.shared.system.EnvironmentPropertiesProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
@@ -78,12 +79,12 @@ class AuthAuthenticationBeansConfig {
     }
 
     @Bean
-    SystemPropertiesProvider systemPropertiesProvider() {
-        return new SystemPropertiesProvider( environment );
+    EnvironmentPropertiesProvider environmentPropertiesProvider() {
+        return new EnvironmentPropertiesProvider( environment );
     }
 
     @Bean
     VerificationUrlResolver verificationUrlResolver() {
-        return new VerificationUrlResolver( verificationTokenRepository, systemPropertiesProvider() );
+        return new VerificationUrlResolver( verificationTokenRepository, environmentPropertiesProvider() );
     }
 }

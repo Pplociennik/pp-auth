@@ -3,6 +3,7 @@ package com.github.pplociennik.auth.business.authentication;
 import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
 import com.github.pplociennik.auth.business.authentication.domain.model.VerificationTokenDO;
 import com.github.pplociennik.auth.business.authentication.ports.VerificationTokenRepository;
+import com.github.pplociennik.auth.business.shared.system.EnvironmentPropertiesProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 
@@ -11,6 +12,7 @@ import java.time.ZoneId;
 import java.util.UUID;
 
 import static com.github.pplociennik.auth.business.authentication.TokenExpirationDateAmount.ACCOUNT_CONFIRMATION_REQUEST;
+import static com.github.pplociennik.auth.business.shared.system.SystemProperty.GLOBAL_CLIENT_URL;
 import static com.github.pplociennik.auth.common.auth.AuthVerificationTokenType.EMAIL_CONFIRMATION_TOKEN;
 import static java.util.Objects.requireNonNull;
 
@@ -22,10 +24,10 @@ import static java.util.Objects.requireNonNull;
 class VerificationUrlResolver {
 
     private final VerificationTokenRepository tokenRepository;
-    private final SystemPropertiesProvider propertiesProvider;
+    private final EnvironmentPropertiesProvider propertiesProvider;
 
     @Autowired
-    VerificationUrlResolver( @NonNull VerificationTokenRepository aTokenRepository, @NonNull SystemPropertiesProvider aPropertiesProvider ) {
+    VerificationUrlResolver( @NonNull VerificationTokenRepository aTokenRepository, @NonNull EnvironmentPropertiesProvider aPropertiesProvider ) {
         tokenRepository = requireNonNull( aTokenRepository );
         propertiesProvider = requireNonNull( aPropertiesProvider );
     }
@@ -36,7 +38,7 @@ class VerificationUrlResolver {
         final var parameter = "aToken";
 
         var verificationToken = resolveUniqueToken( aAccountDO );
-        var url = propertiesProvider.getFrontendUrl();
+        var url = propertiesProvider.getPropertyValue( GLOBAL_CLIENT_URL );
 
         return url + "/?" + parameter + "=" + verificationToken.getToken();
     }
