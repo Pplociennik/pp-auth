@@ -26,7 +26,8 @@ package com.github.pplociennik.auth.business.authentication;
 
 import com.github.pplociennik.auth.business.authentication.domain.model.RegistrationDO;
 import com.github.pplociennik.auth.business.authentication.ports.AccountRepository;
-import com.github.pplociennik.auth.business.authentication.ports.VerificationTokenRepository;
+import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryAccountRepository;
+import com.github.pplociennik.auth.business.authentication.testimpl.InMemorySystemPropertiesProvider;
 import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryVerificationTokenRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,10 +49,11 @@ class AuthServiceTest {
     private static final String TEST_VALID_PASSWORD = "TestValidPassword1!";
     private static final String TEST_ENCODED_PASSWORD = "EncodedPass";
 
-    private AccountRepository accountRepository;
+    private InMemoryAccountRepository accountRepository = new InMemoryAccountRepository();
+    private InMemoryVerificationTokenRepository verificationTokenRepository = new InMemoryVerificationTokenRepository();
+    private InMemorySystemPropertiesProvider propertiesProvider = new InMemorySystemPropertiesProvider();
+    private VerificationUrlResolver urlResolver = new VerificationUrlResolver( verificationTokenRepository, propertiesProvider );
     private PasswordEncoder encoder;
-    private VerificationUrlResolver urlResolver;
-    private VerificationTokenRepository verificationTokenRepository;
 
     private AuthService underTest;
 
