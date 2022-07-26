@@ -112,6 +112,12 @@ class AuthService {
 
         throwIf( verificationToken, this::isTokenExpired );
         accountRepository.enableAccount( accountToBeConfirmed );
+        deactivateToken( verificationToken );
+    }
+
+    private void deactivateToken( VerificationTokenDO aVerificationToken ) {
+        aVerificationToken.setActive( false );
+        tokenRepository.save( aVerificationToken );
     }
 
     private boolean throwIf( @NonNull VerificationTokenDO aVerificationToken, @NonNull Predicate< VerificationTokenDO > aPredicate ) {

@@ -27,6 +27,7 @@ public class VerificationTokenMapper {
                 .type( aVerificationToken.getType() )
                 .expirationDate( getInstant( aVerificationToken.getExpirationDate() ) )
                 .owner( AccountMapper.mapToDomain( aVerificationToken.getOwner() ) )
+                .isActive( aVerificationToken.isActive() )
                 .build();
     }
 
@@ -38,6 +39,7 @@ public class VerificationTokenMapper {
                 .expirationDate( getZonedExpirationDate( aVerificationToken.getExpirationDate() ) )
                 .owner( aOwner )
                 .type( aVerificationToken.getType() )
+                .isActive( aVerificationToken.isActive() )
                 .build();
     }
 

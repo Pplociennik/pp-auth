@@ -22,4 +22,5 @@ public class VerificationTokenDO {
     private AccountDO owner;
     private String token;
     private Instant expirationDate;
+    private boolean isActive;
 }

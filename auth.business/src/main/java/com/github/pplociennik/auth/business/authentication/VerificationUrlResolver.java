@@ -51,6 +51,7 @@ class VerificationUrlResolver {
                 .owner( aAccountDO )
                 .type( EMAIL_CONFIRMATION_TOKEN )
                 .expirationDate( getExpirationDateForImmediateToken( ACCOUNT_CONFIRMATION_REQUEST ) )
+                .isActive( true )
                 .build();
 
         return tokenRepository.save( verificationToken );
