@@ -53,4 +53,10 @@ public class VerificationToken {
      */
     @Column( name = "EXPIRATION_DATETIME", nullable = false )
     private ZonedDateTime expirationDate;
+
+    /**
+     * A flag defining if the token is active or not.
+     */
+    @Column( name = "IS_ACTIVE" )
+    private boolean isActive;
 }

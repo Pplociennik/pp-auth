@@ -26,6 +26,7 @@ package com.github.pplociennik.auth.business.authentication.infrastructure;
 
 import com.github.pplociennik.auth.business.authentication.ports.AccountRepository;
 import com.github.pplociennik.auth.business.authentication.ports.AuthenticationValidationRepository;
+import com.github.pplociennik.auth.business.authentication.ports.VerificationTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 
@@ -39,10 +40,12 @@ import static java.util.Objects.requireNonNull;
 class AuthenticationValidationRepositoryImpl implements AuthenticationValidationRepository {
 
     private final AccountRepository accountRepository;
+    private final VerificationTokenRepository tokenRepository;
 
     @Autowired
-    AuthenticationValidationRepositoryImpl( @NonNull AccountRepository aAccountRepository ) {
+    AuthenticationValidationRepositoryImpl( @NonNull AccountRepository aAccountRepository, VerificationTokenRepository aTokenRepository ) {
         accountRepository = aAccountRepository;
+        tokenRepository = aTokenRepository;
     }
 
     /**
@@ -61,5 +64,16 @@ class AuthenticationValidationRepositoryImpl implements AuthenticationValidation
     public boolean checkIfEmailExists( @NonNull String aEmail ) {
         requireNonNull( aEmail );
         return accountRepository.existsAccountByEmailAddress( aEmail );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean checkIfTokenActive( @NonNull String aToken ) {
+        requireNonNull( aToken );
+
+        var verificationToken = tokenRepository.findByToken( aToken );
+        return verificationToken.isActive();
     }
 }

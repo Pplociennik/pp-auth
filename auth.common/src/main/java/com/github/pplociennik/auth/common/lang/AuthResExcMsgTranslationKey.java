@@ -89,6 +89,11 @@ public enum AuthResExcMsgTranslationKey implements TranslationKey {
     ACCOUNT_CONFIRMATION_TOKEN_EXPIRED,
 
     /**
+     * Account confirmation: Token is not active!
+     */
+    ACCOUNT_CONFIRMATION_TOKEN_NOT_ACTIVE,
+
+    /**
      * Reading properties: Process failed.
      */
     READING_PROPERTIES_FAILED,

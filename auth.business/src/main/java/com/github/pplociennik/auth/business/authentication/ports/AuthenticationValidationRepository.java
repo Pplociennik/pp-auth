@@ -46,8 +46,19 @@ public interface AuthenticationValidationRepository {
      * Returns true if the specified email address is already present in the database.
      *
      * @param aEmail
-     *         an email adress
+     *         an email address
      * @return true if the specified username is already present in the database.
      */
     boolean checkIfEmailExists( @NonNull String aEmail );
+
+    /**
+     * Returns true if the specified token is active. False otherwise.
+     *
+     * @param aToken
+     *         a token to be checked
+     * @return true if the specified token is active, false otherwise.
+     * @throws NullPointerException
+     *         if the parameter is null.
+     */
+    boolean checkIfTokenActive( @NonNull String aToken );
 }

@@ -69,6 +69,11 @@ public class InMemoryAuthenticationValidationRepository implements Authenticatio
                 .anyMatch( account -> account.getEmailAddress().equals( aEmail ) );
     }
 
+    @Override
+    public boolean checkIfTokenActive( String aToken ) {
+        return false;
+    }
+
     private Account prepareAccount_1() {
 
         var account = new Account();

@@ -71,7 +71,7 @@ class AuthAuthenticationInfrastructureBeans {
 
     @Bean
     AuthenticationValidationRepository authenticationValidationRepository() {
-        return new AuthenticationValidationRepositoryImpl( accountRepository() );
+        return new AuthenticationValidationRepositoryImpl( accountRepository(), verificationTokenRepository() );
     }
 
 }

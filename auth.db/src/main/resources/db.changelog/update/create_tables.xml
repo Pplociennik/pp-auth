@@ -123,6 +123,9 @@
             <column name="EXPIRATION_DATETIME" type="VARCHAR(60)">
                 <constraints nullable="false"/>
             </column>
+            <column name="IS_ACTIVE" type="BIT">
+                <constraints nullable="false"/>
+            </column>
             <column name="TOKEN_OWNER" type="BIGINT">
                 <constraints nullable="false" foreignKeyName="FOREIGN_KEY_TOKEN_OWNER"
                              references="AUTH_ACCOUNTS(ID)"/>
@@ -148,6 +151,9 @@
                 <constraints nullable="false" unique="true"/>
             </column>
             <column name="EXPIRATION_DATETIME" type="VARCHAR(60)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="IS_ACTIVE" type="BIT">
                 <constraints nullable="false"/>
             </column>
             <column name="TOKEN_OWNER" type="BIGINT">
