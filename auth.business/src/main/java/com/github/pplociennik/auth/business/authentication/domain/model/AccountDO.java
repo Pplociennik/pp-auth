@@ -27,6 +27,7 @@ package com.github.pplociennik.auth.business.authentication.domain.model;
 import com.github.pplociennik.auth.business.authorization.domain.model.AuthorityDO;
 import lombok.*;
 
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -34,11 +35,11 @@ import java.util.Set;
  *
  * @author Created by: Pplociennik at 16.09.2021 17:29
  */
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@EqualsAndHashCode
 public class AccountDO {
 
     /**
@@ -77,4 +78,17 @@ public class AccountDO {
      * Account's authorities.
      */
     private Set< AuthorityDO > authorities;
+
+    @Override
+    public boolean equals( Object aO ) {
+        if ( this == aO ) return true;
+        if ( aO == null || getClass() != aO.getClass() ) return false;
+        AccountDO accountDO = ( AccountDO ) aO;
+        return emailAddress.equals( accountDO.emailAddress ) && username.equals( accountDO.username );
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash( emailAddress, username );
+    }
 }

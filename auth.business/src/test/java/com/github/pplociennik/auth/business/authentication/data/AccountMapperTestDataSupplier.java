@@ -58,7 +58,11 @@ public class AccountMapperTestDataSupplier {
         account.setPassword( TEST_HASHED_PASSWORD );
         account.setUsername( TEST_USERNAME );
 
-        account.setAuthorities( prepareTestAccountAuthorities( account ) );
+        var testAuthorities = prepareTestAccountAuthorities( account );
+
+        account.setAuthorities( testAuthorities );
+
+        testAuthorities.forEach( authority -> authority.setAuthoritiesOwner( account ) );
 
         return account;
     }

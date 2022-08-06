@@ -39,8 +39,7 @@ import java.util.List;
 import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toUnmodifiableList;
-import static java.util.stream.Collectors.toUnmodifiableSet;
+import static java.util.stream.Collectors.*;
 
 /**
  * A mapper for {@link Account} class.
@@ -60,34 +59,30 @@ public class AccountMapper {
     public static Account mapToEntity( @NonNull AccountDO aAccountDO ) {
         requireNonNull( aAccountDO );
 
-        return Account.builder()
+        var authorities = createAuthorities( aAccountDO.getAuthorities() );
+
+        var account = Account.builder()
                 .emailAddress( aAccountDO.getEmailAddress() )
                 .password( aAccountDO.getPassword() )
                 .accountNonExpired( aAccountDO.isAccountNonExpired() )
                 .accountNonLocked( aAccountDO.isAccountNonLocked() )
                 .username( aAccountDO.getUsername() )
                 .credentialsNonExpired( aAccountDO.isCredentialsNonExpired() )
-                .authorities( createAuthorities( aAccountDO.getAuthorities() ) )
+                .authorities( authorities )
                 .enabled( aAccountDO.isEnabled() )
                 .build();
-    }
 
-    private static Set< Authority > createAuthorities( Set< AuthorityDO > aAuthorities ) {
-        return aAuthorities.stream()
-                .map( authority -> Authority.builder()
-                        .name( authority.getAuthorityName() )
-                        .build() )
-                .collect( toUnmodifiableSet() );
+        updateAuthoritiesSetAccount( authorities, account );
+
+        return account;
     }
 
     public static AccountDO mapToDomain( @NonNull Account aAccount ) {
         requireNonNull( aAccount );
 
-        var authorities = aAccount.getAuthorities().stream()
-                .map( AuthorityMapper::mapToDomain )
-                .collect( toUnmodifiableSet() );
+        var authorities = mapAuthoritiesToDomain( aAccount.getAuthorities() );
 
-        return AccountDO.builder()
+        var accountDO = AccountDO.builder()
                 .accountNonExpired( aAccount.isAccountNonExpired() )
                 .accountNonLocked( aAccount.isAccountNonLocked() )
                 .password( aAccount.getPassword() )
@@ -98,6 +93,17 @@ public class AccountMapper {
                 .id( aAccount.getId() )
                 .authorities( authorities )
                 .build();
+
+        authorities.forEach( aAuthorityDO -> aAuthorityDO.setOwner( accountDO ) );
+
+        return accountDO;
+    }
+
+    private static Set< AuthorityDO > mapAuthoritiesToDomain( Set< Authority > aAuthorities ) {
+        return aAuthorities.stream()
+                .map( aAuthority -> AuthorityDO.builder()
+                        .authorityName( aAuthority.getName() )
+                        .build() ).collect( toSet() );
     }
 
     public static AccountDO mapToDomain( @NonNull AccountDto aDto ) {
@@ -132,9 +138,21 @@ public class AccountMapper {
                 .build();
     }
 
+    private static void updateAuthoritiesSetAccount( Set< Authority > aAuthorities, Account aAccount ) {
+        aAuthorities.forEach( aAuthority -> aAuthority.setAuthoritiesOwner( aAccount ) );
+    }
+
+    private static Set< Authority > createAuthorities( Set< AuthorityDO > aAuthorities ) {
+        return aAuthorities.stream()
+                .map( authority -> Authority.builder()
+                        .name( authority.getAuthorityName() )
+                        .build() )
+                .collect( toUnmodifiableSet() );
+    }
+
     private static Set< String > getAuthoritiesNames( AccountDO aAccountDO ) {
         return aAccountDO.getAuthorities().stream()
-                .map( authority -> authority.getAuthorityName() )
+                .map( AuthorityDO::getAuthorityName )
                 .collect( toUnmodifiableSet() );
     }
 

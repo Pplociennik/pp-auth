@@ -3,9 +3,7 @@ package com.github.pplociennik.auth.business.authorization.domain.map;
 import com.github.pplociennik.auth.business.authentication.domain.map.AccountMapper;
 import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
 import com.github.pplociennik.auth.business.authorization.domain.model.AuthorityDO;
-import com.github.pplociennik.auth.db.entity.authentication.Account;
 import com.github.pplociennik.auth.db.entity.authorization.Authority;
-import org.springframework.lang.NonNull;
 
 import java.util.Set;
 
@@ -36,12 +34,5 @@ public class AuthorityMapper {
         return aAuthoritiesNames.stream()
                 .map( name -> mapToDomain( name, aOwner ) )
                 .collect( toUnmodifiableSet() );
-    }
-
-    public static Authority mapToEntity( AuthorityDO aAuthorityDO, @NonNull Account aOwner ) {
-        return Authority.builder()
-                .name( aAuthorityDO.getAuthorityName() )
-                .authoritiesOwner( aOwner )
-                .build();
     }
 }
