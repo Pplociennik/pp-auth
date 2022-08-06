@@ -1,6 +1,7 @@
 package com.github.pplociennik.auth.business.mailing;
 
-import com.github.pplociennik.auth.common.auth.dto.mailing.EmailConfirmationDataDto;
+import com.github.pplociennik.auth.common.mailing.dto.EmailConfirmationDataDto;
+import com.github.pplociennik.auth.common.mailing.dto.WelcomeEmailDataDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.scheduling.annotation.Async;
@@ -26,5 +27,11 @@ public class EmailFacade {
     public void sendEmailConfirmationRequest( @NonNull EmailConfirmationDataDto aDto ) {
         var emailDataDO = mapToDO( aDto );
         emailService.prepareAndSendEmailConfirmationRequest( emailDataDO );
+    }
+
+    @Async
+    public void sendWelcomeEmail( @NonNull WelcomeEmailDataDto aDto ) {
+        var emailDataDO = mapToDO( aDto );
+        emailService.prepareAndSendWelcomeEmail( emailDataDO );
     }
 }

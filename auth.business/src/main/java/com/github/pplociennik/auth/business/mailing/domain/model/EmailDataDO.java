@@ -2,7 +2,6 @@ package com.github.pplociennik.auth.business.mailing.domain.model;
 
 import org.springframework.lang.NonNull;
 
-import java.io.Serializable;
 import java.util.Locale;
 
 import static java.util.Objects.requireNonNull;
@@ -13,7 +12,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @author Created by: Pplociennik at 30.06.2022 21:27
  */
-abstract class EmailDataDO implements Serializable {
+abstract class EmailDataDO implements AddressableDataDO {
 
     protected final String recipientAddress;
     protected final Locale locale;

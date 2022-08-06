@@ -41,9 +41,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import static auth.AuthVerificationTokenType.EMAIL_CONFIRMATION_TOKEN;
 import static com.github.pplociennik.auth.business.shared.authorization.RolesDefinition.AUTH_USER_ROLE;
 import static com.github.pplociennik.auth.business.shared.system.SystemProperty.GLOBAL_CLIENT_URL;
-import static com.github.pplociennik.auth.common.auth.AuthVerificationTokenType.EMAIL_CONFIRMATION_TOKEN;
 import static com.github.pplociennik.auth.common.lang.AuthResExcMsgTranslationKey.ACCOUNT_CONFIRMATION_TOKEN_EXPIRED;
 import static com.github.pplociennik.auth.common.lang.AuthResExcMsgTranslationKey.ACCOUNT_CONFIRMATION_USER_NOT_EXISTS;
 import static com.github.pplociennik.util.utility.CustomObjects.requireNonEmpty;
@@ -118,7 +118,7 @@ class AuthService {
      * @param aToken
      *         a token for the account's registration confirmation.
      */
-    void confirmRegistration( @NonNull String aToken ) {
+    AccountDO confirmRegistration( @NonNull String aToken ) {
         requireNonEmpty( aToken );
 
         var verificationToken = tokenRepository.findByToken( aToken );
@@ -129,8 +129,10 @@ class AuthService {
                 .orElseThrow( () -> new AccountConfirmationException( ACCOUNT_CONFIRMATION_USER_NOT_EXISTS ) );
 
         throwIf( verificationToken, this::isTokenExpired );
-        accountRepository.enableAccount( accountToBeConfirmed );
+        var enabledAccount = accountRepository.enableAccount( accountToBeConfirmed );
         deactivateToken( verificationToken );
+
+        return enabledAccount;
     }
 
     private AccountDO createNewAccount( @NonNull RegistrationDO aRegistrationDO, @NonNull String aHashedPassword ) {
@@ -148,7 +150,7 @@ class AuthService {
 
     private void deactivateToken( VerificationTokenDO aVerificationToken ) {
         aVerificationToken.setActive( false );
-        tokenRepository.save( aVerificationToken );
+        tokenRepository.update( aVerificationToken );
     }
 
     private boolean throwIf( @NonNull VerificationTokenDO aVerificationToken, @NonNull Predicate< VerificationTokenDO > aPredicate ) {

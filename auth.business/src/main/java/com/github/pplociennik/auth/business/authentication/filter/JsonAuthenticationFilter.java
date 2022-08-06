@@ -25,7 +25,7 @@
 package com.github.pplociennik.auth.business.authentication.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.pplociennik.auth.common.auth.dto.LoginDto;
+import auth.dto.LoginDto;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;

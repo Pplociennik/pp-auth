@@ -1,4 +1,4 @@
-package com.github.pplociennik.auth.common.auth.dto.mailing;
+package com.github.pplociennik.auth.common.mailing.dto;
 
 import org.springframework.lang.NonNull;
 

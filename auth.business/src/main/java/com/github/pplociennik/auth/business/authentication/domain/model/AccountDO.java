@@ -66,6 +66,7 @@ public class AccountDO {
      * Account's unique username.
      */
     private String username;
+
     /**
      * Password.
      */

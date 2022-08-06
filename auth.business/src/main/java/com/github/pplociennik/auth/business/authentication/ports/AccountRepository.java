@@ -76,5 +76,5 @@ public interface AccountRepository {
      * @param aAccountToBeConfirmed
      *         an account to be updated.
      */
-    void enableAccount( @NonNull AccountDO aAccountToBeConfirmed );
+    AccountDO enableAccount( @NonNull AccountDO aAccountToBeConfirmed );
 }

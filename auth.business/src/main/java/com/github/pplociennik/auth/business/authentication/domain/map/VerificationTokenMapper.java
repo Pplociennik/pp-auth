@@ -26,6 +26,7 @@ public class VerificationTokenMapper {
                 .id( aVerificationToken.getId() )
                 .type( aVerificationToken.getType() )
                 .expirationDate( getInstant( aVerificationToken.getExpirationDate() ) )
+                .zoneId( aVerificationToken.getExpirationDate().getZone() )
                 .owner( AccountMapper.mapToDomain( aVerificationToken.getOwner() ) )
                 .isActive( aVerificationToken.isActive() )
                 .build();
@@ -36,16 +37,15 @@ public class VerificationTokenMapper {
 
         return VerificationToken.builder()
                 .token( aVerificationToken.getToken() )
-                .expirationDate( getZonedExpirationDate( aVerificationToken.getExpirationDate() ) )
+                .expirationDate( getZonedExpirationDate( aVerificationToken.getExpirationDate(), aVerificationToken.getZoneId() ) )
                 .owner( aOwner )
                 .type( aVerificationToken.getType() )
                 .isActive( aVerificationToken.isActive() )
                 .build();
     }
 
-    private static ZonedDateTime getZonedExpirationDate( Instant aExpirationDate ) {
-        var zoneId = ZoneId.systemDefault();
-        return aExpirationDate.atZone( zoneId );
+    private static ZonedDateTime getZonedExpirationDate( Instant aExpirationDate, ZoneId aZoneId ) {
+        return aExpirationDate.atZone( aZoneId );
     }
 
     private static Instant getInstant( ZonedDateTime aExpirationDate ) {
