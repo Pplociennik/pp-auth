@@ -24,10 +24,11 @@
 
 package com.github.pplociennik.auth.business.authentication.testimpl;
 
+import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
 import com.github.pplociennik.auth.business.authentication.ports.AuthenticationValidationRepository;
-import com.github.pplociennik.auth.db.entity.authentication.Account;
 import org.springframework.lang.NonNull;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
@@ -39,83 +40,65 @@ import static java.util.Objects.requireNonNull;
  */
 public class InMemoryAuthenticationValidationRepository implements AuthenticationValidationRepository {
 
-    private List< Account > database;
+    private List< AccountDO > database;
+    private boolean usernameExists;
+    private boolean emailExists;
+    private boolean isTokenActive;
+    private boolean tokenExists;
 
-    public InMemoryAuthenticationValidationRepository() {
-        prepareTestDatabase();
+    public InMemoryAuthenticationValidationRepository( List< AccountDO > aDatabase ) {
+        database = aDatabase;
     }
 
-    public void prepareTestDatabase() {
-        var account_1 = prepareAccount_1();
-        var account_2 = prepareAccount_2();
-        var account_3 = prepareAccount_3();
+    public InMemoryAuthenticationValidationRepository() {
+        database = new LinkedList<>();
+    }
 
-        database = List.of( account_1, account_2, account_3 );
+    public void add( AccountDO aAccountDO ) {
+        database.add( aAccountDO );
+    }
+
+    public void setDatabase( List< AccountDO > aDatabase ) {
+        database = aDatabase;
+    }
+
+    public void setUsernameExists( boolean aUsernameExists ) {
+        usernameExists = aUsernameExists;
+    }
+
+    public void setEmailExists( boolean aEmailExists ) {
+        emailExists = aEmailExists;
+    }
+
+    public void setTokenActive( boolean aTokenActive ) {
+        isTokenActive = aTokenActive;
+    }
+
+    public void setTokenExists( boolean aTokenExists ) {
+        tokenExists = aTokenExists;
     }
 
     @Override
     public boolean checkIfUsernameExists( @NonNull String aUsername ) {
         requireNonNull( aUsername );
 
-        return database.stream()
-                .anyMatch( account -> account.getUsername().equals( aUsername ) );
+        return usernameExists;
     }
 
     @Override
     public boolean checkIfEmailExists( @NonNull String aEmail ) {
         requireNonNull( aEmail );
 
-        return database.stream()
-                .anyMatch( account -> account.getEmailAddress().equals( aEmail ) );
+        return emailExists;
     }
 
     @Override
     public boolean checkIfTokenActive( String aToken ) {
-        return false;
+        return isTokenActive;
     }
 
-    private Account prepareAccount_1() {
-
-        var account = new Account();
-        account.setAccountNonExpired( true );
-        account.setAccountNonLocked( true );
-        account.setEnabled( true );
-        account.setCredentialsNonExpired( true );
-        account.setEmailAddress( "test1@testMail.com" );
-        account.setId( 1L );
-        account.setPassword( "test_pass_1" );
-        account.setUsername( "test_username_1" );
-
-        return account;
-    }
-
-    private Account prepareAccount_2() {
-
-        var account = new Account();
-        account.setAccountNonExpired( true );
-        account.setAccountNonLocked( true );
-        account.setEnabled( true );
-        account.setCredentialsNonExpired( true );
-        account.setEmailAddress( "test2@testMail.com" );
-        account.setId( 1L );
-        account.setPassword( "test_pass_1" );
-        account.setUsername( "test_username_2" );
-
-        return account;
-    }
-
-    private Account prepareAccount_3() {
-
-        var account = new Account();
-        account.setAccountNonExpired( true );
-        account.setAccountNonLocked( true );
-        account.setEnabled( true );
-        account.setCredentialsNonExpired( true );
-        account.setEmailAddress( "test3@testMail.com" );
-        account.setId( 1L );
-        account.setPassword( "test_pass_1" );
-        account.setUsername( "test_username_3" );
-
-        return account;
+    @Override
+    public boolean checkIfTokenExists( String aToken ) {
+        return tokenExists;
     }
 }

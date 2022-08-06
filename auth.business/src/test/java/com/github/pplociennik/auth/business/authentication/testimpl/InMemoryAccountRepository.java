@@ -24,16 +24,13 @@
 
 package com.github.pplociennik.auth.business.authentication.testimpl;
 
-import com.github.pplociennik.auth.business.authentication.domain.map.AccountMapper;
 import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
 import com.github.pplociennik.auth.business.authentication.ports.AccountRepository;
-import com.github.pplociennik.auth.db.entity.authentication.Account;
 import org.springframework.lang.NonNull;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.github.pplociennik.util.utility.CustomCollectors.toSingleton;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -43,17 +40,35 @@ import static java.util.Objects.requireNonNull;
  */
 public class InMemoryAccountRepository implements AccountRepository {
 
-    private List< Account > database;
+    private List< AccountDO > database;
+    private boolean existsAccountByUsername;
+    private boolean existsAccountByEmail;
+
+    public InMemoryAccountRepository( List< AccountDO > aDatabase ) {
+        database = aDatabase;
+    }
 
     public InMemoryAccountRepository() {
         database = new LinkedList<>();
     }
 
+    public void setDatabase( List< AccountDO > aDatabase ) {
+        database = aDatabase;
+    }
+
+    public void setExistsAccountByUsername( boolean aExistsAccountByUsername ) {
+        existsAccountByUsername = aExistsAccountByUsername;
+    }
+
+    public void setExistsAccountByEmail( boolean aExistsAccountByEmail ) {
+        existsAccountByEmail = aExistsAccountByEmail;
+    }
+
     @Override
-    public AccountDO save( @NonNull Account aAccount ) {
+    public AccountDO save( @NonNull AccountDO aAccount ) {
         requireNonNull( aAccount );
         database.add( aAccount );
-        return AccountMapper.mapToDomain( aAccount );
+        return aAccount;
     }
 
     @Override
@@ -61,27 +76,25 @@ public class InMemoryAccountRepository implements AccountRepository {
         requireNonNull( aUsername );
         var account = database.stream()
                 .filter( acc -> acc.getUsername().equals( aUsername ) )
-                .collect( toSingleton() );
+                .findAny();
 
-        return AccountMapper.mapToDomain( account );
+        return account.orElse( null );
     }
 
     @Override
     public boolean existsAccountByUsername( @NonNull String aUsername ) {
         requireNonNull( aUsername );
-        return database.stream()
-                .anyMatch( account -> account.getUsername().equals( aUsername ) );
+        return existsAccountByUsername;
     }
 
     @Override
     public boolean existsAccountByEmailAddress( @NonNull String aEmail ) {
         requireNonNull( aEmail );
-        return database.stream()
-                .anyMatch( account -> account.getEmailAddress().equals( aEmail ) );
+        return existsAccountByEmail;
     }
 
     @Override
-    public void enableAccount( AccountDO aAccountToBeConfirmed ) {
-        return;
+    public void enableAccount( @NonNull AccountDO aAccountToBeConfirmed ) {
+        requireNonNull( aAccountToBeConfirmed );
     }
 }

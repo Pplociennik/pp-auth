@@ -26,7 +26,8 @@ package com.github.pplociennik.auth.business.authentication.domain.map;
 
 import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
 import com.github.pplociennik.auth.business.authentication.domain.model.AccountSecurityCoreDO;
-import com.github.pplociennik.auth.business.authentication.domain.model.RegistrationDO;
+import com.github.pplociennik.auth.business.authorization.domain.map.AuthorityMapper;
+import com.github.pplociennik.auth.business.authorization.domain.model.AuthorityDO;
 import com.github.pplociennik.auth.business.authorization.domain.model.AuthorityDetails;
 import com.github.pplociennik.auth.common.auth.dto.AccountDto;
 import com.github.pplociennik.auth.db.entity.authentication.Account;
@@ -37,10 +38,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import static com.github.pplociennik.auth.business.shared.authorization.RolesDefinition.AUTH_USER_ROLE;
-import static com.github.pplociennik.util.utility.CustomObjects.requireNonEmpty;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toUnmodifiableList;
+import static java.util.stream.Collectors.toUnmodifiableSet;
 
 /**
  * A mapper for {@link Account} class.
@@ -57,40 +57,35 @@ public class AccountMapper {
                 aAccount.getPassword(), aAccount.isEnabled(), getAuthorities( aAccount.getAuthorities() ) );
     }
 
-    public static Account mapToEntity( @NonNull RegistrationDO aRegistrationDO, @NonNull String aHashedPassword ) {
-        requireNonNull( aRegistrationDO );
-        requireNonEmpty( aHashedPassword );
-        var newAccount = Account.builder()
-                .emailAddress( aRegistrationDO.getEmail() )
-                .password( aHashedPassword )
-                .username( aRegistrationDO.getUsername() )
+    public static Account mapToEntity( @NonNull AccountDO aAccountDO ) {
+        requireNonNull( aAccountDO );
+
+        return Account.builder()
+                .emailAddress( aAccountDO.getEmailAddress() )
+                .password( aAccountDO.getPassword() )
+                .accountNonExpired( aAccountDO.isAccountNonExpired() )
+                .accountNonLocked( aAccountDO.isAccountNonLocked() )
+                .username( aAccountDO.getUsername() )
+                .credentialsNonExpired( aAccountDO.isCredentialsNonExpired() )
+                .authorities( createAuthorities( aAccountDO.getAuthorities() ) )
+                .enabled( aAccountDO.isEnabled() )
                 .build();
-
-        newAccount.setAuthorities( createNewUserAuthority( newAccount ) );
-
-        return newAccount;
     }
 
-    public static Account mapToEntity( @NonNull AccountDO aAccount, Set< Authority > aAuthorities ) {
-        requireNonNull( aAccount );
-        return Account.builder()
-                .emailAddress( aAccount.getEmailAddress() )
-                .password( aAccount.getPassword() )
-                .accountNonExpired( aAccount.isAccountNonExpired() )
-                .accountNonLocked( aAccount.isAccountNonLocked() )
-                .username( aAccount.getUsername() )
-                .credentialsNonExpired( aAccount.isCredentialsNonExpired() )
-                .authorities( aAuthorities )
-                .enabled( aAccount.isEnabled() )
-                .build();
+    private static Set< Authority > createAuthorities( Set< AuthorityDO > aAuthorities ) {
+        return aAuthorities.stream()
+                .map( authority -> Authority.builder()
+                        .name( authority.getAuthorityName() )
+                        .build() )
+                .collect( toUnmodifiableSet() );
     }
 
     public static AccountDO mapToDomain( @NonNull Account aAccount ) {
         requireNonNull( aAccount );
 
         var authorities = aAccount.getAuthorities().stream()
-                .map( Authority::getName )
-                .collect( toUnmodifiableList() );
+                .map( AuthorityMapper::mapToDomain )
+                .collect( toUnmodifiableSet() );
 
         return AccountDO.builder()
                 .accountNonExpired( aAccount.isAccountNonExpired() )
@@ -108,16 +103,18 @@ public class AccountMapper {
     public static AccountDO mapToDomain( @NonNull AccountDto aDto ) {
         requireNonNull( aDto );
 
-        return AccountDO.builder()
+        var accountDO = AccountDO.builder()
                 .accountNonExpired( aDto.isAccountNonExpired() )
                 .accountNonLocked( aDto.isAccountNonLocked() )
-                .authorities( aDto.getAuthorities() )
                 .emailAddress( aDto.getEmailAddress() )
                 .enabled( aDto.isEnabled() )
                 .credentialsNonExpired( aDto.isCredentialsNonExpired() )
                 .password( aDto.getPassword() )
                 .username( aDto.getUsername() )
                 .build();
+
+        accountDO.setAuthorities( AuthorityMapper.mapToDomain( aDto.getAuthorities(), accountDO ) );
+        return accountDO;
     }
 
     public static AccountDto mapToDto( @NonNull AccountDO aAccountDO ) {
@@ -128,11 +125,17 @@ public class AccountMapper {
                 .password( aAccountDO.getPassword() )
                 .accountNonExpired( aAccountDO.isAccountNonExpired() )
                 .accountNonLocked( aAccountDO.isAccountNonLocked() )
-                .authorities( aAccountDO.getAuthorities() )
+                .authorities( getAuthoritiesNames( aAccountDO ) )
                 .username( aAccountDO.getUsername() )
                 .credentialsNonExpired( aAccountDO.isCredentialsNonExpired() )
                 .enabled( aAccountDO.isEnabled() )
                 .build();
+    }
+
+    private static Set< String > getAuthoritiesNames( AccountDO aAccountDO ) {
+        return aAccountDO.getAuthorities().stream()
+                .map( authority -> authority.getAuthorityName() )
+                .collect( toUnmodifiableSet() );
     }
 
     private static List< AuthorityDetails > getAuthorities( Collection< Authority > aAuthorities ) {
@@ -143,10 +146,4 @@ public class AccountMapper {
                 .collect( toUnmodifiableList() );
     }
 
-    private static Set< Authority > createNewUserAuthority( Account aAccount ) {
-        return Set.of( Authority.builder()
-                .name( AUTH_USER_ROLE.getName() )
-                .authoritiesOwner( aAccount )
-                .build() );
-    }
 }

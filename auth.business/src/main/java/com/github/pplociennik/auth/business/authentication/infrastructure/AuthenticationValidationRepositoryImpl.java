@@ -76,4 +76,15 @@ class AuthenticationValidationRepositoryImpl implements AuthenticationValidation
         var verificationToken = tokenRepository.findByToken( aToken );
         return verificationToken.isActive();
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean checkIfTokenExists( @NonNull String aToken ) {
+        requireNonNull( aToken );
+
+        var verificationToken = tokenRepository.findByToken( aToken );
+        return verificationToken != null;
+    }
 }

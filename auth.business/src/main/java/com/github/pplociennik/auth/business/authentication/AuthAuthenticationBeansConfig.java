@@ -75,7 +75,7 @@ class AuthAuthenticationBeansConfig {
 
     @Bean
     AuthService authService() {
-        return new AuthService( encoder, accountRepository, verificationUrlResolver(), verificationTokenRepository );
+        return new AuthService( encoder, accountRepository, verificationTokenResolver(), verificationTokenRepository, environmentPropertiesProvider() );
     }
 
     @Bean
@@ -84,7 +84,7 @@ class AuthAuthenticationBeansConfig {
     }
 
     @Bean
-    VerificationUrlResolver verificationUrlResolver() {
-        return new VerificationUrlResolver( verificationTokenRepository, environmentPropertiesProvider() );
+    VerificationTokenResolver verificationTokenResolver() {
+        return new VerificationTokenResolver( verificationTokenRepository );
     }
 }

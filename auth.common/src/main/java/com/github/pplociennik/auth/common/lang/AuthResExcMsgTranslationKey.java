@@ -94,6 +94,11 @@ public enum AuthResExcMsgTranslationKey implements TranslationKey {
     ACCOUNT_CONFIRMATION_TOKEN_NOT_ACTIVE,
 
     /**
+     * Account confirmation: Token not found!
+     */
+    ACCOUNT_CONFIRMATION_TOKEN_NOT_FOUND,
+
+    /**
      * Reading properties: Process failed.
      */
     READING_PROPERTIES_FAILED,

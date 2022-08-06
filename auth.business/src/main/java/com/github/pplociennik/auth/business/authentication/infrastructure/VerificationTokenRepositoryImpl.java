@@ -41,7 +41,7 @@ class VerificationTokenRepositoryImpl implements VerificationTokenRepository {
         requireNonNull( aVerificationToken );
 
         var accountDO = aVerificationToken.getOwner();
-        var owner = accountDao.getAccountByEmailAddress( accountDO.getEmailAddress() );
+        var owner = accountDao.getAccountByEmailAddress( accountDO.getEmailAddress() ).orElseThrow();
 
         var verificationTokenEntity = mapToEntity( aVerificationToken, owner );
         return mapToDomain( verificationTokenDao.save( verificationTokenEntity ) );

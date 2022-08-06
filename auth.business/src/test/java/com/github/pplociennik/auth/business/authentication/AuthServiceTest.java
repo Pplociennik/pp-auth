@@ -24,14 +24,24 @@
 
 package com.github.pplociennik.auth.business.authentication;
 
+import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
 import com.github.pplociennik.auth.business.authentication.domain.model.RegistrationDO;
-import com.github.pplociennik.auth.business.authentication.ports.AccountRepository;
-import com.github.pplociennik.auth.business.authentication.ports.VerificationTokenRepository;
+import com.github.pplociennik.auth.business.authentication.domain.model.VerificationTokenDO;
+import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryAccountRepository;
 import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryVerificationTokenRepository;
-import org.junit.jupiter.api.BeforeEach;
+import com.github.pplociennik.auth.business.shared.system.EnvironmentPropertiesProvider;
+import com.github.pplociennik.auth.common.exc.AccountConfirmationException;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.Instant;
+import java.util.LinkedList;
+import java.util.List;
+
+import static com.github.pplociennik.auth.common.auth.AuthVerificationTokenType.EMAIL_CONFIRMATION_TOKEN;
+import static java.time.temporal.ChronoUnit.MINUTES;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -47,36 +57,88 @@ class AuthServiceTest {
     private static final String TEST_VALID_EMAIL = "testEmail@gmail.com";
     private static final String TEST_VALID_PASSWORD = "TestValidPassword1!";
     private static final String TEST_ENCODED_PASSWORD = "EncodedPass";
+    private static final long TEST_TOKEN_ID = 1L;
+    private static final String TEST_TOKEN = "testToken";
 
-    private AccountRepository accountRepository;
-    private PasswordEncoder encoder;
-    private VerificationUrlResolver urlResolver;
-    private VerificationTokenRepository verificationTokenRepository;
+    private List< VerificationTokenDO > TEST_TOKEN_DATABASE = new LinkedList<>();
+    private List< AccountDO > TEST_ACCOUNT_DATABASE = new LinkedList<>();
 
-    private AuthService underTest;
+    private EnvironmentPropertiesProvider propertiesProvider = mock( EnvironmentPropertiesProvider.class );
+    private PasswordEncoder encoder = mock( PasswordEncoder.class );
+    private InMemoryAccountRepository accountRepository = new InMemoryAccountRepository( TEST_ACCOUNT_DATABASE );
+    private InMemoryVerificationTokenRepository verificationTokenRepository = new InMemoryVerificationTokenRepository( TEST_TOKEN_DATABASE );
+    private VerificationTokenResolver tokenResolver = new VerificationTokenResolver( verificationTokenRepository );
 
-    @BeforeEach
-    void prepareMocks() {
-        accountRepository = mock( AccountRepository.class );
-        encoder = mock( PasswordEncoder.class );
-        urlResolver = mock( VerificationUrlResolver.class );
-        verificationTokenRepository = new InMemoryVerificationTokenRepository();
+    private AuthService sut = new AuthService( encoder, accountRepository, tokenResolver, verificationTokenRepository, propertiesProvider );
 
+
+    @Test
+    void shouldAddValidBasePrivilidges_whenDataValid() {
+
+        // GIVEN
         when( encoder.encode( TEST_VALID_PASSWORD ) ).thenReturn( TEST_ENCODED_PASSWORD );
+        var registrationDO = new RegistrationDO( TEST_VALID_EMAIL, TEST_VALID_USERNAME, TEST_VALID_PASSWORD, TEST_VALID_PASSWORD );
 
-        underTest = new AuthService( encoder, accountRepository, urlResolver, verificationTokenRepository );
+        // WHEN
+        var registeredAccountDO = sut.registerNewAccount( registrationDO );
+
+        // THEN
+        assertThat( registeredAccountDO.isAccountNonExpired() ).isTrue();
+        assertThat( registeredAccountDO.isAccountNonLocked() ).isTrue();
+        assertThat( registeredAccountDO.isCredentialsNonExpired() ).isTrue();
+        assertThat( registeredAccountDO.isEnabled() ).isFalse();
     }
 
     @Test
-    void shouldRegisterNewAccount_whenDataValid() {
+    void shouldThrowAccountConfirmationException_whenUserAttachedToTokenDoesNotExist() {
 
-        var registrationDO = new RegistrationDO( TEST_VALID_EMAIL, TEST_VALID_USERNAME, TEST_VALID_PASSWORD, TEST_VALID_PASSWORD );
+        // GIVEN
+        var accountDO = getDummyAccountDO();
+        var token = new VerificationTokenDO( TEST_TOKEN_ID, EMAIL_CONFIRMATION_TOKEN, accountDO, TEST_TOKEN, Instant.now().plus( 15, MINUTES ), true );
+        TEST_TOKEN_DATABASE.add( token );
 
-        underTest.registerNewAccount( registrationDO );
+        // THEN
+        assertThatThrownBy( () -> sut.confirmRegistration( TEST_TOKEN ) ).isInstanceOf( AccountConfirmationException.class );
+    }
+
+    @Test
+    void shouldThrowAccountConfirmationException_whenTokenExpired() {
+
+        // GIVEN
+        var accountDO = getDummyAccountDO();
+        TEST_ACCOUNT_DATABASE.add( accountDO );
+        var token = new VerificationTokenDO( TEST_TOKEN_ID, EMAIL_CONFIRMATION_TOKEN, accountDO, TEST_TOKEN, Instant.now().minus( 15, MINUTES ), true );
+        TEST_TOKEN_DATABASE.add( token );
+
+        // THEN
+        assertThatThrownBy( () -> sut.confirmRegistration( TEST_TOKEN ) ).isInstanceOf( AccountConfirmationException.class );
+    }
+
+    @Test
+    void shouldThrowNullPointerException_whenTryingToConfirmAccountAndTokenIsNull() {
+        assertThatThrownBy( () -> sut.confirmRegistration( null ) ).isInstanceOf( NullPointerException.class );
+    }
+
+    @Test
+    void shouldThrowNullPointerException_whenTryingToConfirmAccountAndTokenIsEmpty() {
+        assertThatThrownBy( () -> sut.confirmRegistration( EMPTY ) ).isInstanceOf( NullPointerException.class );
     }
 
     @Test
     void shouldThrowNullPointerException_whenRegistrationDOIsNull() {
-        assertThatThrownBy( () -> underTest.registerNewAccount( null ) ).isInstanceOf( NullPointerException.class );
+        assertThatThrownBy( () -> sut.registerNewAccount( null ) ).isInstanceOf( NullPointerException.class );
+    }
+
+    @Test
+    void shouldThrowNullPointerException_whenGeneratingConfirmationLinkAndAccountDOIsNull() {
+        assertThatThrownBy( () -> sut.generateConfirmationLink( null ) ).isInstanceOf( NullPointerException.class );
+    }
+
+    private AccountDO getDummyAccountDO() {
+        return AccountDO.builder()
+                .username( TEST_VALID_USERNAME )
+                .emailAddress( TEST_VALID_EMAIL )
+                .enabled( false )
+                .build();
     }
 }

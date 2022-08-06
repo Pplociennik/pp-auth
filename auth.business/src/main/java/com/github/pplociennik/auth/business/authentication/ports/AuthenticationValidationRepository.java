@@ -61,4 +61,15 @@ public interface AuthenticationValidationRepository {
      *         if the parameter is null.
      */
     boolean checkIfTokenActive( @NonNull String aToken );
+
+    /**
+     * Returns true if the specified token exists in the database. False otherwise.
+     *
+     * @param aToken
+     *         a token to be checked
+     * @return true if the specified token exists in the database. False otherwise.
+     * @throws NullPointerException
+     *         if the parameter is null.
+     */
+    boolean checkIfTokenExists( @NonNull String aToken );
 }

@@ -34,6 +34,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.lang.NonNull;
 
 import static com.github.pplociennik.auth.business.authentication.domain.map.AccountMapper.mapToDto;
+import static com.github.pplociennik.util.utility.CustomObjects.requireNonEmpty;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -61,18 +62,36 @@ public class AuthenticationFacade {
      *         a registration data necessary for a new account creation. The data is being validated before the process starts.
      */
     public AccountDto registerNewAccount( @NonNull RegistrationDO aRegistrationDO ) {
+        requireNonNull( aRegistrationDO );
         validationService.validateRegistration( aRegistrationDO );
         var registeredAccount = mapToDto( authService.registerNewAccount( aRegistrationDO ) );
         publishEventOnRegistrationFinished( registeredAccount );
         return registeredAccount;
     }
 
-    public String createNewAccountConfirmationLink( @NonNull AccountDO aAccount ) {
-        validationService.validateConfirmationLinkGeneration( aAccount );
-        return authService.generateConfirmationLink( aAccount );
+    /**
+     * Returns a confirmation link for the specified account.
+     *
+     * @param aAccountDO
+     *         the account for which the confirmation link is going to be generated.
+     * @return the confirmation link as a {@link String}.
+     */
+    public String createNewAccountConfirmationLink( @NonNull AccountDO aAccountDO ) {
+        requireNonNull( aAccountDO );
+        validationService.validateConfirmationLinkGeneration( aAccountDO );
+        return authService.generateConfirmationLink( aAccountDO );
     }
 
+    /**
+     * Confirms (enables) the account if the specified token is valid.
+     *
+     * @param aToken
+     *         the verification token.
+     * @throws NullPointerException
+     *         when the token is null or empty.
+     */
     public void confirmRegistration( @NonNull String aToken ) {
+        requireNonEmpty( aToken );
         validationService.validateRegistrationConfirmation( aToken );
         authService.confirmRegistration( aToken );
     }

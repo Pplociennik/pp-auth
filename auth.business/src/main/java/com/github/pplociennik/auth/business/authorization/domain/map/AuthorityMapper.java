@@ -1,12 +1,15 @@
 package com.github.pplociennik.auth.business.authorization.domain.map;
 
 import com.github.pplociennik.auth.business.authentication.domain.map.AccountMapper;
+import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
 import com.github.pplociennik.auth.business.authorization.domain.model.AuthorityDO;
 import com.github.pplociennik.auth.db.entity.authentication.Account;
 import com.github.pplociennik.auth.db.entity.authorization.Authority;
 import org.springframework.lang.NonNull;
 
-import static java.util.Objects.requireNonNull;
+import java.util.Set;
+
+import static java.util.stream.Collectors.toUnmodifiableSet;
 
 /**
  * A mapper for authorities.
@@ -15,16 +18,27 @@ import static java.util.Objects.requireNonNull;
  */
 public class AuthorityMapper {
 
-    public static AuthorityDO mapToDomain( @NonNull Authority aAuthority ) {
-        requireNonNull( aAuthority );
+    public static AuthorityDO mapToDomain( Authority aAuthority ) {
         return AuthorityDO.builder()
                 .authorityName( aAuthority.getName() )
                 .owner( AccountMapper.mapToDomain( aAuthority.getAuthoritiesOwner() ) )
                 .build();
     }
 
-    public static Authority mapToEntity( @NonNull AuthorityDO aAuthorityDO, @NonNull Account aOwner ) {
-        requireNonNull( aAuthorityDO );
+    public static AuthorityDO mapToDomain( String aAuthorityName, AccountDO aOwner ) {
+        return AuthorityDO.builder()
+                .authorityName( aAuthorityName )
+                .owner( aOwner )
+                .build();
+    }
+
+    public static Set< AuthorityDO > mapToDomain( Set< String > aAuthoritiesNames, AccountDO aOwner ) {
+        return aAuthoritiesNames.stream()
+                .map( name -> mapToDomain( name, aOwner ) )
+                .collect( toUnmodifiableSet() );
+    }
+
+    public static Authority mapToEntity( AuthorityDO aAuthorityDO, @NonNull Account aOwner ) {
         return Authority.builder()
                 .name( aAuthorityDO.getAuthorityName() )
                 .authoritiesOwner( aOwner )
