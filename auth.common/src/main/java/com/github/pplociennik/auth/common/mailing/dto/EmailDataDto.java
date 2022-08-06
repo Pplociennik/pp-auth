@@ -1,4 +1,4 @@
-package com.github.pplociennik.auth.common.auth.dto.mailing;
+package com.github.pplociennik.auth.common.mailing.dto;
 
 import org.springframework.lang.NonNull;
 
@@ -13,7 +13,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @author Created by: Pplociennik at 30.06.2022 21:18
  */
-abstract class EmailDataDto implements Serializable {
+abstract class EmailDataDto implements AddressableDataDto {
 
     protected final String recipientAddress;
     protected final Locale locale;

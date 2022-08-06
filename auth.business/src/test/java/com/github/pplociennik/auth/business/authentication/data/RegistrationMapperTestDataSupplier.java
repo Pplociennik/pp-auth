@@ -24,7 +24,7 @@
 
 package com.github.pplociennik.auth.business.authentication.data;
 
-import com.github.pplociennik.auth.common.auth.dto.RegistrationDto;
+import auth.dto.RegistrationDto;
 
 /**
  * A data supplier for RegistrationMapperTest.

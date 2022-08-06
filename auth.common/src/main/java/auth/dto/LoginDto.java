@@ -22,29 +22,23 @@
  * SOFTWARE.
  */
 
-package com.github.pplociennik.auth.common.auth.dto;
+package auth.dto;
 
-import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.io.Serializable;
 
 /**
- * A Data Transfer Object representing data being used during the registration process.
+ * A Data Transfer Object representing data being used during the logging process.
  *
- * @author Created by: Pplociennik at 26.10.2021 19:01
+ * @author Created by: Pplociennik at 29.01.2022 22:47
  */
-@Getter
-@Builder
 @EqualsAndHashCode
-public class RegistrationDto implements Serializable {
-
-    private String email;
+@Getter
+public class LoginDto implements Serializable {
 
     private String username;
 
     private String password;
-
-    private String repeatedPassword;
 }

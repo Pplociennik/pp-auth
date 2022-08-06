@@ -1,4 +1,4 @@
-package com.github.pplociennik.auth.common.auth.dto;
+package auth.dto;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -37,10 +37,6 @@ public class AccountDto implements Serializable {
      * Account's unique username.
      */
     private String username;
-    /**
-     * Password.
-     */
-    private String password;
     /**
      * The property determines if account is enabled, or it isn't.
      */

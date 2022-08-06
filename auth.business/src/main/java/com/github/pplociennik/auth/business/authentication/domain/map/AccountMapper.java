@@ -24,12 +24,12 @@
 
 package com.github.pplociennik.auth.business.authentication.domain.map;
 
+import auth.dto.AccountDto;
 import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
 import com.github.pplociennik.auth.business.authentication.domain.model.AccountSecurityCoreDO;
 import com.github.pplociennik.auth.business.authorization.domain.map.AuthorityMapper;
 import com.github.pplociennik.auth.business.authorization.domain.model.AuthorityDO;
 import com.github.pplociennik.auth.business.authorization.domain.model.AuthorityDetails;
-import com.github.pplociennik.auth.common.auth.dto.AccountDto;
 import com.github.pplociennik.auth.db.entity.authentication.Account;
 import com.github.pplociennik.auth.db.entity.authorization.Authority;
 import org.springframework.lang.NonNull;
@@ -63,9 +63,9 @@ public class AccountMapper {
 
         var account = Account.builder()
                 .emailAddress( aAccountDO.getEmailAddress() )
-                .password( aAccountDO.getPassword() )
                 .accountNonExpired( aAccountDO.isAccountNonExpired() )
                 .accountNonLocked( aAccountDO.isAccountNonLocked() )
+                .password( aAccountDO.getPassword() )
                 .username( aAccountDO.getUsername() )
                 .credentialsNonExpired( aAccountDO.isCredentialsNonExpired() )
                 .authorities( authorities )
@@ -85,7 +85,6 @@ public class AccountMapper {
         var accountDO = AccountDO.builder()
                 .accountNonExpired( aAccount.isAccountNonExpired() )
                 .accountNonLocked( aAccount.isAccountNonLocked() )
-                .password( aAccount.getPassword() )
                 .enabled( aAccount.isEnabled() )
                 .emailAddress( aAccount.getEmailAddress() )
                 .username( aAccount.getUsername() )
@@ -115,7 +114,6 @@ public class AccountMapper {
                 .emailAddress( aDto.getEmailAddress() )
                 .enabled( aDto.isEnabled() )
                 .credentialsNonExpired( aDto.isCredentialsNonExpired() )
-                .password( aDto.getPassword() )
                 .username( aDto.getUsername() )
                 .build();
 
@@ -128,7 +126,6 @@ public class AccountMapper {
 
         return AccountDto.builder()
                 .emailAddress( aAccountDO.getEmailAddress() )
-                .password( aAccountDO.getPassword() )
                 .accountNonExpired( aAccountDO.isAccountNonExpired() )
                 .accountNonLocked( aAccountDO.isAccountNonLocked() )
                 .authorities( getAuthoritiesNames( aAccountDO ) )

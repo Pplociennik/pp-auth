@@ -1,9 +1,13 @@
 package com.github.pplociennik.auth.business.authentication.domain.model;
 
-import com.github.pplociennik.auth.common.auth.AuthVerificationTokenType;
-import lombok.*;
+import auth.AuthVerificationTokenType;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.time.Instant;
+import java.time.ZoneId;
 
 /**
  * A Domain Object being a representation of the verification token.
@@ -11,7 +15,6 @@ import java.time.Instant;
  * @author Created by: Pplociennik at 01.07.2022 14:05
  */
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode
@@ -22,5 +25,20 @@ public class VerificationTokenDO {
     private AccountDO owner;
     private String token;
     private Instant expirationDate;
+    private ZoneId zoneId;
     private boolean isActive;
+
+    public VerificationTokenDO( long aId, AuthVerificationTokenType aType, AccountDO aOwner, String aToken, Instant aExpirationDate, boolean aIsActive ) {
+        this( aId, aType, aOwner, aToken, aExpirationDate, ZoneId.systemDefault(), aIsActive );
+    }
+
+    public VerificationTokenDO( long aId, AuthVerificationTokenType aType, AccountDO aOwner, String aToken, Instant aExpirationDate, ZoneId aZoneId, boolean aIsActive ) {
+        id = aId;
+        type = aType;
+        owner = aOwner;
+        token = aToken;
+        expirationDate = aExpirationDate;
+        zoneId = aZoneId;
+        isActive = aIsActive;
+    }
 }

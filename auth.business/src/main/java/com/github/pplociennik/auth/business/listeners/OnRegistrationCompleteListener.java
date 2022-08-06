@@ -1,14 +1,16 @@
-package com.github.pplociennik.auth.business.shared.listeners;
+package com.github.pplociennik.auth.business.listeners;
 
+import auth.dto.AccountDto;
 import com.github.pplociennik.auth.business.authentication.AuthenticationFacade;
 import com.github.pplociennik.auth.business.mailing.EmailFacade;
 import com.github.pplociennik.auth.business.shared.events.OnRegistrationCompleteEvent;
-import com.github.pplociennik.auth.common.auth.dto.AccountDto;
-import com.github.pplociennik.auth.common.auth.dto.mailing.EmailConfirmationDataDto;
+import com.github.pplociennik.auth.common.mailing.dto.EmailConfirmationDataDto;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.lang.NonNull;
 
 import static com.github.pplociennik.auth.business.authentication.domain.map.AccountMapper.mapToDomain;
+import static com.github.pplociennik.auth.business.listeners.ListenerParametersUtil.getSourceOfTheProperType;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -21,6 +23,7 @@ class OnRegistrationCompleteListener implements ApplicationListener< OnRegistrat
     private final AuthenticationFacade authenticationFacade;
     private final EmailFacade emailFacade;
 
+    @Autowired
     OnRegistrationCompleteListener( @NonNull AuthenticationFacade aAuthenticationFacade, @NonNull EmailFacade aEmailFacade ) {
         authenticationFacade = requireNonNull( aAuthenticationFacade );
         emailFacade = requireNonNull( aEmailFacade );
@@ -31,8 +34,10 @@ class OnRegistrationCompleteListener implements ApplicationListener< OnRegistrat
 
         requireNonNull( event );
 
-        var accountDto = ( ( AccountDto ) event.getSource() );
         var locale = event.getLocale();
+        var source = event.getSource();
+
+        var accountDto = getSourceOfTheProperType( source, AccountDto.class );
 
         var recipientAddress = accountDto.getEmailAddress();
         var confirmationLink = authenticationFacade.createNewAccountConfirmationLink( mapToDomain( accountDto ) );

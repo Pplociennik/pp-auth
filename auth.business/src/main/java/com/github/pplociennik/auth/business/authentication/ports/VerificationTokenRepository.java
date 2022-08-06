@@ -27,4 +27,13 @@ public interface VerificationTokenRepository {
      * @return domain object.
      */
     VerificationTokenDO save( @NonNull VerificationTokenDO aVerificationToken );
+
+    /**
+     * Updates the specified VerificationToken in the database.
+     *
+     * @param aVerificationTokenDO
+     *         a verification token domain object.
+     * @return domain object.
+     */
+    VerificationTokenDO update( @NonNull VerificationTokenDO aVerificationTokenDO );
 }

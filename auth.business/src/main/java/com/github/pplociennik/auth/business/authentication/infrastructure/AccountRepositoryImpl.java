@@ -59,7 +59,7 @@ class AccountRepositoryImpl implements AccountRepository {
         requireNonNull( aAccountDO );
 
         var account = mapToEntity( aAccountDO );
-        return mapToDomain( accountDao.save( account ) );
+        return mapToDomain( accountDao.saveAndFlush( account ) );
     }
 
     /**
@@ -87,7 +87,7 @@ class AccountRepositoryImpl implements AccountRepository {
     @Override
     public boolean existsAccountByEmailAddress( @NonNull String aEmail ) {
         requireNonNull( aEmail );
-        return accountDao.existsAccountByUsername( aEmail );
+        return accountDao.existsAccountByEmailAddress( aEmail );
     }
 
     /**
@@ -97,13 +97,14 @@ class AccountRepositoryImpl implements AccountRepository {
      *         an account to be updated.
      */
     @Override
-    public void enableAccount( @NonNull AccountDO aAccount ) {
+    public AccountDO enableAccount( @NonNull AccountDO aAccount ) {
         requireNonNull( aAccount );
 
         var account = accountDao.findAccountByEmailAddress( aAccount.getEmailAddress() );
         var toUpdate = account.orElseThrow( () -> new AccountConfirmationException( ACCOUNT_CONFIRMATION_USER_NOT_EXISTS ) );
         toUpdate.setEnabled( true );
 
-        accountDao.save( toUpdate );
+        var enabledAccount = accountDao.save( toUpdate );
+        return mapToDomain( enabledAccount );
     }
 }

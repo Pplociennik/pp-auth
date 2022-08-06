@@ -24,10 +24,11 @@
 
 package com.github.pplociennik.auth.business.authentication;
 
+import auth.dto.AccountDto;
 import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
 import com.github.pplociennik.auth.business.authentication.domain.model.RegistrationDO;
+import com.github.pplociennik.auth.business.shared.events.OnAccountConfirmationCompleteEvent;
 import com.github.pplociennik.auth.business.shared.events.OnRegistrationCompleteEvent;
-import com.github.pplociennik.auth.common.auth.dto.AccountDto;
 import com.github.pplociennik.util.utility.LanguageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -93,13 +94,21 @@ public class AuthenticationFacade {
     public void confirmRegistration( @NonNull String aToken ) {
         requireNonEmpty( aToken );
         validationService.validateRegistrationConfirmation( aToken );
-        authService.confirmRegistration( aToken );
+        var enabledAccount = mapToDto( authService.confirmRegistration( aToken ) );
+        publishEventOnAccountConfirmationFinished( enabledAccount );
     }
 
     private void publishEventOnRegistrationFinished( @NonNull AccountDto aRegisteredAccount ) {
         requireNonNull( aRegisteredAccount );
 
         var event = new OnRegistrationCompleteEvent( aRegisteredAccount, LanguageUtil.getLocale() );
+        eventPublisher.publishEvent( event );
+    }
+
+    private void publishEventOnAccountConfirmationFinished( @NonNull AccountDto aEnabledAccount ) {
+        requireNonNull( aEnabledAccount );
+
+        var event = new OnAccountConfirmationCompleteEvent( aEnabledAccount, LanguageUtil.getLocale() );
         eventPublisher.publishEvent( event );
     }
 }

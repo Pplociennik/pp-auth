@@ -11,7 +11,7 @@ import static com.github.pplociennik.util.utility.CustomObjects.requireNonEmpty;
  *
  * @author Created by: Pplociennik at 30.06.2022 21:31
  */
-public final class EmailConfirmationDataDO extends EmailDataDO implements AddressableDataDO {
+public final class EmailConfirmationDataDO extends EmailDataDO {
 
     private final String confirmationLink;
 

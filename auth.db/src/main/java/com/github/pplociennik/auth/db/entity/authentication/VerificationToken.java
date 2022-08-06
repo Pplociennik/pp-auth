@@ -1,6 +1,6 @@
 package com.github.pplociennik.auth.db.entity.authentication;
 
-import com.github.pplociennik.auth.common.auth.AuthVerificationTokenType;
+import auth.AuthVerificationTokenType;
 import lombok.*;
 
 import javax.persistence.*;

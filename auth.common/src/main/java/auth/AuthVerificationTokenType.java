@@ -1,4 +1,4 @@
-package com.github.pplociennik.auth.common.auth;
+package auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

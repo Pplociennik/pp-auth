@@ -2,6 +2,7 @@ package com.github.pplociennik.auth.business.mailing;
 
 import com.github.pplociennik.auth.business.mailing.domain.model.AddressableDataDO;
 import com.github.pplociennik.auth.business.mailing.domain.model.EmailConfirmationDataDO;
+import com.github.pplociennik.auth.business.mailing.domain.model.WelcomeEmailDataDO;
 import com.github.pplociennik.auth.common.lang.AuthResEmailMsgTranslationKey;
 import com.github.pplociennik.auth.common.lang.AuthResUnitTranslationKey;
 import lombok.AllArgsConstructor;
@@ -12,9 +13,9 @@ import org.thymeleaf.context.Context;
 import java.util.Locale;
 import java.util.Optional;
 
-import static com.github.pplociennik.auth.common.lang.AuthResEmailMsgTranslationKey.EMAIL_ACCOUNT_CONFIRMATION_DISCLAIMER;
-import static com.github.pplociennik.auth.common.lang.AuthResEmailMsgTranslationKey.EMAIL_ACCOUNT_CONFIRMATION_MESSAGE;
+import static com.github.pplociennik.auth.common.lang.AuthResEmailMsgTranslationKey.*;
 import static com.github.pplociennik.auth.common.lang.AuthResUnitTranslationKey.MINUTES;
+import static com.github.pplociennik.util.utility.CustomObjects.arrayOf;
 import static com.github.pplociennik.util.utility.LanguageUtil.getLocalizedMessage;
 import static java.util.Objects.requireNonNull;
 
@@ -44,6 +45,24 @@ enum EmailContentDataCreationStrategy {
             return EmailContentData.of( context, getTemplateFile(), locale );
         }
 
+    },
+
+    WELCOME_EMAIL_MESSAGE( "welcomeEmailTemplate" ) {
+        @Override
+        EmailContentData prepare( AddressableDataDO aDataDO ) {
+            requireNonNull( aDataDO );
+
+            var emailData = getProperTypeOfDataDO( aDataDO, WelcomeEmailDataDO.class );
+            var locale = emailData.getLocale();
+
+            var context = new Context();
+
+            context.setVariable( "welcome", getLocalizedMessage( WELCOME_EMAIL_WELCOME, locale, arrayOf( emailData.getUsername() ) ) );
+            context.setVariable( "welcome_text", getLocalizedMessage( WELCOME_EMAIL_WELCOME_TEXT, locale ) );
+            context.setVariable( "regards", getLocalizedMessage( WELCOME_EMAIL_REGARDS, locale ) );
+
+            return EmailContentData.of( context, getTemplateFile(), locale );
+        }
     };
 
     private final String templateFile;

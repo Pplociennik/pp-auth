@@ -24,12 +24,12 @@
 
 package com.github.pplociennik.auth.business.authentication;
 
+import auth.dto.AccountDto;
 import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
 import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryAccountRepository;
 import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryAuthenticationValidationRepository;
 import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryVerificationTokenRepository;
 import com.github.pplociennik.auth.business.shared.system.EnvironmentPropertiesProvider;
-import com.github.pplociennik.auth.common.auth.dto.AccountDto;
 import com.github.pplociennik.util.utility.LanguageUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -106,7 +106,6 @@ class AuthenticationFacadeTest {
             // THEN
             final var expectedAccount = AccountDto.builder()
                     .username( registrationDO.getUsername() )
-                    .password( hashedPass )
                     .emailAddress( registrationDO.getEmail() )
                     .accountNonExpired( true )
                     .accountNonLocked( true )

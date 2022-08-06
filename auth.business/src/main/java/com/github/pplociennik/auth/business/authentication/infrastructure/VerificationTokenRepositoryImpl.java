@@ -46,4 +46,17 @@ class VerificationTokenRepositoryImpl implements VerificationTokenRepository {
         var verificationTokenEntity = mapToEntity( aVerificationToken, owner );
         return mapToDomain( verificationTokenDao.save( verificationTokenEntity ) );
     }
+
+    @Override
+    public VerificationTokenDO update( @NonNull VerificationTokenDO aVerificationTokenDO ) {
+        requireNonNull( aVerificationTokenDO );
+
+        var token = verificationTokenDao.findByToken( aVerificationTokenDO.getToken() );
+        var toUpdate = token.orElseThrow();
+
+        toUpdate.setActive( aVerificationTokenDO.isActive() );
+        toUpdate.setType( aVerificationTokenDO.getType() );
+
+        return mapToDomain( verificationTokenDao.save( toUpdate ) );
+    }
 }

@@ -1,7 +1,7 @@
 package com.github.pplociennik.auth.e2e.it.data;
 
 import com.github.pplociennik.auth.business.mailing.EmailFacade;
-import com.github.pplociennik.auth.common.auth.dto.mailing.EmailConfirmationDataDto;
+import com.github.pplociennik.auth.common.mailing.dto.EmailConfirmationDataDto;
 
 import java.util.Locale;
 

@@ -1,7 +1,9 @@
 package com.github.pplociennik.auth.business.mailing.domain.map;
 
 import com.github.pplociennik.auth.business.mailing.domain.model.EmailConfirmationDataDO;
-import com.github.pplociennik.auth.common.auth.dto.mailing.EmailConfirmationDataDto;
+import com.github.pplociennik.auth.business.mailing.domain.model.WelcomeEmailDataDO;
+import com.github.pplociennik.auth.common.mailing.dto.EmailConfirmationDataDto;
+import com.github.pplociennik.auth.common.mailing.dto.WelcomeEmailDataDto;
 import org.springframework.lang.NonNull;
 
 import java.util.Objects;
@@ -21,5 +23,15 @@ public class MailingMapper {
         var locale = aDto.getLocale();
 
         return new EmailConfirmationDataDO( recipientAddress, confirmationLink, locale );
+    }
+
+    public static WelcomeEmailDataDO mapToDO( @NonNull WelcomeEmailDataDto aDto ) {
+        Objects.requireNonNull( aDto );
+
+        var recipientAddress = aDto.getRecipientAddress();
+        var username = aDto.getUsername();
+        var locale = aDto.getLocale();
+
+        return new WelcomeEmailDataDO( recipientAddress, locale, username );
     }
 }

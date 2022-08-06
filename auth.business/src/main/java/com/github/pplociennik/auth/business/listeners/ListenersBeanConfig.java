@@ -1,4 +1,4 @@
-package com.github.pplociennik.auth.business.shared.listeners;
+package com.github.pplociennik.auth.business.listeners;
 
 import com.github.pplociennik.auth.business.authentication.AuthenticationFacade;
 import com.github.pplociennik.auth.business.mailing.EmailFacade;
@@ -19,13 +19,18 @@ class ListenersBeanConfig {
     private final AuthenticationFacade authenticationFacade;
     private final EmailFacade emailFacade;
 
-    public ListenersBeanConfig( @NonNull AuthenticationFacade aAuthenticationFacade, @NonNull EmailFacade aEmailFacade ) {
+    ListenersBeanConfig( @NonNull AuthenticationFacade aAuthenticationFacade, @NonNull EmailFacade aEmailFacade ) {
         authenticationFacade = requireNonNull( aAuthenticationFacade );
         emailFacade = requireNonNull( aEmailFacade );
     }
 
     @Bean
-    public OnRegistrationCompleteListener registrationListener() {
+    OnRegistrationCompleteListener registrationListener() {
         return new OnRegistrationCompleteListener( authenticationFacade, emailFacade );
+    }
+
+    @Bean
+    OnAccountConfirmationCompleteListener confirmationListener() {
+        return new OnAccountConfirmationCompleteListener( emailFacade );
     }
 }

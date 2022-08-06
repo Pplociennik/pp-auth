@@ -44,4 +44,9 @@ public class InMemoryVerificationTokenRepository implements VerificationTokenRep
         database.add( aVerificationToken );
         return aVerificationToken;
     }
+
+    @Override
+    public VerificationTokenDO update( VerificationTokenDO aVerificationTokenDO ) {
+        return null;
+    }
 }

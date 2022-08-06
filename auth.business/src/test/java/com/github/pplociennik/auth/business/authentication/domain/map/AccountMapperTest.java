@@ -24,9 +24,9 @@
 
 package com.github.pplociennik.auth.business.authentication.domain.map;
 
+import auth.dto.AccountDto;
 import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
 import com.github.pplociennik.auth.business.authorization.domain.model.AuthorityDO;
-import com.github.pplociennik.auth.common.auth.dto.AccountDto;
 import com.github.pplociennik.auth.db.entity.authentication.Account;
 import com.github.pplociennik.auth.db.entity.authorization.Authority;
 import org.junit.jupiter.api.Test;
@@ -73,7 +73,6 @@ class AccountMapperTest {
 
         // GIVEN
         var username = "TEST_USERNAME";
-        var password = "TEST_PASSWORD";
         var email = "test@email.com";
         var enabled = true;
         var nonLocked = true;
@@ -82,7 +81,6 @@ class AccountMapperTest {
         var authoritiesDOs = prepareTestAuthoritiesDOs();
         var accountDO = AccountDO.builder()
                 .username( username )
-                .password( password )
                 .emailAddress( email )
                 .accountNonLocked( nonLocked )
                 .accountNonExpired( nonExpired )
@@ -99,7 +97,6 @@ class AccountMapperTest {
         var authorities = prepareTestAuthorities();
         var expectedAccount = Account.builder()
                 .username( username )
-                .password( password )
                 .emailAddress( email )
                 .accountNonLocked( nonLocked )
                 .accountNonExpired( nonExpired )
@@ -116,7 +113,6 @@ class AccountMapperTest {
 
         // GIVEN
         var username = "TEST_USERNAME";
-        var password = "TEST_PASSWORD";
         var email = "test@email.com";
         var enabled = true;
         var nonLocked = true;
@@ -125,7 +121,6 @@ class AccountMapperTest {
         var authorities = prepareTestAuthorities();
         var account = Account.builder()
                 .username( username )
-                .password( password )
                 .emailAddress( email )
                 .accountNonLocked( nonLocked )
                 .accountNonExpired( nonExpired )
@@ -142,7 +137,6 @@ class AccountMapperTest {
         var authoritiesDOs = prepareTestAuthoritiesDOs();
         var expectedAccountDO = AccountDO.builder()
                 .username( username )
-                .password( password )
                 .emailAddress( email )
                 .accountNonLocked( nonLocked )
                 .accountNonExpired( nonExpired )
@@ -159,7 +153,6 @@ class AccountMapperTest {
 
         // GIVEN
         var username = "TEST_USERNAME";
-        var password = "TEST_PASSWORD";
         var email = "test@email.com";
         var enabled = true;
         var nonLocked = true;
@@ -168,7 +161,6 @@ class AccountMapperTest {
         var authorities = prepareTestAuthoritiesDto();
         var accountDto = AccountDto.builder()
                 .username( username )
-                .password( password )
                 .emailAddress( email )
                 .accountNonLocked( nonLocked )
                 .accountNonExpired( nonExpired )
@@ -184,7 +176,6 @@ class AccountMapperTest {
         var authoritiesDOs = prepareTestAuthoritiesDOs();
         var expectedAccountDO = AccountDO.builder()
                 .username( username )
-                .password( password )
                 .emailAddress( email )
                 .accountNonLocked( nonLocked )
                 .accountNonExpired( nonExpired )
@@ -201,7 +192,6 @@ class AccountMapperTest {
 
         // GIVEN
         var username = "TEST_USERNAME";
-        var password = "TEST_PASSWORD";
         var email = "test@email.com";
         var enabled = true;
         var nonLocked = true;
@@ -210,7 +200,6 @@ class AccountMapperTest {
         var authoritiesDOs = prepareTestAuthoritiesDOs();
         var accountDO = AccountDO.builder()
                 .username( username )
-                .password( password )
                 .emailAddress( email )
                 .accountNonLocked( nonLocked )
                 .accountNonExpired( nonExpired )
@@ -227,7 +216,6 @@ class AccountMapperTest {
         var authorities = prepareTestAuthoritiesDto();
         var expectedAAccountDto = AccountDto.builder()
                 .username( username )
-                .password( password )
                 .emailAddress( email )
                 .accountNonLocked( nonLocked )
                 .accountNonExpired( nonExpired )

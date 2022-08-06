@@ -94,7 +94,9 @@ public class InMemoryAccountRepository implements AccountRepository {
     }
 
     @Override
-    public void enableAccount( @NonNull AccountDO aAccountToBeConfirmed ) {
+    public AccountDO enableAccount( @NonNull AccountDO aAccountToBeConfirmed ) {
         requireNonNull( aAccountToBeConfirmed );
+        return null;
+        // TODO: add tests and fix this!!!
     }
 }

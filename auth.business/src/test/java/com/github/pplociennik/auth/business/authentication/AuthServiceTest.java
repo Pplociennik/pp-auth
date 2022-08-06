@@ -38,7 +38,7 @@ import java.time.Instant;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.github.pplociennik.auth.common.auth.AuthVerificationTokenType.EMAIL_CONFIRMATION_TOKEN;
+import static auth.AuthVerificationTokenType.EMAIL_CONFIRMATION_TOKEN;
 import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.assertj.core.api.Assertions.assertThat;

@@ -4,7 +4,7 @@ import com.github.pplociennik.auth.business.authentication.domain.model.AccountD
 import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryVerificationTokenRepository;
 import org.junit.jupiter.api.Test;
 
-import static com.github.pplociennik.auth.common.auth.AuthVerificationTokenType.EMAIL_CONFIRMATION_TOKEN;
+import static auth.AuthVerificationTokenType.EMAIL_CONFIRMATION_TOKEN;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
