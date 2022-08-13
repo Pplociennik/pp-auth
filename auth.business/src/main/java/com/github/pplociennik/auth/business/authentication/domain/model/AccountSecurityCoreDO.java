@@ -31,6 +31,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * A class being the implementation of the {@link UserDetails} interface being responsible for managing the users' information.
@@ -42,33 +43,39 @@ import java.util.Collection;
 public class AccountSecurityCoreDO implements UserDetails {
 
     /**
-     * The property determines if account is expired, or it isn't.
-     */
-    private boolean accountNonExpired;
-    /**
-     * The property determines if credentials are expired, or they're not.
-     */
-    private boolean credentialsNonExpired;
-    /**
-     * The property determines if account is locked, or it isn't.
-     */
-    private boolean accountNonLocked;
-    /**
      * Account's unique username.
      */
     private String username;
+
     /**
      * Password.
      */
     private String password;
+
     /**
      * The property determines if account is enabled, or it isn't.
      */
     private boolean enabled;
+
+    /**
+     * The property determines if account is expired, or it isn't.
+     */
+    private boolean accountNonExpired;
+
+    /**
+     * The property determines if credentials are expired, or they're not.
+     */
+    private boolean credentialsNonExpired;
+
+    /**
+     * The property determines if account is locked, or it isn't.
+     */
+    private boolean accountNonLocked;
+
     /**
      * Account's authorities.
      */
-    private Collection< AuthorityDetails > authorities;
+    private List< AuthorityDetails > authorities;
 
 
     @Override

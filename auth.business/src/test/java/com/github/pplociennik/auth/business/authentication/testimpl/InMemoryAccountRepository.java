@@ -25,7 +25,7 @@
 package com.github.pplociennik.auth.business.authentication.testimpl;
 
 import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
-import com.github.pplociennik.auth.business.authentication.ports.AccountRepository;
+import com.github.pplociennik.auth.business.authentication.ports.inside.AccountRepository;
 import org.springframework.lang.NonNull;
 
 import java.util.LinkedList;
@@ -65,7 +65,7 @@ public class InMemoryAccountRepository implements AccountRepository {
     }
 
     @Override
-    public AccountDO save( @NonNull AccountDO aAccount ) {
+    public AccountDO update( @NonNull AccountDO aAccount ) {
         requireNonNull( aAccount );
         database.add( aAccount );
         return aAccount;

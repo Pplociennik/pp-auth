@@ -170,7 +170,7 @@ class AccountMapperTest {
                 .build();
 
         // WHEN
-        var result = AccountMapper.mapToDomain( accountDto );
+        var result = AccountMapper.mapToDto( accountDto );
 
         // THEN
         var authoritiesDOs = prepareTestAuthoritiesDOs();

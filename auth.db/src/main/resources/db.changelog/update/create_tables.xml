@@ -32,7 +32,10 @@
     <!--                                        ### Authentication ###                                               -->
     <!-- ########################################################################################################### -->
 
-    <changeSet id="2021.09.27 19:03:00" author="pplociennik" dbms="mssql" context="ctx.auth">
+    <property name="DATE_TIME_WITH_ZONE">VARCHAR(60)</property>
+
+    <changeSet id="2021.09.27 19:03:00" author="pplociennik" dbms="mssql"
+               context="ctx.auth">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="AUTH_ACCOUNTS"/>
@@ -51,6 +54,10 @@
             <column name="PASSWORD" type="CHAR(60)">
                 <constraints nullable="false"/>
             </column>
+            <column name="CREATION_DATE" type="${DATE_TIME_WITH_ZONE}">
+                <constraints nullable="false" updatable="false"/>
+            </column>
+            <column name="LAST_LOGIN_DATE" type="${DATE_TIME_WITH_ZONE}"/>
             <column name="ENABLED" type="BOOLEAN">
                 <constraints nullable="false"/>
             </column>
@@ -64,10 +71,12 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-        <comment>Creates a table AUTH_USERS for authentication data storing.</comment>
+        <comment>Creates a table AUTH_USERS for authentication data storing.
+        </comment>
     </changeSet>
 
-    <changeSet id="2021.10.15 18:24:00" author="pplociennik" dbms="h2" context="ctx.auth">
+    <changeSet id="2021.10.15 18:24:00" author="pplociennik" dbms="h2"
+               context="ctx.auth">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="AUTH_ACCOUNTS"/>
@@ -86,6 +95,10 @@
             <column name="PASSWORD" type="CHAR(76)">
                 <constraints nullable="false"/>
             </column>
+            <column name="CREATION_DATE" type="${DATE_TIME_WITH_ZONE}">
+                <constraints nullable="false" updatable="false"/>
+            </column>
+            <column name="LAST_LOGIN_DATE" type="${DATE_TIME_WITH_ZONE}"/>
             <column name="ENABLED" type="BOOLEAN">
                 <constraints nullable="false"/>
             </column>
@@ -99,12 +112,14 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-        <comment>Creates a table AUTH_USERS for authentication data storing.</comment>
+        <comment>Creates a table AUTH_USERS for authentication data storing.
+        </comment>
     </changeSet>
 
     <!-- Tokens -->
 
-    <changeSet id="2022.07.01 13:33:00" author="pplociennik" dbms="mssql" context="ctx.auth">
+    <changeSet id="2022.07.01 13:33:00" author="pplociennik" dbms="mssql"
+               context="ctx.auth">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="AUTH_TOKENS"/>
@@ -120,21 +135,24 @@
             <column name="TOKEN_VALUE" type="VARCHAR(76)">
                 <constraints nullable="false" unique="true"/>
             </column>
-            <column name="EXPIRATION_DATETIME" type="VARCHAR(60)">
+            <column name="EXPIRATION_DATETIME" type="${DATE_TIME_WITH_ZONE}">
                 <constraints nullable="false"/>
             </column>
             <column name="IS_ACTIVE" type="BIT">
                 <constraints nullable="false"/>
             </column>
-            <column name="TOKEN_OWNER" type="BIGINT">
-                <constraints nullable="false" foreignKeyName="FOREIGN_KEY_TOKEN_OWNER"
+            <column name="OWNER_ID" type="BIGINT">
+                <constraints nullable="false"
+                             foreignKeyName="FOREIGN_KEY_OWNER_ID"
                              references="AUTH_ACCOUNTS(ID)"/>
             </column>
         </createTable>
-        <comment>Creates a table AUTH_TOKENS for authentication data storing.</comment>
+        <comment>Creates a table AUTH_TOKENS for authentication data storing.
+        </comment>
     </changeSet>
 
-    <changeSet id="2022.07.01 13:45:00" author="pplociennik" dbms="h2" context="ctx.auth">
+    <changeSet id="2022.07.01 13:45:00" author="pplociennik" dbms="h2"
+               context="ctx.auth">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="AUTH_TOKENS"/>
@@ -150,25 +168,28 @@
             <column name="TOKEN_VALUE" type="VARCHAR(76)">
                 <constraints nullable="false" unique="true"/>
             </column>
-            <column name="EXPIRATION_DATETIME" type="VARCHAR(60)">
+            <column name="EXPIRATION_DATETIME" type="${DATE_TIME_WITH_ZONE}">
                 <constraints nullable="false"/>
             </column>
             <column name="IS_ACTIVE" type="BIT">
                 <constraints nullable="false"/>
             </column>
-            <column name="TOKEN_OWNER" type="BIGINT">
-                <constraints nullable="false" foreignKeyName="FOREIGN_KEY_TOKEN_OWNER"
+            <column name="OWNER_ID" type="BIGINT">
+                <constraints nullable="false"
+                             foreignKeyName="FOREIGN_KEY_OWNER_ID"
                              references="AUTH_ACCOUNTS(ID)"/>
             </column>
         </createTable>
-        <comment>Creates a table AUTH_TOKENS for authentication data storing.</comment>
+        <comment>Creates a table AUTH_TOKENS for authentication data storing.
+        </comment>
     </changeSet>
 
     <!-- ########################################################################################################### -->
     <!--                                        ### Authorization ###                                                -->
     <!-- ########################################################################################################### -->
 
-    <changeSet id="2021.09.17 22:06:00" author="pplociennik" dbms="mssql" context="ctx.auth">
+    <changeSet id="2021.09.17 22:06:00" author="pplociennik" dbms="mssql"
+               context="ctx.auth">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="AUTH_AUTHORITIES"/>
@@ -181,15 +202,19 @@
             <column name="AUTHORITY_NAME" type="VARCHAR(15)">
                 <constraints nullable="false" unique="true"/>
             </column>
-            <column name="AUTHORITIES_OWNER" type="BIGINT">
-                <constraints nullable="false" foreignKeyName="FOREIGN_KEY_AUTHORITY_OWNER"
+            <column name="OWNER_ID" type="BIGINT">
+                <constraints nullable="false"
+                             foreignKeyName="FOREIGN_KEY_OWNER_ID"
                              references="AUTH_ACCOUNTS(ID)"/>
             </column>
         </createTable>
-        <comment>Creates a table AUTH_AUTHORITIES for authorization data storing.</comment>
+        <comment>Creates a table AUTH_AUTHORITIES for authorization data
+            storing.
+        </comment>
     </changeSet>
 
-    <changeSet id="2021.10.15 18:24:10" author="pplociennik" dbms="h2" context="ctx.auth">
+    <changeSet id="2021.10.15 18:24:10" author="pplociennik" dbms="h2"
+               context="ctx.auth">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="AUTH_AUTHORITIES"/>
@@ -202,17 +227,21 @@
             <column name="AUTHORITY_NAME" type="VARCHAR(15)">
                 <constraints nullable="false" unique="true"/>
             </column>
-            <column name="AUTHORITIES_OWNER" type="BIGINT">
-                <constraints nullable="false" foreignKeyName="FOREIGN_KEY_AUTHORITY_OWNER"
+            <column name="OWNER_ID" type="BIGINT">
+                <constraints nullable="false"
+                             foreignKeyName="FOREIGN_KEY_OWNER_ID"
                              references="AUTH_ACCOUNTS(ID)"/>
             </column>
         </createTable>
-        <comment>Creates a table AUTH_AUTHORITIES for authorization data storing.</comment>
+        <comment>Creates a table AUTH_AUTHORITIES for authorization data
+            storing.
+        </comment>
     </changeSet>
 
     <!-- ACL -->
 
-    <changeSet id="2022.02.01 22:10:00" author="pplociennik" dbms="mssql" context="ctx.auth">
+    <changeSet id="2022.02.01 22:10:00" author="pplociennik" dbms="mssql"
+               context="ctx.auth">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="ACL_CLASS"/>
@@ -226,10 +255,12 @@
                 <constraints nullable="false" unique="true"/>
             </column>
         </createTable>
-        <comment>Creates a table ACL_CLASS for authorization data storing.</comment>
+        <comment>Creates a table ACL_CLASS for authorization data storing.
+        </comment>
     </changeSet>
 
-    <changeSet id="2022.02.01 22:16:00" author="pplociennik" dbms="mssql" context="ctx.auth">
+    <changeSet id="2022.02.01 22:16:00" author="pplociennik" dbms="mssql"
+               context="ctx.auth">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="ACL_SID"/>
@@ -246,10 +277,12 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-        <comment>Creates a table ACL_SID for authorization data storing.</comment>
+        <comment>Creates a table ACL_SID for authorization data storing.
+        </comment>
     </changeSet>
 
-    <changeSet id="2022.02.01 22:20:00" author="pplociennik" dbms="mssql" context="ctx.auth">
+    <changeSet id="2022.02.01 22:20:00" author="pplociennik" dbms="mssql"
+               context="ctx.auth">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="ACL_OBJECT_IDENTITY"/>
@@ -290,10 +323,13 @@
                                  baseColumnNames="OWNER_SID"
                                  referencedTableName="ACL_SID"
                                  referencedColumnNames="ID"/>
-        <comment>Creates a table ACL_OBJECT_IDENTITY for authorization data storing.</comment>
+        <comment>Creates a table ACL_OBJECT_IDENTITY for authorization data
+            storing.
+        </comment>
     </changeSet>
 
-    <changeSet id="2022.02.01 22:36:00" author="pplociennik" dbms="mssql" context="ctx.auth">
+    <changeSet id="2022.02.01 22:36:00" author="pplociennik" dbms="mssql"
+               context="ctx.auth">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="ACL_ENTRY"/>
@@ -335,11 +371,13 @@
                                  baseColumnNames="SID"
                                  referencedTableName="ACL_SID"
                                  referencedColumnNames="ID"/>
-        <comment>Creates a table ACL_ENTRY for authorization data storing.</comment>
+        <comment>Creates a table ACL_ENTRY for authorization data storing.
+        </comment>
     </changeSet>
 
 
-    <changeSet id="2022.02.01 23:04:00" author="pplociennik" dbms="h2" context="ctx.auth">
+    <changeSet id="2022.02.01 23:04:00" author="pplociennik" dbms="h2"
+               context="ctx.auth">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="ACL_CLASS"/>
@@ -353,10 +391,12 @@
                 <constraints nullable="false" unique="true"/>
             </column>
         </createTable>
-        <comment>Creates a table ACL_CLASS for authorization data storing.</comment>
+        <comment>Creates a table ACL_CLASS for authorization data storing.
+        </comment>
     </changeSet>
 
-    <changeSet id="2022.02.01 23:04:10" author="pplociennik" dbms="h2" context="ctx.auth">
+    <changeSet id="2022.02.01 23:04:10" author="pplociennik" dbms="h2"
+               context="ctx.auth">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="ACL_SID"/>
@@ -373,10 +413,12 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-        <comment>Creates a table ACL_SID for authorization data storing.</comment>
+        <comment>Creates a table ACL_SID for authorization data storing.
+        </comment>
     </changeSet>
 
-    <changeSet id="2022.02.01 23:04:20" author="pplociennik" dbms="h2" context="ctx.auth">
+    <changeSet id="2022.02.01 23:04:20" author="pplociennik" dbms="h2"
+               context="ctx.auth">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="ACL_OBJECT_IDENTITY"/>
@@ -417,10 +459,13 @@
                                  baseColumnNames="OWNER_SID"
                                  referencedTableName="ACL_SID"
                                  referencedColumnNames="ID"/>
-        <comment>Creates a table ACL_OBJECT_IDENTITY for authorization data storing.</comment>
+        <comment>Creates a table ACL_OBJECT_IDENTITY for authorization data
+            storing.
+        </comment>
     </changeSet>
 
-    <changeSet id="2022.02.01 23:04:30" author="pplociennik" dbms="h2" context="ctx.auth">
+    <changeSet id="2022.02.01 23:04:30" author="pplociennik" dbms="h2"
+               context="ctx.auth">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="ACL_ENTRY"/>
@@ -462,7 +507,8 @@
                                  baseColumnNames="SID"
                                  referencedTableName="ACL_SID"
                                  referencedColumnNames="ID"/>
-        <comment>Creates a table ACL_ENTRY for authorization data storing.</comment>
+        <comment>Creates a table ACL_ENTRY for authorization data storing.
+        </comment>
     </changeSet>
 
 </databaseChangeLog>

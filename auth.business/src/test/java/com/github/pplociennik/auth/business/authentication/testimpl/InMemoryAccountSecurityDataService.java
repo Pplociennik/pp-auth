@@ -24,7 +24,7 @@
 
 package com.github.pplociennik.auth.business.authentication.testimpl;
 
-import com.github.pplociennik.auth.business.authentication.ports.AccountSecurityDataService;
+import com.github.pplociennik.auth.business.authentication.ports.outside.AccountSecurityDataService;
 import com.github.pplociennik.auth.db.repository.authentication.AccountDao;
 import org.springframework.lang.NonNull;
 import org.springframework.security.core.userdetails.UserDetails;

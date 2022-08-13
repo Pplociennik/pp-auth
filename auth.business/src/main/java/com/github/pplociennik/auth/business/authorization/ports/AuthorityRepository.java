@@ -19,5 +19,14 @@ public interface AuthorityRepository {
      *         an email address.
      * @return a set of authorities.
      */
-    Set< AuthorityDO > findUserAuthorities( @NonNull String aEmailAddress );
+    Set< AuthorityDO > findByEmail( @NonNull String aEmailAddress );
+
+    /**
+     * Returns user's authorities by username.
+     *
+     * @param aUsername
+     *         the username.
+     * @return a set of authorities.
+     */
+    Set< AuthorityDO > findByUsername( @NonNull String aUsername );
 }

@@ -1,4 +1,4 @@
-package com.github.pplociennik.auth.business.authentication.ports;
+package com.github.pplociennik.auth.business.authentication.ports.inside;
 
 import com.github.pplociennik.auth.business.authentication.domain.model.VerificationTokenDO;
 import org.springframework.lang.NonNull;
@@ -26,7 +26,7 @@ public interface VerificationTokenRepository {
      *         a verification token domain object.
      * @return domain object.
      */
-    VerificationTokenDO save( @NonNull VerificationTokenDO aVerificationToken );
+    VerificationTokenDO persist( @NonNull VerificationTokenDO aVerificationToken );
 
     /**
      * Updates the specified VerificationToken in the database.

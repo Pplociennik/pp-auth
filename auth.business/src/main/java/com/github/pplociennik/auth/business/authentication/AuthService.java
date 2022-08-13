@@ -27,10 +27,11 @@ package com.github.pplociennik.auth.business.authentication;
 import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
 import com.github.pplociennik.auth.business.authentication.domain.model.RegistrationDO;
 import com.github.pplociennik.auth.business.authentication.domain.model.VerificationTokenDO;
-import com.github.pplociennik.auth.business.authentication.ports.AccountRepository;
-import com.github.pplociennik.auth.business.authentication.ports.VerificationTokenRepository;
+import com.github.pplociennik.auth.business.authentication.ports.inside.AccountRepository;
+import com.github.pplociennik.auth.business.authentication.ports.inside.VerificationTokenRepository;
 import com.github.pplociennik.auth.business.authorization.domain.model.AuthorityDO;
 import com.github.pplociennik.auth.business.shared.system.EnvironmentPropertiesProvider;
+import com.github.pplociennik.auth.business.shared.system.TimeService;
 import com.github.pplociennik.auth.common.exc.AccountConfirmationException;
 import com.github.pplociennik.auth.db.entity.authentication.Account;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,17 +65,19 @@ class AuthService {
     private final VerificationTokenResolver tokenResolver;
     private final VerificationTokenRepository tokenRepository;
     private final EnvironmentPropertiesProvider propertiesProvider;
+    private final TimeService timeService;
 
     @Autowired
     public AuthService(
             @NonNull PasswordEncoder aEncoder, @NonNull AccountRepository aAccountRepository,
             @NonNull VerificationTokenResolver aUrlResolver, @NonNull VerificationTokenRepository aTokenRepository,
-            @NonNull EnvironmentPropertiesProvider aPropertiesProvider ) {
+            @NonNull EnvironmentPropertiesProvider aPropertiesProvider, TimeService aTimeService ) {
         encoder = aEncoder;
         accountRepository = aAccountRepository;
         tokenResolver = aUrlResolver;
         tokenRepository = aTokenRepository;
         propertiesProvider = aPropertiesProvider;
+        timeService = aTimeService;
     }
 
     /**
@@ -91,7 +94,7 @@ class AuthService {
         var newAccount = createNewAccount( aRegistrationDO, hashedPassword );
         addNewAccountBasePrivilidges( newAccount );
 
-        return accountRepository.save( newAccount );
+        return accountRepository.update( newAccount );
     }
 
     /**
@@ -125,7 +128,8 @@ class AuthService {
         var tokenOwner = verificationToken.getOwner();
 
         var accountByUsername = accountRepository.findAccountByUsername( tokenOwner.getUsername() );
-        var accountToBeConfirmed = Optional.ofNullable( accountByUsername )
+        var accountToBeConfirmed = Optional
+                .ofNullable( accountByUsername )
                 .orElseThrow( () -> new AccountConfirmationException( ACCOUNT_CONFIRMATION_USER_NOT_EXISTS ) );
 
         throwIf( verificationToken, this::isTokenExpired );
@@ -139,10 +143,12 @@ class AuthService {
         requireNonNull( aRegistrationDO );
         requireNonNull( aHashedPassword );
 
-        return AccountDO.builder()
+        return AccountDO
+                .builder()
                 .username( aRegistrationDO.getUsername() )
                 .password( aHashedPassword )
                 .emailAddress( aRegistrationDO.getEmail() )
+                .creationDate( timeService.getCurrentSystemDateTime() )
                 .authorities( createBaseUserAuthorities() )
                 .build();
 
@@ -153,7 +159,8 @@ class AuthService {
         tokenRepository.update( aVerificationToken );
     }
 
-    private boolean throwIf( @NonNull VerificationTokenDO aVerificationToken, @NonNull Predicate< VerificationTokenDO > aPredicate ) {
+    private boolean throwIf(
+            @NonNull VerificationTokenDO aVerificationToken, @NonNull Predicate< VerificationTokenDO > aPredicate ) {
         requireNonNull( aVerificationToken );
         requireNonNull( aPredicate );
 
@@ -167,7 +174,9 @@ class AuthService {
 
     private boolean isTokenExpired( @NonNull VerificationTokenDO aVerificationTokenDO ) {
         requireNonNull( aVerificationTokenDO );
-        return aVerificationTokenDO.getExpirationDate().isBefore( now() );
+        return aVerificationTokenDO
+                .getExpirationDate()
+                .isBefore( now() );
     }
 
     private AccountDO addNewAccountBasePrivilidges( AccountDO aNewAccount ) {
@@ -181,7 +190,8 @@ class AuthService {
     }
 
     private Set< AuthorityDO > createBaseUserAuthorities() {
-        return BASE_USER_AUTHORITIES.stream()
+        return BASE_USER_AUTHORITIES
+                .stream()
                 .map( this::createNewOrphanAuthority )
                 .collect( toUnmodifiableSet() );
     }

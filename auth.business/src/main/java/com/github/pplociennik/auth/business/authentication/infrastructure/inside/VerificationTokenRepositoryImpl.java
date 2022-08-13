@@ -1,8 +1,8 @@
-package com.github.pplociennik.auth.business.authentication.infrastructure;
+package com.github.pplociennik.auth.business.authentication.infrastructure.inside;
 
 import com.github.pplociennik.auth.business.authentication.domain.map.VerificationTokenMapper;
 import com.github.pplociennik.auth.business.authentication.domain.model.VerificationTokenDO;
-import com.github.pplociennik.auth.business.authentication.ports.VerificationTokenRepository;
+import com.github.pplociennik.auth.business.authentication.ports.inside.VerificationTokenRepository;
 import com.github.pplociennik.auth.db.repository.authentication.AccountDao;
 import com.github.pplociennik.auth.db.repository.authentication.VerificationTokenDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,8 @@ class VerificationTokenRepositoryImpl implements VerificationTokenRepository {
     private final AccountDao accountDao;
 
     @Autowired
-    VerificationTokenRepositoryImpl( @NonNull VerificationTokenDao aVerificationTokenDao, @NonNull AccountDao aAccountDao ) {
+    VerificationTokenRepositoryImpl(
+            @NonNull VerificationTokenDao aVerificationTokenDao, @NonNull AccountDao aAccountDao ) {
         verificationTokenDao = requireNonNull( aVerificationTokenDao );
         accountDao = requireNonNull( aAccountDao );
     }
@@ -33,15 +34,19 @@ class VerificationTokenRepositoryImpl implements VerificationTokenRepository {
         requireNonNull( aToken );
 
         var verificationToken = verificationTokenDao.findByToken( aToken );
-        return verificationToken.map( VerificationTokenMapper::mapToDomain ).orElse( null );
+        return verificationToken
+                .map( VerificationTokenMapper::mapToDomain )
+                .orElse( null );
     }
 
     @Override
-    public VerificationTokenDO save( @NonNull VerificationTokenDO aVerificationToken ) {
+    public VerificationTokenDO persist( @NonNull VerificationTokenDO aVerificationToken ) {
         requireNonNull( aVerificationToken );
 
         var accountDO = aVerificationToken.getOwner();
-        var owner = accountDao.getAccountByEmailAddress( accountDO.getEmailAddress() ).orElseThrow();
+        var owner = accountDao
+                .getAccountByEmailAddress( accountDO.getEmailAddress() )
+                .orElseThrow( () -> new IllegalArgumentException( "User not found!" ) );
 
         var verificationTokenEntity = mapToEntity( aVerificationToken, owner );
         return mapToDomain( verificationTokenDao.save( verificationTokenEntity ) );

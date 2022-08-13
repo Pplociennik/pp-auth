@@ -48,12 +48,12 @@ import static java.util.stream.Collectors.*;
  */
 public class AccountMapper {
 
-    public static AccountSecurityCoreDO mapToSecurityCoreDO( @NonNull Account aAccount ) {
+    public static AccountSecurityCoreDO mapToSecurityCoreDO(
+            @NonNull Account aAccount ) {
         requireNonNull( aAccount );
-        return new AccountSecurityCoreDO(
-                aAccount.isAccountNonExpired(), aAccount.isCredentialsNonExpired(),
-                aAccount.isAccountNonLocked(), aAccount.getUsername(),
-                aAccount.getPassword(), aAccount.isEnabled(), getAuthorities( aAccount.getAuthorities() ) );
+        return new AccountSecurityCoreDO( aAccount.getUsername(), aAccount.getPassword(), aAccount.isEnabled(),
+                                          aAccount.isAccountNonExpired(), aAccount.isCredentialsNonExpired(),
+                                          aAccount.isAccountNonLocked(), getAuthorities( aAccount.getAuthorities() ) );
     }
 
     public static Account mapToEntity( @NonNull AccountDO aAccountDO ) {
@@ -61,7 +61,8 @@ public class AccountMapper {
 
         var authorities = createAuthorities( aAccountDO.getAuthorities() );
 
-        var account = Account.builder()
+        var account = Account
+                .builder()
                 .emailAddress( aAccountDO.getEmailAddress() )
                 .accountNonExpired( aAccountDO.isAccountNonExpired() )
                 .accountNonLocked( aAccountDO.isAccountNonLocked() )
@@ -70,6 +71,8 @@ public class AccountMapper {
                 .credentialsNonExpired( aAccountDO.isCredentialsNonExpired() )
                 .authorities( authorities )
                 .enabled( aAccountDO.isEnabled() )
+                .creationDate( aAccountDO.getCreationDate() )
+                .lastLoginDate( aAccountDO.getLastLoginDate() )
                 .build();
 
         updateAuthoritiesSetAccount( authorities, account );
@@ -82,7 +85,8 @@ public class AccountMapper {
 
         var authorities = mapAuthoritiesToDomain( aAccount.getAuthorities() );
 
-        var accountDO = AccountDO.builder()
+        var accountDO = AccountDO
+                .builder()
                 .accountNonExpired( aAccount.isAccountNonExpired() )
                 .accountNonLocked( aAccount.isAccountNonLocked() )
                 .enabled( aAccount.isEnabled() )
@@ -91,6 +95,8 @@ public class AccountMapper {
                 .credentialsNonExpired( aAccount.isCredentialsNonExpired() )
                 .id( aAccount.getId() )
                 .authorities( authorities )
+                .creationDate( aAccount.getCreationDate() )
+                .lastLoginDate( aAccount.getLastLoginDate() )
                 .build();
 
         authorities.forEach( aAuthorityDO -> aAuthorityDO.setOwner( accountDO ) );
@@ -98,17 +104,22 @@ public class AccountMapper {
         return accountDO;
     }
 
-    private static Set< AuthorityDO > mapAuthoritiesToDomain( Set< Authority > aAuthorities ) {
-        return aAuthorities.stream()
-                .map( aAuthority -> AuthorityDO.builder()
+    private static Set< AuthorityDO > mapAuthoritiesToDomain(
+            Set< Authority > aAuthorities ) {
+        return aAuthorities
+                .stream()
+                .map( aAuthority -> AuthorityDO
+                        .builder()
                         .authorityName( aAuthority.getName() )
-                        .build() ).collect( toSet() );
+                        .build() )
+                .collect( toSet() );
     }
 
-    public static AccountDO mapToDomain( @NonNull AccountDto aDto ) {
+    public static AccountDO mapToDto( @NonNull AccountDto aDto ) {
         requireNonNull( aDto );
 
-        var accountDO = AccountDO.builder()
+        var accountDO = AccountDO
+                .builder()
                 .accountNonExpired( aDto.isAccountNonExpired() )
                 .accountNonLocked( aDto.isAccountNonLocked() )
                 .emailAddress( aDto.getEmailAddress() )
@@ -124,7 +135,8 @@ public class AccountMapper {
     public static AccountDto mapToDto( @NonNull AccountDO aAccountDO ) {
         requireNonNull( aAccountDO );
 
-        return AccountDto.builder()
+        return AccountDto
+                .builder()
                 .emailAddress( aAccountDO.getEmailAddress() )
                 .accountNonExpired( aAccountDO.isAccountNonExpired() )
                 .accountNonLocked( aAccountDO.isAccountNonLocked() )
@@ -135,25 +147,32 @@ public class AccountMapper {
                 .build();
     }
 
-    private static void updateAuthoritiesSetAccount( Set< Authority > aAuthorities, Account aAccount ) {
+    private static void updateAuthoritiesSetAccount(
+            Set< Authority > aAuthorities, Account aAccount ) {
         aAuthorities.forEach( aAuthority -> aAuthority.setAuthoritiesOwner( aAccount ) );
     }
 
-    private static Set< Authority > createAuthorities( Set< AuthorityDO > aAuthorities ) {
-        return aAuthorities.stream()
-                .map( authority -> Authority.builder()
+    private static Set< Authority > createAuthorities(
+            Set< AuthorityDO > aAuthorities ) {
+        return aAuthorities
+                .stream()
+                .map( authority -> Authority
+                        .builder()
                         .name( authority.getAuthorityName() )
                         .build() )
                 .collect( toUnmodifiableSet() );
     }
 
     private static Set< String > getAuthoritiesNames( AccountDO aAccountDO ) {
-        return aAccountDO.getAuthorities().stream()
+        return aAccountDO
+                .getAuthorities()
+                .stream()
                 .map( AuthorityDO::getAuthorityName )
                 .collect( toUnmodifiableSet() );
     }
 
-    private static List< AuthorityDetails > getAuthorities( Collection< Authority > aAuthorities ) {
+    private static List< AuthorityDetails > getAuthorities(
+            Collection< Authority > aAuthorities ) {
         requireNonNull( aAuthorities );
         return aAuthorities
                 .stream()

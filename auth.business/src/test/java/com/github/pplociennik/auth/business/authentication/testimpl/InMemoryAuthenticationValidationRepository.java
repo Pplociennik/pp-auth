@@ -25,7 +25,7 @@
 package com.github.pplociennik.auth.business.authentication.testimpl;
 
 import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
-import com.github.pplociennik.auth.business.authentication.ports.AuthenticationValidationRepository;
+import com.github.pplociennik.auth.business.authentication.ports.inside.AuthenticationValidationRepository;
 import org.springframework.lang.NonNull;
 
 import java.util.LinkedList;

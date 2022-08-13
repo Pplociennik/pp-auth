@@ -22,24 +22,25 @@
  * SOFTWARE.
  */
 
-package com.github.pplociennik.auth.business.authentication.filter;
+package com.github.pplociennik.auth.business.authentication.ports.outside;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import org.springframework.lang.NonNull;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 /**
- * Handler for successful rest authentication.
+ * A service for Account data management.
  *
- * @author Created by: Pplociennik at 29.01.2022 22:53
+ * @author Created by: Pplociennik at 17.09.2021 21:54
  */
-public class RestAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+public interface AccountSecurityDataService extends UserDetailsService {
 
-    @Override
-    public void onAuthenticationSuccess( HttpServletRequest request, HttpServletResponse response,
-                                         Authentication authentication ) {
-        clearAuthenticationAttributes( request );
-    }
+    /**
+     * Returns a user data object with the specified username.
+     *
+     * @param aUsername
+     *         the username identifying the user whose data is required.
+     * @return a user data object.
+     */
+    UserDetails loadUserByUsername( @NonNull final String aUsername );
 }

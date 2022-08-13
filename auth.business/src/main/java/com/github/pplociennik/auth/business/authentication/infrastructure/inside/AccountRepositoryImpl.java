@@ -22,11 +22,11 @@
  * SOFTWARE.
  */
 
-package com.github.pplociennik.auth.business.authentication.infrastructure;
+package com.github.pplociennik.auth.business.authentication.infrastructure.inside;
 
 import com.github.pplociennik.auth.business.authentication.domain.map.AccountMapper;
 import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
-import com.github.pplociennik.auth.business.authentication.ports.AccountRepository;
+import com.github.pplociennik.auth.business.authentication.ports.inside.AccountRepository;
 import com.github.pplociennik.auth.common.exc.AccountConfirmationException;
 import com.github.pplociennik.auth.db.repository.authentication.AccountDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +55,7 @@ class AccountRepositoryImpl implements AccountRepository {
      * {@inheritDoc}
      */
     @Override
-    public AccountDO save( @NonNull AccountDO aAccountDO ) {
+    public AccountDO update( @NonNull AccountDO aAccountDO ) {
         requireNonNull( aAccountDO );
 
         var account = mapToEntity( aAccountDO );
@@ -69,7 +69,9 @@ class AccountRepositoryImpl implements AccountRepository {
     public AccountDO findAccountByUsername( @NonNull String aUsername ) {
         requireNonNull( aUsername );
         var account = accountDao.findAccountByUsername( aUsername );
-        return account.map( AccountMapper::mapToDomain ).orElse( null );
+        return account
+                .map( AccountMapper::mapToDomain )
+                .orElse( null );
     }
 
     /**
@@ -101,7 +103,8 @@ class AccountRepositoryImpl implements AccountRepository {
         requireNonNull( aAccount );
 
         var account = accountDao.findAccountByEmailAddress( aAccount.getEmailAddress() );
-        var toUpdate = account.orElseThrow( () -> new AccountConfirmationException( ACCOUNT_CONFIRMATION_USER_NOT_EXISTS ) );
+        var toUpdate = account.orElseThrow(
+                () -> new AccountConfirmationException( ACCOUNT_CONFIRMATION_USER_NOT_EXISTS ) );
         toUpdate.setEnabled( true );
 
         var enabledAccount = accountDao.save( toUpdate );

@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
-package com.github.pplociennik.auth.business.authentication.infrastructure;
+package com.github.pplociennik.auth.business.authentication.infrastructure.inside;
 
-import com.github.pplociennik.auth.business.authentication.ports.AccountRepository;
+import com.github.pplociennik.auth.business.authentication.ports.inside.AccountRepository;
 import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryAccountRepository;
 import org.junit.jupiter.api.Test;
 
@@ -45,7 +45,7 @@ class AccountRepositoryTest {
 
     @Test
     void shouldThrowNullPointerException_whenTryingToSaveAndNullPassedViaParameter() {
-        assertThatThrownBy( () -> sut.save( null ) ).isInstanceOf( NullPointerException.class );
+        assertThatThrownBy( () -> sut.update( null ) ).isInstanceOf( NullPointerException.class );
     }
 
     @Test

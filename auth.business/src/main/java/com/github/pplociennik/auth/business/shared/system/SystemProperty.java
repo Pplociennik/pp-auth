@@ -18,7 +18,11 @@ public enum SystemProperty {
 
     // -- Mailing properties.
 
-    MAILING_SENDER_ADDRESS( "spring.mail.username" );
+    MAILING_SENDER_ADDRESS( "spring.mail.username" ),
+
+    // -- Time Zone properties.
+
+    SYSTEM_JPA_TIME_ZONE( "spring.jpa.properties.hibernate.jdbc.time_zone" );
 
     private final String name;
 }

@@ -22,4 +22,13 @@ public interface AuthorityDao extends JpaRepository< Authority, Long >, CrudRepo
      * @return a set of authorities.
      */
     Set< Authority > findAllByAuthoritiesOwner_EmailAddress( @NonNull String aEmailAddress );
+
+    /**
+     * Returns a set of {@link Authority} typed objects tied to the user with the specified name.
+     *
+     * @param aUsername
+     *         a username of the user.
+     * @return a set of authorities.
+     */
+    Set< Authority > findAllByAuthoritiesOwner_Username( @NonNull String aUsername );
 }

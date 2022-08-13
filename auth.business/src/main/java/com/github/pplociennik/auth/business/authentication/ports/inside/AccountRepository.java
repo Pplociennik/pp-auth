@@ -22,10 +22,9 @@
  * SOFTWARE.
  */
 
-package com.github.pplociennik.auth.business.authentication.ports;
+package com.github.pplociennik.auth.business.authentication.ports.inside;
 
 import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
-import com.github.pplociennik.auth.db.entity.authentication.Account;
 import org.springframework.lang.NonNull;
 
 /**
@@ -41,7 +40,7 @@ public interface AccountRepository {
      * @param aAccount
      *         a user account.
      */
-    AccountDO save( @NonNull AccountDO aAccount );
+    AccountDO update( @NonNull AccountDO aAccount );
 
     /**
      * Returns an account with the specified username if it exists in the database.

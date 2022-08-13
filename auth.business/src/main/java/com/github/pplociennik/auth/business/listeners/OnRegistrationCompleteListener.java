@@ -2,6 +2,7 @@ package com.github.pplociennik.auth.business.listeners;
 
 import auth.dto.AccountDto;
 import com.github.pplociennik.auth.business.authentication.AuthenticationFacade;
+import com.github.pplociennik.auth.business.authentication.domain.map.AccountMapper;
 import com.github.pplociennik.auth.business.mailing.EmailFacade;
 import com.github.pplociennik.auth.business.shared.events.OnRegistrationCompleteEvent;
 import com.github.pplociennik.auth.common.mailing.dto.EmailConfirmationDataDto;
@@ -9,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.lang.NonNull;
 
-import static com.github.pplociennik.auth.business.authentication.domain.map.AccountMapper.mapToDomain;
 import static com.github.pplociennik.auth.business.listeners.ListenerParametersUtil.getSourceOfTheProperType;
 import static java.util.Objects.requireNonNull;
 
@@ -40,7 +40,7 @@ class OnRegistrationCompleteListener implements ApplicationListener< OnRegistrat
         var accountDto = getSourceOfTheProperType( source, AccountDto.class );
 
         var recipientAddress = accountDto.getEmailAddress();
-        var confirmationLink = authenticationFacade.createNewAccountConfirmationLink( mapToDomain( accountDto ) );
+        var confirmationLink = authenticationFacade.createNewAccountConfirmationLink( AccountMapper.mapToDto( accountDto ) );
 
         var emailData = new EmailConfirmationDataDto( recipientAddress, confirmationLink, locale );
         emailFacade.sendEmailConfirmationRequest( emailData );

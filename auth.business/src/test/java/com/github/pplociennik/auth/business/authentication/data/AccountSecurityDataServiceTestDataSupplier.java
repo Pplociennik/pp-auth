@@ -54,7 +54,8 @@ public class AccountSecurityDataServiceTestDataSupplier {
 
         List authorities = prepareTestAuthorities();
 
-        var account = new AccountSecurityCoreDO( accountNonExpired, credentialsNonExpired, accountNonLocked, username, password, accountEnabled, authorities );
+        var account = new AccountSecurityCoreDO( username, password, accountEnabled, accountNonExpired,
+                                                 credentialsNonExpired, accountNonLocked, authorities );
 
         return account;
 
@@ -71,7 +72,8 @@ public class AccountSecurityDataServiceTestDataSupplier {
 
         List authorities = prepareTestAuthorities();
 
-        var account = new AccountSecurityCoreDO( accountNonExpired, credentialsNonExpired, accountNonLocked, username, password, accountEnabled, authorities );
+        var account = new AccountSecurityCoreDO( username, password, accountEnabled, accountNonExpired,
+                                                 credentialsNonExpired, accountNonLocked, authorities );
 
         return account;
 
@@ -88,7 +90,8 @@ public class AccountSecurityDataServiceTestDataSupplier {
 
         List authorities = prepareTestAuthorities();
 
-        var account = new AccountSecurityCoreDO( accountNonExpired, credentialsNonExpired, accountNonLocked, username, password, accountEnabled, authorities );
+        var account = new AccountSecurityCoreDO( username, password, accountEnabled, accountNonExpired,
+                                                 credentialsNonExpired, accountNonLocked, authorities );
 
         return account;
 
@@ -152,10 +155,7 @@ public class AccountSecurityDataServiceTestDataSupplier {
     }
 
     private static Set< Authority > prepareTestAccountAuthorities( Account aOwner ) {
-        var authority = Authority.builder()
-                .authoritiesOwner( aOwner )
-                .name( AUTH_USER_ROLE.getName() )
-                .build();
+        var authority = Authority.builder().authoritiesOwner( aOwner ).name( AUTH_USER_ROLE.getName() ).build();
 
         return Set.of( authority );
     }
