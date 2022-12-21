@@ -27,6 +27,7 @@ package com.github.pplociennik.auth.business.authentication.domain.model;
 import com.github.pplociennik.auth.business.authorization.domain.model.AuthorityDO;
 import lombok.*;
 
+import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.Set;
 
@@ -43,25 +44,15 @@ import java.util.Set;
 public class AccountDO {
 
     /**
-     * The property determines if account is expired, or it isn't.
-     */
-    boolean accountNonExpired;
-    /**
-     * The property determines if credentials are expired, or they're not.
-     */
-    boolean credentialsNonExpired;
-    /**
-     * The property determines if account is locked, or it isn't.
-     */
-    boolean accountNonLocked;
-    /**
      * An identifier of the object.
      */
     private long id;
+
     /**
      * An email address.
      */
     private String emailAddress;
+
     /**
      * Account's unique username.
      */
@@ -71,14 +62,46 @@ public class AccountDO {
      * Password.
      */
     private String password;
+
+    /**
+     * Account's creation date.
+     */
+    private ZonedDateTime creationDate;
+
+    /**
+     * Account's last login date.
+     */
+    private ZonedDateTime lastLoginDate;
+
     /**
      * The property determines if account is enabled, or it isn't.
      */
     private boolean enabled;
+
+    /**
+     * The property determines if account is expired, or it isn't.
+     */
+    private boolean accountNonExpired;
+
+    /**
+     * The property determines if credentials are expired, or they're not.
+     */
+    private boolean credentialsNonExpired;
+
+    /**
+     * The property determines if account is locked, or it isn't.
+     */
+    private boolean accountNonLocked;
+
     /**
      * Account's authorities.
      */
     private Set< AuthorityDO > authorities;
+
+    @Override
+    public int hashCode() {
+        return Objects.hash( emailAddress, username );
+    }
 
     @Override
     public boolean equals( Object aO ) {
@@ -86,10 +109,5 @@ public class AccountDO {
         if ( aO == null || getClass() != aO.getClass() ) return false;
         AccountDO accountDO = ( AccountDO ) aO;
         return emailAddress.equals( accountDO.emailAddress ) && username.equals( accountDO.username );
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash( emailAddress, username );
     }
 }

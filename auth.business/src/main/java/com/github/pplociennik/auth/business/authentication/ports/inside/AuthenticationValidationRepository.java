@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.github.pplociennik.auth.business.authentication.ports;
+package com.github.pplociennik.auth.business.authentication.ports.inside;
 
 import org.springframework.lang.NonNull;
 

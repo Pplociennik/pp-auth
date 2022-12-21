@@ -18,29 +18,35 @@ import java.util.Set;
 public class AccountDto implements Serializable {
 
     /**
-     * The property determines if account is expired, or it isn't.
-     */
-    boolean accountNonExpired;
-    /**
-     * The property determines if credentials are expired, or they're not.
-     */
-    boolean credentialsNonExpired;
-    /**
-     * The property determines if account is locked, or it isn't.
-     */
-    boolean accountNonLocked;
-    /**
      * An email address.
      */
     private String emailAddress;
+
     /**
      * Account's unique username.
      */
     private String username;
+
     /**
      * The property determines if account is enabled, or it isn't.
      */
     private boolean enabled;
+
+    /**
+     * The property determines if account is expired, or it isn't.
+     */
+    private boolean accountNonExpired;
+
+    /**
+     * The property determines if credentials are expired, or they're not.
+     */
+    private boolean credentialsNonExpired;
+
+    /**
+     * The property determines if account is locked, or it isn't.
+     */
+    private boolean accountNonLocked;
+
     /**
      * Account's authorities.
      */

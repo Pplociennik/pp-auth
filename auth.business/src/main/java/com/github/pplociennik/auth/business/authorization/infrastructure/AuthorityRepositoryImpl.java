@@ -28,9 +28,21 @@ public class AuthorityRepositoryImpl implements AuthorityRepository {
     }
 
     @Override
-    public Set< AuthorityDO > findUserAuthorities( @NonNull String aEmailAddress ) {
+    public Set< AuthorityDO > findByEmail( @NonNull String aEmailAddress ) {
         requireNonEmpty( aEmailAddress );
-        return springRepository.findAllByAuthoritiesOwner_EmailAddress( aEmailAddress ).stream()
+        return springRepository
+                .findAllByAuthoritiesOwner_EmailAddress( aEmailAddress )
+                .stream()
+                .map( AuthorityMapper::mapToDomain )
+                .collect( toUnmodifiableSet() );
+    }
+
+    @Override
+    public Set< AuthorityDO > findByUsername( @NonNull String aUsername ) {
+        requireNonNull( aUsername );
+        return springRepository
+                .findAllByAuthoritiesOwner_Username( aUsername )
+                .stream()
                 .map( AuthorityMapper::mapToDomain )
                 .collect( toUnmodifiableSet() );
     }

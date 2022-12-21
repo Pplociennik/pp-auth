@@ -28,6 +28,7 @@ import com.github.pplociennik.auth.business.authentication.domain.model.AccountD
 import com.github.pplociennik.auth.business.authentication.domain.model.RegistrationDO;
 import com.github.pplociennik.auth.business.authentication.domain.model.VerificationTokenDO;
 import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryAccountRepository;
+import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryTimeService;
 import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryVerificationTokenRepository;
 import com.github.pplociennik.auth.business.shared.system.EnvironmentPropertiesProvider;
 import com.github.pplociennik.auth.common.exc.AccountConfirmationException;
@@ -35,6 +36,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -59,6 +62,8 @@ class AuthServiceTest {
     private static final String TEST_ENCODED_PASSWORD = "EncodedPass";
     private static final long TEST_TOKEN_ID = 1L;
     private static final String TEST_TOKEN = "testToken";
+    private static final ZoneId TEST_ZONE_ID = ZoneId.of( "UTC" );
+    private static final ZonedDateTime TEST_CURRENT_TIME = ZonedDateTime.now( TEST_ZONE_ID );
 
     private List< VerificationTokenDO > TEST_TOKEN_DATABASE = new LinkedList<>();
     private List< AccountDO > TEST_ACCOUNT_DATABASE = new LinkedList<>();
@@ -66,18 +71,22 @@ class AuthServiceTest {
     private EnvironmentPropertiesProvider propertiesProvider = mock( EnvironmentPropertiesProvider.class );
     private PasswordEncoder encoder = mock( PasswordEncoder.class );
     private InMemoryAccountRepository accountRepository = new InMemoryAccountRepository( TEST_ACCOUNT_DATABASE );
-    private InMemoryVerificationTokenRepository verificationTokenRepository = new InMemoryVerificationTokenRepository( TEST_TOKEN_DATABASE );
+    private InMemoryVerificationTokenRepository verificationTokenRepository = new InMemoryVerificationTokenRepository(
+            TEST_TOKEN_DATABASE );
     private VerificationTokenResolver tokenResolver = new VerificationTokenResolver( verificationTokenRepository );
-
-    private AuthService sut = new AuthService( encoder, accountRepository, tokenResolver, verificationTokenRepository, propertiesProvider );
-
+    private InMemoryTimeService timeService = new InMemoryTimeService();
+    private AuthService sut = new AuthService( encoder, accountRepository, tokenResolver, verificationTokenRepository,
+                                               propertiesProvider, timeService );
 
     @Test
     void shouldAddValidBasePrivilidges_whenDataValid() {
 
         // GIVEN
+        timeService.setSystemZoneId( TEST_ZONE_ID );
+        timeService.setCurrentSystemDateTime( TEST_CURRENT_TIME );
         when( encoder.encode( TEST_VALID_PASSWORD ) ).thenReturn( TEST_ENCODED_PASSWORD );
-        var registrationDO = new RegistrationDO( TEST_VALID_EMAIL, TEST_VALID_USERNAME, TEST_VALID_PASSWORD, TEST_VALID_PASSWORD );
+        var registrationDO = new RegistrationDO( TEST_VALID_EMAIL, TEST_VALID_USERNAME, TEST_VALID_PASSWORD,
+                                                 TEST_VALID_PASSWORD );
 
         // WHEN
         var registeredAccountDO = sut.registerNewAccount( registrationDO );
@@ -94,11 +103,14 @@ class AuthServiceTest {
 
         // GIVEN
         var accountDO = getDummyAccountDO();
-        var token = new VerificationTokenDO( TEST_TOKEN_ID, EMAIL_CONFIRMATION_TOKEN, accountDO, TEST_TOKEN, Instant.now().plus( 15, MINUTES ), true );
+        var token = new VerificationTokenDO( TEST_TOKEN_ID, EMAIL_CONFIRMATION_TOKEN, accountDO, TEST_TOKEN, Instant
+                .now()
+                .plus( 15, MINUTES ), true );
         TEST_TOKEN_DATABASE.add( token );
 
         // THEN
-        assertThatThrownBy( () -> sut.confirmRegistration( TEST_TOKEN ) ).isInstanceOf( AccountConfirmationException.class );
+        assertThatThrownBy( () -> sut.confirmRegistration( TEST_TOKEN ) ).isInstanceOf(
+                AccountConfirmationException.class );
     }
 
     @Test
@@ -107,11 +119,14 @@ class AuthServiceTest {
         // GIVEN
         var accountDO = getDummyAccountDO();
         TEST_ACCOUNT_DATABASE.add( accountDO );
-        var token = new VerificationTokenDO( TEST_TOKEN_ID, EMAIL_CONFIRMATION_TOKEN, accountDO, TEST_TOKEN, Instant.now().minus( 15, MINUTES ), true );
+        var token = new VerificationTokenDO( TEST_TOKEN_ID, EMAIL_CONFIRMATION_TOKEN, accountDO, TEST_TOKEN, Instant
+                .now()
+                .minus( 15, MINUTES ), true );
         TEST_TOKEN_DATABASE.add( token );
 
         // THEN
-        assertThatThrownBy( () -> sut.confirmRegistration( TEST_TOKEN ) ).isInstanceOf( AccountConfirmationException.class );
+        assertThatThrownBy( () -> sut.confirmRegistration( TEST_TOKEN ) ).isInstanceOf(
+                AccountConfirmationException.class );
     }
 
     @Test
@@ -135,7 +150,8 @@ class AuthServiceTest {
     }
 
     private AccountDO getDummyAccountDO() {
-        return AccountDO.builder()
+        return AccountDO
+                .builder()
                 .username( TEST_VALID_USERNAME )
                 .emailAddress( TEST_VALID_EMAIL )
                 .enabled( false )

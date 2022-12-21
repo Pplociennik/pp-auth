@@ -22,12 +22,11 @@
  * SOFTWARE.
  */
 
-package com.github.pplociennik.auth.business.authentication.infrastructure;
+package com.github.pplociennik.auth.business.authentication.infrastructure.inside;
 
-import com.github.pplociennik.auth.business.authentication.ports.AccountRepository;
-import com.github.pplociennik.auth.business.authentication.ports.AccountSecurityDataService;
-import com.github.pplociennik.auth.business.authentication.ports.AuthenticationValidationRepository;
-import com.github.pplociennik.auth.business.authentication.ports.VerificationTokenRepository;
+import com.github.pplociennik.auth.business.authentication.ports.inside.AccountRepository;
+import com.github.pplociennik.auth.business.authentication.ports.inside.AuthenticationValidationRepository;
+import com.github.pplociennik.auth.business.authentication.ports.inside.VerificationTokenRepository;
 import com.github.pplociennik.auth.db.repository.authentication.AccountDao;
 import com.github.pplociennik.auth.db.repository.authentication.VerificationTokenDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,18 +37,19 @@ import org.springframework.lang.NonNull;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A Spring's configuration class for authentication beans definition. Infrastructure package part.
+ * A Spring's configuration class for authentication beans definition. Infrastructure package part for incoming ports.
  *
  * @author Created by: Pplociennik at 13.10.2021 17:42
  */
 @Configuration
-class AuthAuthenticationInfrastructureBeans {
+class AuthAuthenticationInfrastructureBeansIn {
 
     private final AccountDao accountDao;
     private final VerificationTokenDao springTokenRepository;
 
     @Autowired
-    AuthAuthenticationInfrastructureBeans( @NonNull AccountDao aAccountDao, @NonNull VerificationTokenDao aSpringTokenRepository ) {
+    AuthAuthenticationInfrastructureBeansIn(
+            @NonNull AccountDao aAccountDao, @NonNull VerificationTokenDao aSpringTokenRepository ) {
         accountDao = requireNonNull( aAccountDao );
         springTokenRepository = requireNonNull( aSpringTokenRepository );
     }
@@ -62,11 +62,6 @@ class AuthAuthenticationInfrastructureBeans {
     @Bean
     VerificationTokenRepository verificationTokenRepository() {
         return new VerificationTokenRepositoryImpl( springTokenRepository, accountDao );
-    }
-
-    @Bean
-    AccountSecurityDataService accountSecurityDataService() {
-        return new AccountSecurityDataServiceImpl( accountDao );
     }
 
     @Bean

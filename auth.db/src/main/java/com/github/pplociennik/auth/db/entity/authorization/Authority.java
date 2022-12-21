@@ -62,7 +62,7 @@ public class Authority {
      * An {@link Account} which the authority object is related to.
      */
     @ManyToOne( fetch = FetchType.EAGER, optional = false )
-    @JoinColumn( name = "AUTHORITIES_OWNER", referencedColumnName = "ID" )
+    @JoinColumn( name = "OWNER_ID", referencedColumnName = "ID" )
     private Account authoritiesOwner;
 
 

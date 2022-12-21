@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
-package com.github.pplociennik.auth.business.authentication.infrastructure;
+package com.github.pplociennik.auth.business.authentication.infrastructure.outside;
 
-import com.github.pplociennik.auth.business.authentication.ports.AccountSecurityDataService;
+import com.github.pplociennik.auth.business.authentication.ports.outside.AccountSecurityDataService;
 import com.github.pplociennik.auth.db.entity.authentication.Account;
 import com.github.pplociennik.auth.db.repository.authentication.AccountDao;
 import org.springframework.beans.factory.annotation.Autowired;

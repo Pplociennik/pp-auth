@@ -22,43 +22,50 @@
  * SOFTWARE.
  */
 
-package com.github.pplociennik.auth.business.authentication.filter;
+package com.github.pplociennik.auth.business.authentication.infrastructure.outside;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import auth.dto.LoginDto;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
 import java.io.IOException;
 
 /**
- * Filter for custom rest authentication. Maps JSON object from rest request to {@link LoginDto} and proceeds the authentication process.
+ * Filter for custom rest authentication. Maps JSON object from rest request to {@link LoginDto} and proceeds the
+ * authentication process.
  *
  * @author Created by: Pplociennik at 29.01.2022 22:44
  */
-public class JsonAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+class JsonAuthenticationFilterImpl extends UsernamePasswordAuthenticationFilter {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public Authentication attemptAuthentication( HttpServletRequest request, HttpServletResponse response ) {
+
         try {
-            BufferedReader reader = request.getReader();
-            StringBuilder sb = new StringBuilder();
+
+            var reader = request.getReader();
+            var stringBuilder = new StringBuilder();
             String line;
+
             while ( ( line = reader.readLine() ) != null ) {
-                sb.append( line );
+                stringBuilder.append( line );
             }
-            LoginDto authRequest = objectMapper.readValue( sb.toString(), LoginDto.class );
+
+            LoginDto authRequest = objectMapper.readValue( stringBuilder.toString(), LoginDto.class );
             UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                    authRequest.getUsername(), authRequest.getPassword()
-            );
+                    authRequest.getUsername(), authRequest.getPassword() );
+
             setDetails( request, token );
-            return this.getAuthenticationManager().authenticate( token );
+            return this
+                    .getAuthenticationManager()
+                    .authenticate( token );
+
         } catch ( IOException e ) {
             throw new IllegalArgumentException( "Could not authenticate. Reason: " + e.getMessage() );
         }

@@ -24,10 +24,12 @@
 
 package com.github.pplociennik.auth.business.authentication;
 
-import com.github.pplociennik.auth.business.authentication.ports.AccountRepository;
-import com.github.pplociennik.auth.business.authentication.ports.AuthenticationValidationRepository;
-import com.github.pplociennik.auth.business.authentication.ports.VerificationTokenRepository;
+import com.github.pplociennik.auth.business.authentication.ports.inside.AccountRepository;
+import com.github.pplociennik.auth.business.authentication.ports.inside.AuthenticationValidationRepository;
+import com.github.pplociennik.auth.business.authentication.ports.inside.VerificationTokenRepository;
 import com.github.pplociennik.auth.business.shared.system.EnvironmentPropertiesProvider;
+import com.github.pplociennik.auth.business.shared.system.TimeService;
+import com.github.pplociennik.auth.business.shared.system.time.SystemTimeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
@@ -52,8 +54,9 @@ class AuthAuthenticationBeansConfig {
 
     @Autowired
     AuthAuthenticationBeansConfig(
-            AccountRepository aAccountRepository, AuthenticationValidationRepository aAuthenticationValidationRepository,
-            PasswordEncoder aEncoder, ApplicationEventPublisher aEventPublisher, Environment aEnvironment,
+            AccountRepository aAccountRepository,
+            AuthenticationValidationRepository aAuthenticationValidationRepository, PasswordEncoder aEncoder,
+            ApplicationEventPublisher aEventPublisher, Environment aEnvironment,
             VerificationTokenRepository aVerificationTokenRepository ) {
         accountRepository = aAccountRepository;
         authenticationValidationRepository = aAuthenticationValidationRepository;
@@ -75,7 +78,8 @@ class AuthAuthenticationBeansConfig {
 
     @Bean
     AuthService authService() {
-        return new AuthService( encoder, accountRepository, verificationTokenResolver(), verificationTokenRepository, environmentPropertiesProvider() );
+        return new AuthService( encoder, accountRepository, verificationTokenResolver(), verificationTokenRepository,
+                                environmentPropertiesProvider(), timeService() );
     }
 
     @Bean
@@ -86,5 +90,10 @@ class AuthAuthenticationBeansConfig {
     @Bean
     VerificationTokenResolver verificationTokenResolver() {
         return new VerificationTokenResolver( verificationTokenRepository );
+    }
+
+    @Bean
+    TimeService timeService() {
+        return new SystemTimeServiceImpl( environmentPropertiesProvider() );
     }
 }

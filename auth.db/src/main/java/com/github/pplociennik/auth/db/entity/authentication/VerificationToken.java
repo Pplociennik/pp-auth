@@ -39,7 +39,7 @@ public class VerificationToken {
      * An owner of the token.
      */
     @OneToOne( fetch = FetchType.EAGER, optional = false )
-    @JoinColumn( name = "TOKEN_OWNER", referencedColumnName = "ID" )
+    @JoinColumn( name = "OWNER_ID", referencedColumnName = "ID" )
     private Account owner;
 
     /**

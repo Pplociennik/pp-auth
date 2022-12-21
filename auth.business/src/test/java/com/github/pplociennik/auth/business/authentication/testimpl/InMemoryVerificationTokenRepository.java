@@ -1,7 +1,7 @@
 package com.github.pplociennik.auth.business.authentication.testimpl;
 
 import com.github.pplociennik.auth.business.authentication.domain.model.VerificationTokenDO;
-import com.github.pplociennik.auth.business.authentication.ports.VerificationTokenRepository;
+import com.github.pplociennik.auth.business.authentication.ports.inside.VerificationTokenRepository;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -40,7 +40,7 @@ public class InMemoryVerificationTokenRepository implements VerificationTokenRep
     }
 
     @Override
-    public VerificationTokenDO save( VerificationTokenDO aVerificationToken ) {
+    public VerificationTokenDO persist( VerificationTokenDO aVerificationToken ) {
         database.add( aVerificationToken );
         return aVerificationToken;
     }

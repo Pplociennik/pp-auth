@@ -3,7 +3,7 @@ package com.github.pplociennik.auth.business.authentication;
 import auth.AuthVerificationTokenType;
 import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
 import com.github.pplociennik.auth.business.authentication.domain.model.VerificationTokenDO;
-import com.github.pplociennik.auth.business.authentication.ports.VerificationTokenRepository;
+import com.github.pplociennik.auth.business.authentication.ports.inside.VerificationTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 
@@ -51,7 +51,7 @@ class VerificationTokenResolver {
                 .isActive( true )
                 .build();
 
-        return tokenRepository.save( verificationToken );
+        return tokenRepository.persist( verificationToken );
     }
 
     private Instant getExpirationDateForImmediateToken( AuthVerificationTokenType aVerificationTokenType ) {

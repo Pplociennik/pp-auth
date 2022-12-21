@@ -24,12 +24,8 @@
 
 package com.github.pplociennik.auth.core.configuration;
 
-import com.github.pplociennik.auth.business.authentication.filter.JsonAuthenticationFilter;
-import com.github.pplociennik.auth.business.authentication.filter.RestAuthenticationFailureHandler;
-import com.github.pplociennik.auth.business.authentication.filter.RestAuthenticationSuccessHandler;
-import com.github.pplociennik.auth.business.authentication.ports.AccountSecurityDataService;
+import com.github.pplociennik.auth.business.authentication.ports.outside.AccountSecurityDataService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
@@ -54,83 +50,53 @@ import static com.github.pplociennik.auth.core.configuration.AuthSecurityConstan
  * @author Created by: Pplociennik at 16.09.2021 18:09
  */
 @Configuration
-@Import( {
-        SpringModulesConfiguration.class,
-        AclMethodSecurityConfiguration.class
-} )
+@Import( { SpringModulesConfiguration.class, AclMethodSecurityConfiguration.class } )
 class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private static final String[] AUTH_WHITELIST = {
             // -- Swagger UI v2
-            "/v2/api-docs",
-            "/swagger-resources",
-            "/swagger-resources/**",
-            "/configuration/ui",
-            "/configuration/security",
-            "/swagger-ui.html",
-            "/webjars/**",
+            "/v2/api-docs", "/swagger-resources", "/swagger-resources/**", "/configuration/ui", "/configuration/security", "/swagger-ui.html", "/webjars/**",
             // -- Swagger UI v3 (OpenAPI)
-            "/v3/api-docs/**",
-            "/swagger-ui/**"
+            "/v3/api-docs/**", "/swagger-ui/**"
             // other public endpoints of your API may be appended to this array
     };
-    private final String USERS_BY_USERNAME_QUERY = "SELECT " +
-            String.join( ",", AuthSchemaConstants.AUTH_USER_TABLE_USERNAME_COLUMN_NAME, AuthSchemaConstants.AUTH_USER_TABLE_PASSWORD_COLUMN_NAME, AuthSchemaConstants.AUTH_USER_TABLE_ENABLED_COLUMN_NAME ) +
-            " FROM " + AuthSchemaConstants.AUTH_USER_TABLE_SCHEMA_NAME +
-            " WHERE " + AuthSchemaConstants.AUTH_USER_TABLE_USERNAME_COLUMN_NAME + " = ?";
-    private final String AUTHORITIES_BY_USERNAME_QUERY = "SELECT " +
-            String.join( ",", AuthSchemaConstants.AUTH_AUTHORITY_TABLE_USERNAME_COLUMN_NAME, AuthSchemaConstants.AUTH_AUTHORITY_TABLE_AUTHORITY_COLUMN_NAME ) +
-            " FROM " + AuthSchemaConstants.AUTH_AUTHORITY_TABLE_SCHEMA_NAME +
-            " WHERE " + AuthSchemaConstants.AUTH_AUTHORITY_TABLE_USERNAME_COLUMN_NAME + " = ?";
-    private PasswordEncoder encoder;
-    private AccountSecurityDataService accountDetailsService;
+    private final String USERS_BY_USERNAME_QUERY = "SELECT " + String.join( ",",
+                                                                            AuthSchemaConstants.AUTH_USER_TABLE_USERNAME_COLUMN_NAME,
+                                                                            AuthSchemaConstants.AUTH_USER_TABLE_PASSWORD_COLUMN_NAME,
+                                                                            AuthSchemaConstants.AUTH_USER_TABLE_ENABLED_COLUMN_NAME ) + " FROM " + AuthSchemaConstants.AUTH_USER_TABLE_SCHEMA_NAME + " WHERE " + AuthSchemaConstants.AUTH_USER_TABLE_USERNAME_COLUMN_NAME + " = ?";
+    private final String AUTHORITIES_BY_USERNAME_QUERY = "SELECT " + String.join( ",",
+                                                                                  AuthSchemaConstants.AUTH_AUTHORITY_TABLE_USERNAME_COLUMN_NAME,
+                                                                                  AuthSchemaConstants.AUTH_AUTHORITY_TABLE_AUTHORITY_COLUMN_NAME ) + " FROM " + AuthSchemaConstants.AUTH_AUTHORITY_TABLE_SCHEMA_NAME + " WHERE " + AuthSchemaConstants.AUTH_AUTHORITY_TABLE_USERNAME_COLUMN_NAME + " = ?";
+    private final PasswordEncoder encoder;
+    private final AccountSecurityDataService accountDetailsService;
+    private final UsernamePasswordAuthenticationFilter jsonAuthenticationFilter;
 
 
     @Autowired
-    SecurityConfiguration( final PasswordEncoder aEncoder,
-                           final AccountSecurityDataService aAccountDetailsService ) {
+    SecurityConfiguration(
+            final PasswordEncoder aEncoder, final AccountSecurityDataService aAccountDetailsService,
+            UsernamePasswordAuthenticationFilter aJsonAuthenticationFilter ) {
         encoder = aEncoder;
         accountDetailsService = aAccountDetailsService;
-    }
-
-    @Bean
-    public RestAuthenticationSuccessHandler authenticationSuccessHandler() {
-        return new RestAuthenticationSuccessHandler();
-    }
-
-    @Bean
-    public RestAuthenticationFailureHandler authenticationFailureHandler() {
-        return new RestAuthenticationFailureHandler();
-    }
-
-    @Bean
-    public JsonAuthenticationFilter authenticationFilter() throws Exception {
-        JsonAuthenticationFilter filter = new JsonAuthenticationFilter();
-        filter.setAuthenticationSuccessHandler( authenticationSuccessHandler() );
-        filter.setAuthenticationFailureHandler( authenticationFailureHandler() );
-        filter.setAuthenticationManager( super.authenticationManager() );
-        return filter;
+        jsonAuthenticationFilter = aJsonAuthenticationFilter;
     }
 
     /**
-     * Used by the default implementation of {@link #authenticationManager()} to attempt
-     * to obtain an {@link AuthenticationManager}. If overridden, the
-     * {@link AuthenticationManagerBuilder} should be used to specify the
-     * {@link AuthenticationManager}.
+     * Used by the default implementation of {@link #authenticationManager()} to attempt to obtain an
+     * {@link AuthenticationManager}. If overridden, the {@link AuthenticationManagerBuilder} should be used to specify
+     * the {@link AuthenticationManager}.
      *
      * <p>
-     * The {@link #authenticationManagerBean()} method can be used to expose the resulting
-     * {@link AuthenticationManager} as a Bean. The {@link #userDetailsServiceBean()} can
-     * be used to expose the last populated {@link UserDetailsService} that is created
-     * with the {@link AuthenticationManagerBuilder} as a Bean. The
-     * {@link UserDetailsService} will also automatically be populated on
-     * {@link HttpSecurity#getSharedObject(Class)} for use with other
-     * {@link SecurityContextConfigurer} (i.e. RememberMeConfigurer )
+     * The {@link #authenticationManagerBean()} method can be used to expose the resulting {@link AuthenticationManager}
+     * as a Bean. The {@link #userDetailsServiceBean()} can be used to expose the last populated
+     * {@link UserDetailsService} that is created with the {@link AuthenticationManagerBuilder} as a Bean. The
+     * {@link UserDetailsService} will also automatically be populated on {@link HttpSecurity#getSharedObject(Class)}
+     * for use with other {@link SecurityContextConfigurer} (i.e. RememberMeConfigurer )
      * </p>
      *
      * <p>
-     * For example, the following configuration could be used to register in memory
-     * authentication that exposes an in memory {@link UserDetailsService}:
+     * For example, the following configuration could be used to register in memory authentication that exposes an in
+     * memory {@link UserDetailsService}:
      * </p>
      *
      * <pre>
@@ -165,26 +131,17 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     }
 
-    private AuthenticationManagerBuilder getBasicJdbcAuthenticationManagerBuilder( final AuthenticationManagerBuilder aAuth ) throws Exception {
-        aAuth
-                .jdbcAuthentication()
-                .authoritiesByUsernameQuery( AUTHORITIES_BY_USERNAME_QUERY )
-                .usersByUsernameQuery( USERS_BY_USERNAME_QUERY );
-        return aAuth;
-    }
-
     /**
-     * Override this method to configure the {@link HttpSecurity}. Typically subclasses
-     * should not invoke this method by calling super as it may override their
-     * configuration. The default configuration is:
+     * Override this method to configure the {@link HttpSecurity}. Typically subclasses should not invoke this method by
+     * calling super as it may override their configuration. The default configuration is:
      *
      * <pre>
      * http.authorizeRequests().anyRequest().authenticated().and().formLogin().and().httpBasic();
      * </pre>
      *
-     * Any endpoint that requires defense against common vulnerabilities can be specified
-     * here, including public ones. See {@link HttpSecurity#authorizeRequests} and the
-     * `permitAll()` authorization rule for more details on public endpoints.
+     * Any endpoint that requires defense against common vulnerabilities can be specified here, including public ones.
+     * See {@link HttpSecurity#authorizeRequests} and the `permitAll()` authorization rule for more details on public
+     * endpoints.
      *
      * @param http
      *         the {@link HttpSecurity} to modify
@@ -193,17 +150,41 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure( final HttpSecurity http ) throws Exception {
-        http.authorizeRequests().antMatchers( ROOT_URI, AUTH_LOGIN_URI, AUTH_LOGOUT_URI, AUTH_REGISTRATION_URI, AUTH_ACCOUNT_CONFIRMATION_URI ).permitAll();
-        http.authorizeRequests().antMatchers( AUTH_ADMIN_URI ).hasRole( AUTH_ADMIN_ROLE.getName() );
-        http.authorizeRequests().antMatchers( AUTH_USER_URI ).hasAnyRole( AUTH_ADMIN_ROLE.getName(), AUTH_USER_ROLE.getName() );
-        http.addFilterBefore( authenticationFilter(), UsernamePasswordAuthenticationFilter.class )
+        http
+                .authorizeRequests()
+                .antMatchers( ROOT_URI, AUTH_LOGIN_URI, AUTH_LOGOUT_URI, AUTH_REGISTRATION_URI,
+                              AUTH_ACCOUNT_CONFIRMATION_URI )
+                .permitAll();
+        http
+                .authorizeRequests()
+                .antMatchers( AUTH_ADMIN_URI )
+                .hasRole( AUTH_ADMIN_ROLE.getName() );
+        http
+                .authorizeRequests()
+                .antMatchers( AUTH_USER_URI )
+                .hasAnyRole( AUTH_ADMIN_ROLE.getName(), AUTH_USER_ROLE.getName() );
+        http
+                .addFilterBefore( jsonAuthenticationFilter, UsernamePasswordAuthenticationFilter.class )
                 .exceptionHandling()
                 .authenticationEntryPoint( new HttpStatusEntryPoint( HttpStatus.UNAUTHORIZED ) );
 
-        http.csrf().disable()
-                .authorizeRequests().
-                antMatchers( AUTH_WHITELIST ).permitAll().
-                antMatchers( "/**" ).authenticated();
+        http
+                .csrf()
+                .disable()
+                .authorizeRequests()
+                .antMatchers( AUTH_WHITELIST )
+                .permitAll()
+                .antMatchers( "/**" )
+                .authenticated();
+    }
+
+    private AuthenticationManagerBuilder getBasicJdbcAuthenticationManagerBuilder(
+            final AuthenticationManagerBuilder aAuth ) throws Exception {
+        aAuth
+                .jdbcAuthentication()
+                .authoritiesByUsernameQuery( AUTHORITIES_BY_USERNAME_QUERY )
+                .usersByUsernameQuery( USERS_BY_USERNAME_QUERY );
+        return aAuth;
     }
 
 }

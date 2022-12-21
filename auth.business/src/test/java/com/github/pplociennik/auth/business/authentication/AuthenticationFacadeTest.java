@@ -28,6 +28,7 @@ import auth.dto.AccountDto;
 import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
 import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryAccountRepository;
 import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryAuthenticationValidationRepository;
+import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryTimeService;
 import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryVerificationTokenRepository;
 import com.github.pplociennik.auth.business.shared.system.EnvironmentPropertiesProvider;
 import com.github.pplociennik.util.utility.LanguageUtil;
@@ -38,6 +39,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -57,6 +60,9 @@ import static org.mockito.Mockito.when;
  */
 class AuthenticationFacadeTest {
 
+    private static final ZoneId TEST_ZONE_ID = ZoneId.of( "UTC" );
+    private static final ZonedDateTime TEST_CURRENT_TIME = ZonedDateTime.now( TEST_ZONE_ID );
+
     private AuthService authService;
     private AuthenticationValidator validator;
     private PasswordEncoder encoder;
@@ -66,6 +72,7 @@ class AuthenticationFacadeTest {
     private VerificationTokenResolver tokenResolver;
     private InMemoryVerificationTokenRepository verificationTokenRepository;
     private EnvironmentPropertiesProvider propertiesProvider;
+    private InMemoryTimeService timeService;
     private AuthenticationFacade sut;
 
     @BeforeEach
@@ -77,17 +84,15 @@ class AuthenticationFacadeTest {
         preparePropertiesProvider();
         prepareTokenRepository();
         prepareTokenResolver();
+        prepareTimeService();
 
-        authService = new AuthService( encoder, accountRepository, tokenResolver, verificationTokenRepository, propertiesProvider );
+        authService = new AuthService( encoder, accountRepository, tokenResolver, verificationTokenRepository,
+                                       propertiesProvider, timeService );
         validator = new AuthenticationValidator( validationRepository );
 
         sut = new AuthenticationFacade( authService, validator, eventPublisher );
         LanguageUtil.setLocale( Locale.ENGLISH );
     }
-
-    // ##############################################
-    // ################ Registration ################
-    // ##############################################
 
     @Nested
     class Registration {
@@ -96,6 +101,8 @@ class AuthenticationFacadeTest {
         void shouldRegisterNewAccount_whenAllDataValid() {
 
             // GIVEN
+            timeService.setSystemZoneId( TEST_ZONE_ID );
+            timeService.setCurrentSystemDateTime( TEST_CURRENT_TIME );
             final var hashedPass = "encodedPassword";
             var registrationDO = prepareDummyRegistrationDO();
             when( encoder.encode( registrationDO.getPassword() ) ).thenReturn( hashedPass );
@@ -104,7 +111,8 @@ class AuthenticationFacadeTest {
             final var registeredAccount = sut.registerNewAccount( registrationDO );
 
             // THEN
-            final var expectedAccount = AccountDto.builder()
+            final var expectedAccount = AccountDto
+                    .builder()
                     .username( registrationDO.getUsername() )
                     .emailAddress( registrationDO.getEmail() )
                     .accountNonExpired( true )
@@ -120,6 +128,8 @@ class AuthenticationFacadeTest {
         void shouldNewlyRegisteredAccountHaveBasePrivilegesSetProperly() {
 
             // GIVEN
+            timeService.setSystemZoneId( TEST_ZONE_ID );
+            timeService.setCurrentSystemDateTime( TEST_CURRENT_TIME );
             final var hashedPass = "encodedPassword";
             final var registrationDO = prepareDummyRegistrationDO();
             when( encoder.encode( registrationDO.getPassword() ) ).thenReturn( hashedPass );
@@ -138,6 +148,8 @@ class AuthenticationFacadeTest {
         void shouldNewlyRegisteredAccountHaveBaseAuthoritiesSetProperly() {
 
             // GIVEN
+            timeService.setSystemZoneId( TEST_ZONE_ID );
+            timeService.setCurrentSystemDateTime( TEST_CURRENT_TIME );
             final var hashedPass = "encodedPassword";
             final var registrationDO = prepareDummyRegistrationDO();
             when( encoder.encode( registrationDO.getPassword() ) ).thenReturn( hashedPass );
@@ -162,7 +174,7 @@ class AuthenticationFacadeTest {
     }
 
     // ##############################################
-    // ######## Confirmation Link Generation ########
+    // ################ Registration ################
     // ##############################################
 
     @Nested
@@ -173,7 +185,8 @@ class AuthenticationFacadeTest {
 
             // GIVEN
             final var EXPECTED_CLIENT_URL = "http://localhost:8080";
-            var accountDO = AccountDO.builder()
+            var accountDO = AccountDO
+                    .builder()
                     .emailAddress( "test@email.com" )
                     .build();
             validationRepository.setEmailExists( true );
@@ -195,13 +208,14 @@ class AuthenticationFacadeTest {
 
                 // WHEN
                 // THEN
-                assertThatThrownBy( () -> sut.createNewAccountConfirmationLink( null ) ).isInstanceOf( NullPointerException.class );
+                assertThatThrownBy( () -> sut.createNewAccountConfirmationLink( null ) ).isInstanceOf(
+                        NullPointerException.class );
             }
         }
     }
 
     // ##############################################
-    // ############ Account Confirmation ############
+    // ######## Confirmation Link Generation ########
     // ##############################################
 
     @Nested
@@ -223,9 +237,18 @@ class AuthenticationFacadeTest {
 
                 // WHEN
                 // THEN
-                assertThatThrownBy( () -> sut.confirmRegistration( StringUtils.EMPTY ) ).isInstanceOf( NullPointerException.class );
+                assertThatThrownBy( () -> sut.confirmRegistration( StringUtils.EMPTY ) ).isInstanceOf(
+                        NullPointerException.class );
             }
         }
+    }
+
+    // ##############################################
+    // ############ Account Confirmation ############
+    // ##############################################
+
+    private void prepareTimeService() {
+        timeService = new InMemoryTimeService();
     }
 
     private void preparePropertiesProvider() {
@@ -245,8 +268,7 @@ class AuthenticationFacadeTest {
     }
 
     private void prepareRepository() {
-        accountRepository = new InMemoryAccountRepository()
-        ;
+        accountRepository = new InMemoryAccountRepository();
     }
 
     private void prepareValidator() {

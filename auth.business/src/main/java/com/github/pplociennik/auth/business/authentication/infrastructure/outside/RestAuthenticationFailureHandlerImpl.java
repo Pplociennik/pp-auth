@@ -22,25 +22,26 @@
  * SOFTWARE.
  */
 
-package com.github.pplociennik.auth.business.authentication.ports;
+package com.github.pplociennik.auth.business.authentication.infrastructure.outside;
 
-import org.springframework.lang.NonNull;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
- * A service for Account data management.
+ * Handler for failure rest authentication.
  *
- * @author Created by: Pplociennik at 17.09.2021 21:54
+ * @author Created by: Pplociennik at 29.01.2022 22:56
  */
-public interface AccountSecurityDataService extends UserDetailsService {
+class RestAuthenticationFailureHandlerImpl extends SimpleUrlAuthenticationFailureHandler {
 
-    /**
-     * Returns a user data object with the specified username.
-     *
-     * @param aUsername
-     *         the username identifying the user whose data is required.
-     * @return a user data object.
-     */
-    UserDetails loadUserByUsername( @NonNull final String aUsername );
+    @Override
+    public void onAuthenticationFailure( HttpServletRequest request, HttpServletResponse response,
+                                         AuthenticationException exception ) throws ServletException, IOException {
+        super.onAuthenticationFailure( request, response, exception );
+    }
 }

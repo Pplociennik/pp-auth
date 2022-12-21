@@ -79,6 +79,21 @@ public enum AuthResExcMsgTranslationKey implements TranslationKey {
     AUTHENTICATION_USERNAME_NOT_FOUND,
 
     /**
+     * Authentication process: Incorrect password.
+     */
+    AUTHENTICATION_INCORRECT_PASSWORD,
+
+    /**
+     * Authentication process: Account not confirmed!
+     */
+    AUTHENTICATION_ACCOUNT_NOT_CONFIRMED,
+
+    /**
+     * Authentication process: Account has been blocked. Please, contact the administrators.
+     */
+    AUTHENTICATION_ACCOUNT_LOCKED,
+
+    /**
      * Account confirmation: Account does not exist!
      */
     ACCOUNT_CONFIRMATION_USER_NOT_EXISTS,

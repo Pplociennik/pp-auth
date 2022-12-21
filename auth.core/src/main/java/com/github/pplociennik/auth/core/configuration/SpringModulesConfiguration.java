@@ -33,14 +33,6 @@ import org.springframework.context.annotation.Configuration;
  * @author Created by: Pplociennik at 13.10.2021 17:18
  */
 @Configuration
-@ComponentScan(
-        basePackages = {
-                "com.github.pplociennik.auth.mailing",
-                "com.github.pplociennik.auth.business",
-                "com.github.pplociennik.auth.common",
-                "com.github.pplociennik.auth.api",
-                "com.github.pplociennik.auth.db"
-        }
-)
+@ComponentScan( basePackages = { "com.github.pplociennik.auth.business", "com.github.pplociennik.auth.common", "com.github.pplociennik.auth.api", "com.github.pplociennik.auth.db" } )
 class SpringModulesConfiguration {
 }
