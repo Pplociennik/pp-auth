@@ -1,6 +1,6 @@
 package com.github.pplociennik.auth.common.lang;
 
-import com.github.pplociennik.util.lang.TranslationKey;
+import com.github.pplociennik.commons.lang.TranslationKey;
 
 /**
  * An enum holding keys for identifying units' translated names.

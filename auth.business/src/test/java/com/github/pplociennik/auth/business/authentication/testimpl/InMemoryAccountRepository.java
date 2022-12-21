@@ -65,7 +65,7 @@ public class InMemoryAccountRepository implements AccountRepository {
     }
 
     @Override
-    public AccountDO update( @NonNull AccountDO aAccount ) {
+    public AccountDO persist( @NonNull AccountDO aAccount ) {
         requireNonNull( aAccount );
         database.add( aAccount );
         return aAccount;
@@ -74,8 +74,11 @@ public class InMemoryAccountRepository implements AccountRepository {
     @Override
     public AccountDO findAccountByUsername( @NonNull String aUsername ) {
         requireNonNull( aUsername );
-        var account = database.stream()
-                .filter( acc -> acc.getUsername().equals( aUsername ) )
+        var account = database
+                .stream()
+                .filter( acc -> acc
+                        .getUsername()
+                        .equals( aUsername ) )
                 .findAny();
 
         return account.orElse( null );

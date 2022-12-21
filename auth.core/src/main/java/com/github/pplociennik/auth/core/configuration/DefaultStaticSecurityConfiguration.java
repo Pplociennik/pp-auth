@@ -34,7 +34,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
- * A class defining default security configuration. Should be imported in Spring's configuration class if there's a need to use the library in the default state.
+ * A class defining default security configuration. Should be imported in Spring's configuration class if there's a need
+ * to use the library in the default state.
  *
  * @author Created by: Pplociennik at 16.09.2021 21:06
  */
@@ -45,10 +46,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableWebSecurity
 @EnableSwagger2
 @EnableAsync
-@Import( {
-        SpringModulesConfiguration.class,
-        SecurityConfiguration.class
-} )
+@Import( { SpringModulesConfiguration.class, SecurityConfiguration.class } )
 public class DefaultStaticSecurityConfiguration {
 
 }

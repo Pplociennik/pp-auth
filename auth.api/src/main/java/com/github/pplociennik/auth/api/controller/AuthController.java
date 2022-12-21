@@ -24,8 +24,8 @@
 
 package com.github.pplociennik.auth.api.controller;
 
-import com.github.pplociennik.auth.business.authentication.AuthenticationFacade;
 import auth.dto.RegistrationDto;
+import com.github.pplociennik.auth.business.authentication.AuthenticationFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;

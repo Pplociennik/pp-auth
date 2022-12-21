@@ -34,6 +34,7 @@ import com.github.pplociennik.auth.business.shared.system.EnvironmentPropertiesP
 import com.github.pplociennik.auth.business.shared.system.TimeService;
 import com.github.pplociennik.auth.common.exc.AccountConfirmationException;
 import com.github.pplociennik.auth.db.entity.authentication.Account;
+import com.github.pplociennik.auth.db.entity.authorization.Authority;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -47,7 +48,8 @@ import static com.github.pplociennik.auth.business.shared.authorization.RolesDef
 import static com.github.pplociennik.auth.business.shared.system.SystemProperty.GLOBAL_CLIENT_URL;
 import static com.github.pplociennik.auth.common.lang.AuthResExcMsgTranslationKey.ACCOUNT_CONFIRMATION_TOKEN_EXPIRED;
 import static com.github.pplociennik.auth.common.lang.AuthResExcMsgTranslationKey.ACCOUNT_CONFIRMATION_USER_NOT_EXISTS;
-import static com.github.pplociennik.util.utility.CustomObjects.requireNonEmpty;
+import static com.github.pplociennik.commons.utility.CustomObjects.requireNonEmpty;
+import static com.github.pplociennik.commons.utility.identifier.UniqueIdentifierGenerator.generateIdentifier;
 import static java.time.Instant.now;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toUnmodifiableSet;
@@ -94,7 +96,7 @@ class AuthService {
         var newAccount = createNewAccount( aRegistrationDO, hashedPassword );
         addNewAccountBasePrivilidges( newAccount );
 
-        return accountRepository.update( newAccount );
+        return accountRepository.persist( newAccount );
     }
 
     /**
@@ -143,8 +145,11 @@ class AuthService {
         requireNonNull( aRegistrationDO );
         requireNonNull( aHashedPassword );
 
+        var identifier = generateIdentifier( Account.class, aRegistrationDO.getUsername() );
+
         return AccountDO
                 .builder()
+                .uniqueObjectIdentifier( identifier )
                 .username( aRegistrationDO.getUsername() )
                 .password( aHashedPassword )
                 .emailAddress( aRegistrationDO.getEmail() )
@@ -197,8 +202,11 @@ class AuthService {
     }
 
     private AuthorityDO createNewOrphanAuthority( String aAuthorityName ) {
+        var identifier = generateIdentifier( Authority.class, aAuthorityName );
+
         var authorityDO = new AuthorityDO();
         authorityDO.setAuthorityName( aAuthorityName );
+        authorityDO.setUniqueObjectIdentifier( identifier );
 
         return authorityDO;
     }

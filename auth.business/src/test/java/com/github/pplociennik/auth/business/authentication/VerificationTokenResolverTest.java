@@ -23,19 +23,22 @@ class VerificationTokenResolverTest {
 
         // WHEN
         // THEN
-        assertThatThrownBy( () -> sut.resolveUniqueToken( null, EMAIL_CONFIRMATION_TOKEN ) ).isInstanceOf( NullPointerException.class );
+        assertThatThrownBy( () -> sut.resolveUniqueToken( null, EMAIL_CONFIRMATION_TOKEN ) ).isInstanceOf(
+                NullPointerException.class );
     }
 
     @Test
     void shouldThrowNullPointerException_whenTypeParameterIsNull() {
 
         // GIVEN
-        var accountDO = AccountDO.builder()
+        var accountDO = AccountDO
+                .builder()
                 .emailAddress( "test@email.com" )
                 .build();
         // WHEN
         // THEN
-        assertThatThrownBy( () -> sut.resolveUniqueToken( accountDO, null ) ).isInstanceOf( NullPointerException.class );
+        assertThatThrownBy( () -> sut.resolveUniqueToken( accountDO, null ) ).isInstanceOf(
+                NullPointerException.class );
     }
 
     @Test
@@ -50,7 +53,8 @@ class VerificationTokenResolverTest {
     void shouldReturnNewlyCreatedToken_whenDataValid() {
 
         // GIVEN
-        var accountDO = AccountDO.builder()
+        var accountDO = AccountDO
+                .builder()
                 .emailAddress( "test@email.com" )
                 .build();
 

@@ -32,7 +32,7 @@
     <!--                                        ### Authentication ###                                               -->
     <!-- ########################################################################################################### -->
 
-    <property name="DATE_TIME_WITH_ZONE">VARCHAR(60)</property>
+    <property name="DATE_TIME_WITH_ZONE" value="VARCHAR(60)"/>
 
     <changeSet id="2021.09.27 19:03:00" author="pplociennik" dbms="mssql"
                context="ctx.auth">
@@ -45,6 +45,9 @@
             <column name="ID" type="BIGINT">
                 <constraints primaryKey="true" nullable="false" unique="true"/>
             </column>
+            <column name="UNIQUE_OBJECT_IDENTIFIER" type="VARCHAR(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
             <column name="USERNAME" type="VARCHAR(25)">
                 <constraints nullable="false" unique="true"/>
             </column>
@@ -55,7 +58,9 @@
                 <constraints nullable="false"/>
             </column>
             <column name="CREATION_DATE" type="${DATE_TIME_WITH_ZONE}">
-                <constraints nullable="false" updatable="false"/>
+                <constraints nullable="false"/>
+            </column>
+            <column name="LAST_MODIFICATION" type="${DATE_TIME_WITH_ZONE}">
             </column>
             <column name="LAST_LOGIN_DATE" type="${DATE_TIME_WITH_ZONE}"/>
             <column name="ENABLED" type="BOOLEAN">
@@ -86,6 +91,9 @@
             <column name="ID" type="BIGINT">
                 <constraints primaryKey="true" nullable="false" unique="true"/>
             </column>
+            <column name="UNIQUE_OBJECT_IDENTIFIER" type="VARCHAR(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
             <column name="USERNAME" type="VARCHAR(25)">
                 <constraints nullable="false" unique="true"/>
             </column>
@@ -96,7 +104,9 @@
                 <constraints nullable="false"/>
             </column>
             <column name="CREATION_DATE" type="${DATE_TIME_WITH_ZONE}">
-                <constraints nullable="false" updatable="false"/>
+                <constraints nullable="false"/>
+            </column>
+            <column name="LAST_MODIFICATION" type="${DATE_TIME_WITH_ZONE}">
             </column>
             <column name="LAST_LOGIN_DATE" type="${DATE_TIME_WITH_ZONE}"/>
             <column name="ENABLED" type="BOOLEAN">
@@ -129,6 +139,9 @@
             <column name="ID" type="BIGINT">
                 <constraints primaryKey="true" nullable="false" unique="true"/>
             </column>
+            <column name="UNIQUE_OBJECT_IDENTIFIER" type="VARCHAR(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
             <column name="TOKEN_TYPE" type="VARCHAR(25)">
                 <constraints nullable="false"/>
             </column>
@@ -143,7 +156,7 @@
             </column>
             <column name="OWNER_ID" type="BIGINT">
                 <constraints nullable="false"
-                             foreignKeyName="FOREIGN_KEY_OWNER_ID"
+                             foreignKeyName="FOREIGN_KEY_TOKENS_OWNER_ID"
                              references="AUTH_ACCOUNTS(ID)"/>
             </column>
         </createTable>
@@ -162,6 +175,9 @@
             <column name="ID" type="BIGINT">
                 <constraints primaryKey="true" nullable="false" unique="true"/>
             </column>
+            <column name="UNIQUE_OBJECT_IDENTIFIER" type="VARCHAR(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
             <column name="TOKEN_TYPE" type="VARCHAR(25)">
                 <constraints nullable="false"/>
             </column>
@@ -176,7 +192,7 @@
             </column>
             <column name="OWNER_ID" type="BIGINT">
                 <constraints nullable="false"
-                             foreignKeyName="FOREIGN_KEY_OWNER_ID"
+                             foreignKeyName="FOREIGN_KEY_TOKENS_OWNER_ID"
                              references="AUTH_ACCOUNTS(ID)"/>
             </column>
         </createTable>
@@ -199,12 +215,15 @@
             <column name="ID" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" unique="true"/>
             </column>
+            <column name="UNIQUE_OBJECT_IDENTIFIER" type="VARCHAR(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
             <column name="AUTHORITY_NAME" type="VARCHAR(15)">
                 <constraints nullable="false" unique="true"/>
             </column>
             <column name="OWNER_ID" type="BIGINT">
                 <constraints nullable="false"
-                             foreignKeyName="FOREIGN_KEY_OWNER_ID"
+                             foreignKeyName="FOREIGN_KEY_AUTHORITIES_OWNER_ID"
                              references="AUTH_ACCOUNTS(ID)"/>
             </column>
         </createTable>
@@ -224,12 +243,15 @@
             <column name="ID" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" unique="true"/>
             </column>
+            <column name="UNIQUE_OBJECT_IDENTIFIER" type="VARCHAR(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
             <column name="AUTHORITY_NAME" type="VARCHAR(15)">
                 <constraints nullable="false" unique="true"/>
             </column>
             <column name="OWNER_ID" type="BIGINT">
                 <constraints nullable="false"
-                             foreignKeyName="FOREIGN_KEY_OWNER_ID"
+                             foreignKeyName="FOREIGN_KEY_AUTHORITIES_OWNER_ID"
                              references="AUTH_ACCOUNTS(ID)"/>
             </column>
         </createTable>

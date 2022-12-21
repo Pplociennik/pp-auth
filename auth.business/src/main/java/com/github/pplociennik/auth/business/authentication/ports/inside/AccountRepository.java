@@ -40,7 +40,7 @@ public interface AccountRepository {
      * @param aAccount
      *         a user account.
      */
-    AccountDO update( @NonNull AccountDO aAccount );
+    AccountDO persist( @NonNull AccountDO aAccount );
 
     /**
      * Returns an account with the specified username if it exists in the database.

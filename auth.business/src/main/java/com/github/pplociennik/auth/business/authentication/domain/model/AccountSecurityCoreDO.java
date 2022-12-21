@@ -34,7 +34,8 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * A class being the implementation of the {@link UserDetails} interface being responsible for managing the users' information.
+ * A class being the implementation of the {@link UserDetails} interface being responsible for managing the users'
+ * information.
  *
  * @author Created by: Pplociennik at 15.10.2021 20:10
  */

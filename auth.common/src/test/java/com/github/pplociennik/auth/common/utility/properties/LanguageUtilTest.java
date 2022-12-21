@@ -24,7 +24,7 @@
 
 package com.github.pplociennik.auth.common.utility.properties;
 
-import com.github.pplociennik.util.utility.LanguageUtil;
+import com.github.pplociennik.commons.utility.LanguageUtil;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -50,7 +50,9 @@ class LanguageUtilTest {
         LocaleContextHolder.setLocale( localeForBeingSet );
 
         var newLocale = LanguageUtil.getLocale();
-        Assertions.assertThat( newLocale.getLanguage() ).isEqualTo( aExpectedLocaleId );
+        Assertions
+                .assertThat( newLocale.getLanguage() )
+                .isEqualTo( aExpectedLocaleId );
     }
 
     @Test
@@ -62,7 +64,9 @@ class LanguageUtilTest {
         LocaleContextHolder.setLocale( localeForBeingSet );
 
         var translation = LanguageUtil.getLocalizedMessage( AUTHENTICATION_EMAIL_ALREADY_IN_USE );
-        Assertions.assertThat( translation ).isEqualTo( expectedTranslation );
+        Assertions
+                .assertThat( translation )
+                .isEqualTo( expectedTranslation );
     }
 
     @Test
@@ -74,7 +78,9 @@ class LanguageUtilTest {
         LocaleContextHolder.setLocale( localeForBeingSet );
 
         var translation = LanguageUtil.getLocalizedMessage( AUTHENTICATION_EMAIL_NOT_MATCHING_PATTERN );
-        Assertions.assertThat( translation ).isEqualTo( expectedTranslation );
+        Assertions
+                .assertThat( translation )
+                .isEqualTo( expectedTranslation );
     }
 
     @Test
@@ -86,7 +92,9 @@ class LanguageUtilTest {
         LocaleContextHolder.setLocale( localeForBeingSet );
 
         var translation = LanguageUtil.getLocalizedMessage( AUTHENTICATION_EMAIL_NOT_MATCHING_PATTERN );
-        Assertions.assertThat( translation ).isEqualTo( expectedTranslation );
+        Assertions
+                .assertThat( translation )
+                .isEqualTo( expectedTranslation );
     }
 
     @Test
@@ -101,7 +109,9 @@ class LanguageUtilTest {
         LocaleContextHolder.setLocale( localeForBeingSet );
 
         var translation = LanguageUtil.getLocalizedMessage( UNEXPECTED_EXCEPTION, params );
-        Assertions.assertThat( translation ).isEqualTo( expectedTranslation );
+        Assertions
+                .assertThat( translation )
+                .isEqualTo( expectedTranslation );
     }
 
 }

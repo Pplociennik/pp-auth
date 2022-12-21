@@ -46,6 +46,8 @@
             <column name="ENABLED" value="true"/>
             <column name="PASSWORD" value="Test1234!"/>
             <column name="USERNAME" value="Tester"/>
+            <column name="UNIQUE_OBJECT_IDENTIFIER" value="Account_221222_010600_Tester"/>
+            <column name="CREATION_DATE" value="2019-01-21T05:36:18.973Z[Etc/UTC]"/>
         </insert>
         <comment>Inserts simple tester account data for tests.</comment>
     </changeSet>
@@ -67,6 +69,8 @@
             <column name="ENABLED" value="true"/>
             <column name="PASSWORD" value="Test1234!"/>
             <column name="USERNAME" value="Tester"/>
+            <column name="UNIQUE_OBJECT_IDENTIFIER" value="Account_221222_010600_Tester"/>
+            <column name="CREATION_DATE" value="2019-01-21T05:36:18.973Z[Etc/UTC]"/>
         </insert>
         <comment>Inserts simple tester account data for tests.</comment>
     </changeSet>

@@ -80,14 +80,21 @@ class AccountSecurityDataServiceTest {
         var user2 = sut.loadUserByUsername( TEST_USERNAME_2 );
         var user3 = sut.loadUserByUsername( TEST_USERNAME_3 );
 
-        assertThat( user1 ).usingRecursiveComparison().isEqualTo( TEST_USER_1 );
-        assertThat( user2 ).usingRecursiveComparison().isEqualTo( TEST_USER_2 );
-        assertThat( user3 ).usingRecursiveComparison().isEqualTo( TEST_USER_3 );
+        assertThat( user1 )
+                .usingRecursiveComparison()
+                .isEqualTo( TEST_USER_1 );
+        assertThat( user2 )
+                .usingRecursiveComparison()
+                .isEqualTo( TEST_USER_2 );
+        assertThat( user3 )
+                .usingRecursiveComparison()
+                .isEqualTo( TEST_USER_3 );
     }
 
     @Test
     void shouldThrowUsernameNotFoundException_whenThereIsNoSuchAUserInTheDatabase() {
-        assertThatThrownBy( () -> sut.loadUserByUsername( TEST_INCORRECT_USERNAME ) ).isInstanceOf( UsernameNotFoundException.class );
+        assertThatThrownBy( () -> sut.loadUserByUsername( TEST_INCORRECT_USERNAME ) ).isInstanceOf(
+                UsernameNotFoundException.class );
     }
 
     @Test

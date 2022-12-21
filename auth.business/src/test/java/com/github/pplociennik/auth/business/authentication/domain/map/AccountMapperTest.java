@@ -63,8 +63,12 @@ class AccountMapperTest {
         assertThat( securityCoreDO.isEnabled() ).isEqualTo( testAccount.isEnabled() );
         assertThat( securityCoreDO.isCredentialsNonExpired() ).isEqualTo( testAccount.isCredentialsNonExpired() );
         assertThat( securityCoreDO.getAuthorities() ).anyMatch( authority -> {
-            return testAccount.getAuthorities().stream()
-                    .anyMatch( a -> a.getName().equals( authority.getAuthority() ) );
+            return testAccount
+                    .getAuthorities()
+                    .stream()
+                    .anyMatch( a -> a
+                            .getName()
+                            .equals( authority.getAuthority() ) );
         } );
     }
 
@@ -79,7 +83,8 @@ class AccountMapperTest {
         var nonExpired = true;
         var credsNonExpired = true;
         var authoritiesDOs = prepareTestAuthoritiesDOs();
-        var accountDO = AccountDO.builder()
+        var accountDO = AccountDO
+                .builder()
                 .username( username )
                 .emailAddress( email )
                 .accountNonLocked( nonLocked )
@@ -95,17 +100,18 @@ class AccountMapperTest {
 
         // THEN
         var authorities = prepareTestAuthorities();
-        var expectedAccount = Account.builder()
-                .username( username )
-                .emailAddress( email )
-                .accountNonLocked( nonLocked )
-                .accountNonExpired( nonExpired )
-                .credentialsNonExpired( credsNonExpired )
-                .enabled( enabled )
-                .authorities( authorities )
-                .build();
+        var expectedAccount = new Account();
+        expectedAccount.setUsername( username );
+        expectedAccount.setEmailAddress( email );
+        expectedAccount.setAccountNonLocked( nonLocked );
+        expectedAccount.setAccountNonExpired( nonExpired );
+        expectedAccount.setCredentialsNonExpired( credsNonExpired );
+        expectedAccount.setEnabled( enabled );
+        expectedAccount.setAuthorities( authorities );
         authorities.forEach( aAuthority -> aAuthority.setAuthoritiesOwner( expectedAccount ) );
-        assertThat( result ).usingRecursiveComparison().isEqualTo( expectedAccount );
+        assertThat( result )
+                .usingRecursiveComparison()
+                .isEqualTo( expectedAccount );
     }
 
     @Test
@@ -119,15 +125,14 @@ class AccountMapperTest {
         var nonExpired = true;
         var credsNonExpired = true;
         var authorities = prepareTestAuthorities();
-        var account = Account.builder()
-                .username( username )
-                .emailAddress( email )
-                .accountNonLocked( nonLocked )
-                .accountNonExpired( nonExpired )
-                .credentialsNonExpired( credsNonExpired )
-                .enabled( enabled )
-                .authorities( authorities )
-                .build();
+        var account = new Account();
+        account.setUsername( username );
+        account.setEmailAddress( email );
+        account.setAccountNonLocked( nonLocked );
+        account.setAccountNonExpired( nonExpired );
+        account.setCredentialsNonExpired( credsNonExpired );
+        account.setEnabled( enabled );
+        account.setAuthorities( authorities );
         authorities.forEach( aAuthority -> aAuthority.setAuthoritiesOwner( account ) );
 
         // WHEN
@@ -135,7 +140,8 @@ class AccountMapperTest {
 
         // THEN
         var authoritiesDOs = prepareTestAuthoritiesDOs();
-        var expectedAccountDO = AccountDO.builder()
+        var expectedAccountDO = AccountDO
+                .builder()
                 .username( username )
                 .emailAddress( email )
                 .accountNonLocked( nonLocked )
@@ -145,7 +151,9 @@ class AccountMapperTest {
                 .authorities( authoritiesDOs )
                 .build();
         authoritiesDOs.forEach( aAuthorityDO -> aAuthorityDO.setOwner( expectedAccountDO ) );
-        assertThat( result ).usingRecursiveComparison().isEqualTo( expectedAccountDO );
+        assertThat( result )
+                .usingRecursiveComparison()
+                .isEqualTo( expectedAccountDO );
     }
 
     @Test
@@ -159,7 +167,8 @@ class AccountMapperTest {
         var nonExpired = true;
         var credsNonExpired = true;
         var authorities = prepareTestAuthoritiesDto();
-        var accountDto = AccountDto.builder()
+        var accountDto = AccountDto
+                .builder()
                 .username( username )
                 .emailAddress( email )
                 .accountNonLocked( nonLocked )
@@ -170,11 +179,12 @@ class AccountMapperTest {
                 .build();
 
         // WHEN
-        var result = AccountMapper.mapToDto( accountDto );
+        var result = AccountMapper.mapToDomain( accountDto );
 
         // THEN
         var authoritiesDOs = prepareTestAuthoritiesDOs();
-        var expectedAccountDO = AccountDO.builder()
+        var expectedAccountDO = AccountDO
+                .builder()
                 .username( username )
                 .emailAddress( email )
                 .accountNonLocked( nonLocked )
@@ -184,7 +194,9 @@ class AccountMapperTest {
                 .authorities( authoritiesDOs )
                 .build();
         authoritiesDOs.forEach( aAuthorityDO -> aAuthorityDO.setOwner( expectedAccountDO ) );
-        assertThat( result ).usingRecursiveComparison().isEqualTo( expectedAccountDO );
+        assertThat( result )
+                .usingRecursiveComparison()
+                .isEqualTo( expectedAccountDO );
     }
 
     @Test
@@ -198,7 +210,8 @@ class AccountMapperTest {
         var nonExpired = true;
         var credsNonExpired = true;
         var authoritiesDOs = prepareTestAuthoritiesDOs();
-        var accountDO = AccountDO.builder()
+        var accountDO = AccountDO
+                .builder()
                 .username( username )
                 .emailAddress( email )
                 .accountNonLocked( nonLocked )
@@ -214,7 +227,8 @@ class AccountMapperTest {
 
         // THEN
         var authorities = prepareTestAuthoritiesDto();
-        var expectedAAccountDto = AccountDto.builder()
+        var expectedAAccountDto = AccountDto
+                .builder()
                 .username( username )
                 .emailAddress( email )
                 .accountNonLocked( nonLocked )
@@ -223,7 +237,9 @@ class AccountMapperTest {
                 .enabled( enabled )
                 .authorities( authorities )
                 .build();
-        assertThat( result ).usingRecursiveComparison().isEqualTo( expectedAAccountDto );
+        assertThat( result )
+                .usingRecursiveComparison()
+                .isEqualTo( expectedAAccountDto );
     }
 
     @Test
@@ -232,7 +248,8 @@ class AccountMapperTest {
     }
 
     private Set< AuthorityDO > prepareTestAuthoritiesDOs() {
-        var baseAuthority = AuthorityDO.builder()
+        var baseAuthority = AuthorityDO
+                .builder()
                 .authorityName( AUTH_USER_ROLE.getName() )
                 .build();
 
@@ -240,9 +257,8 @@ class AccountMapperTest {
     }
 
     private Set< Authority > prepareTestAuthorities() {
-        var baseAuthority = Authority.builder()
-                .name( AUTH_USER_ROLE.getName() )
-                .build();
+        var baseAuthority = new Authority();
+        baseAuthority.setName( AUTH_USER_ROLE.getName() );
 
         return Set.of( baseAuthority );
     }

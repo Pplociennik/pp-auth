@@ -31,7 +31,8 @@ class EmailContentData {
      *
      * @param aContext
      *         a context of a message.
-     * @return a new {@link EmailContentData} object containing information necessary to create a new email message to be sent.
+     * @return a new {@link EmailContentData} object containing information necessary to create a new email message to
+     * be sent.
      */
     static EmailContentData of( @NonNull Context aContext, @NonNull Locale aLocale ) {
         return new EmailContentData( aContext, StringUtils.EMPTY, aLocale );
@@ -44,7 +45,8 @@ class EmailContentData {
      *         a context of a message.
      * @param aTemplateFile
      *         a name of the template file.
-     * @return a new {@link EmailContentData} object containing information necessary to create a new email message to be sent.
+     * @return a new {@link EmailContentData} object containing information necessary to create a new email message to
+     * be sent.
      */
     static EmailContentData of( @NonNull Context aContext, @NonNull String aTemplateFile, @NonNull Locale aLocale ) {
         return new EmailContentData( aContext, aTemplateFile, aLocale );

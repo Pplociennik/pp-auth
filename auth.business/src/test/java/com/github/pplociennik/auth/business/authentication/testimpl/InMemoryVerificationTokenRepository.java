@@ -33,8 +33,11 @@ public class InMemoryVerificationTokenRepository implements VerificationTokenRep
 
     @Override
     public VerificationTokenDO findByToken( String aToken ) {
-        return database.stream()
-                .filter( token -> token.getToken().equals( aToken ) )
+        return database
+                .stream()
+                .filter( token -> token
+                        .getToken()
+                        .equals( aToken ) )
                 .findAny()
                 .orElse( null );
     }

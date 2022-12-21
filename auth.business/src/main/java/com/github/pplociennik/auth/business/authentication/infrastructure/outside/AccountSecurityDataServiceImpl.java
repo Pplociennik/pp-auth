@@ -34,8 +34,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import static com.github.pplociennik.auth.business.authentication.domain.map.AccountMapper.mapToSecurityCoreDO;
 import static com.github.pplociennik.auth.common.lang.AuthResExcMsgTranslationKey.AUTHENTICATION_USERNAME_NOT_FOUND;
-import static com.github.pplociennik.util.utility.CustomObjects.arrayOf;
-import static com.github.pplociennik.util.utility.LanguageUtil.getLocalizedMessage;
+import static com.github.pplociennik.commons.utility.CustomObjects.arrayOf;
+import static com.github.pplociennik.commons.utility.LanguageUtil.getLocalizedMessage;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -60,8 +60,8 @@ class AccountSecurityDataServiceImpl implements AccountSecurityDataService {
         requireNonNull( aUsername );
 
         var account = AccountDao.findAccountByUsername( aUsername );
-        var toReturn = account.orElseThrow(
-                () -> new UsernameNotFoundException( getLocalizedMessage( AUTHENTICATION_USERNAME_NOT_FOUND, arrayOf( aUsername ) ) ) );
+        var toReturn = account.orElseThrow( () -> new UsernameNotFoundException(
+                getLocalizedMessage( AUTHENTICATION_USERNAME_NOT_FOUND, arrayOf( aUsername ) ) ) );
 
         return mapToSecurityCoreDO( toReturn );
     }

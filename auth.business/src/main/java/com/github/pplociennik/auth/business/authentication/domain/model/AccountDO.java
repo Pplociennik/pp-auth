@@ -44,9 +44,9 @@ import java.util.Set;
 public class AccountDO {
 
     /**
-     * An identifier of the object.
+     * An unique object identifier.
      */
-    private long id;
+    private String uniqueObjectIdentifier;
 
     /**
      * An email address.
@@ -67,6 +67,11 @@ public class AccountDO {
      * Account's creation date.
      */
     private ZonedDateTime creationDate;
+
+    /**
+     * Account's last modification date.
+     */
+    private ZonedDateTime lastModificationDate;
 
     /**
      * Account's last login date.
@@ -105,8 +110,12 @@ public class AccountDO {
 
     @Override
     public boolean equals( Object aO ) {
-        if ( this == aO ) return true;
-        if ( aO == null || getClass() != aO.getClass() ) return false;
+        if ( this == aO ) {
+            return true;
+        }
+        if ( aO == null || getClass() != aO.getClass() ) {
+            return false;
+        }
         AccountDO accountDO = ( AccountDO ) aO;
         return emailAddress.equals( accountDO.emailAddress ) && username.equals( accountDO.username );
     }

@@ -55,7 +55,7 @@ class AccountRepositoryImpl implements AccountRepository {
      * {@inheritDoc}
      */
     @Override
-    public AccountDO update( @NonNull AccountDO aAccountDO ) {
+    public AccountDO persist( @NonNull AccountDO aAccountDO ) {
         requireNonNull( aAccountDO );
 
         var account = mapToEntity( aAccountDO );

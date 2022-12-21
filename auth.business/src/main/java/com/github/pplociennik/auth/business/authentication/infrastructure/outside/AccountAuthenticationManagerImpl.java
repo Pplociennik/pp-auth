@@ -11,7 +11,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static com.github.pplociennik.auth.common.lang.AuthResExcMsgTranslationKey.*;
-import static com.github.pplociennik.util.utility.LanguageUtil.getLocalizedMessage;
+import static com.github.pplociennik.commons.utility.LanguageUtil.getLocalizedMessage;
 
 /**
  * Custom authentication provider.
@@ -64,7 +64,7 @@ class AccountAuthenticationManagerImpl implements AuthenticationManager {
     private void updateLastLoginDate( AccountDO aAccountDO ) {
         var currentDateTime = timeService.getCurrentSystemDateTime();
         aAccountDO.setLastLoginDate( currentDateTime );
-        accountRepository.update( aAccountDO );
+        accountRepository.persist( aAccountDO );
     }
 
     private boolean executeValidation( AccountDO aAccount, String aName, String aPassword ) {

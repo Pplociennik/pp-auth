@@ -39,7 +39,8 @@ public class RegistrationMapperTestDataSupplier {
 
     public static RegistrationDto prepareSimpleRegistrationDto() {
 
-        return RegistrationDto.builder()
+        return RegistrationDto
+                .builder()
                 .email( TEST_EMAIL )
                 .username( TEST_USERNAME )
                 .password( TEST_PASSWORD )

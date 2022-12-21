@@ -25,7 +25,9 @@
 package com.github.pplociennik.auth.db.entity.authorization;
 
 import com.github.pplociennik.auth.db.entity.authentication.Account;
-import lombok.*;
+import com.github.pplociennik.commons.persistence.BaseIdentifiableDataEntity;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 
@@ -34,23 +36,11 @@ import javax.persistence.*;
  *
  * @author Created by: Pplociennik at 17.09.2021 20:25
  */
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-@EqualsAndHashCode
+@Getter
+@Setter
 @Entity
 @Table( name = "AUTH_AUTHORITIES" )
-public class Authority {
-
-    /**
-     * An identifier of the object.
-     */
-    @Id
-    @GeneratedValue( strategy = GenerationType.SEQUENCE, generator = "AUTH_AUTHORITY_GEN" )
-    @SequenceGenerator( name = "AUTH_AUTHORITY_GEN", sequenceName = "SEQ_AUTH_AUTHORITY", allocationSize = 1 )
-    @Column( name = "ID", nullable = false, unique = true )
-    private Long id;
+public class Authority extends BaseIdentifiableDataEntity {
 
     /**
      * A string being a name of the authority. The name is being using during the authorization process.
@@ -65,5 +55,7 @@ public class Authority {
     @JoinColumn( name = "OWNER_ID", referencedColumnName = "ID" )
     private Account authoritiesOwner;
 
-
+    public Account getAuthoritiesOwner() {
+        return authoritiesOwner;
+    }
 }

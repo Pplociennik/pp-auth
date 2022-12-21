@@ -1,7 +1,9 @@
 package com.github.pplociennik.auth.db.entity.authentication;
 
 import auth.AuthVerificationTokenType;
-import lombok.*;
+import com.github.pplociennik.commons.persistence.BaseIdentifiableDataEntity;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.ZonedDateTime;
@@ -13,21 +15,9 @@ import java.time.ZonedDateTime;
  */
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Entity
 @Table( name = "AUTH_TOKENS" )
-public class VerificationToken {
-
-    /**
-     * An identifier of the object.
-     */
-    @Id
-    @GeneratedValue( strategy = GenerationType.SEQUENCE, generator = "AUTH_TOKEN_GEN" )
-    @SequenceGenerator( name = "AUTH_TOKEN_GEN", sequenceName = "SEQ_AUTH_TOKEN", allocationSize = 1 )
-    @Column( name = "ID", nullable = false )
-    private long id;
+public class VerificationToken extends BaseIdentifiableDataEntity {
 
     /**
      * A type of the token.

@@ -24,8 +24,8 @@
 
 package com.github.pplociennik.auth.business.authentication.domain.map;
 
-import com.github.pplociennik.auth.business.authentication.domain.model.RegistrationDO;
 import auth.dto.RegistrationDto;
+import com.github.pplociennik.auth.business.authentication.domain.model.RegistrationDO;
 import org.springframework.lang.NonNull;
 
 import static java.util.Objects.requireNonNull;
@@ -39,11 +39,7 @@ public class RegistrationMapper {
 
     public static RegistrationDO mapToDO( @NonNull RegistrationDto aRegistrationDto ) {
         requireNonNull( aRegistrationDto );
-        return new RegistrationDO(
-                aRegistrationDto.getEmail(),
-                aRegistrationDto.getUsername(),
-                aRegistrationDto.getPassword(),
-                aRegistrationDto.getRepeatedPassword()
-        );
+        return new RegistrationDO( aRegistrationDto.getEmail(), aRegistrationDto.getUsername(),
+                                   aRegistrationDto.getPassword(), aRegistrationDto.getRepeatedPassword() );
     }
 }

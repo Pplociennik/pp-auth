@@ -57,7 +57,8 @@ class AclMethodSecurityConfiguration extends GlobalMethodSecurityConfiguration {
     private final DataSource dataSource;
 
     @Autowired
-    public AclMethodSecurityConfiguration( @Lazy MethodSecurityExpressionHandler aDefaultMethodSecurityExpressionHandler, DataSource aDataSource ) {
+    public AclMethodSecurityConfiguration(
+            @Lazy MethodSecurityExpressionHandler aDefaultMethodSecurityExpressionHandler, DataSource aDataSource ) {
         defaultMethodSecurityExpressionHandler = aDefaultMethodSecurityExpressionHandler;
         dataSource = aDataSource;
     }
@@ -68,41 +69,32 @@ class AclMethodSecurityConfiguration extends GlobalMethodSecurityConfiguration {
     }
 
     @Bean
-    public MethodSecurityExpressionHandler
-    defaultMethodSecurityExpressionHandler() {
-        DefaultMethodSecurityExpressionHandler expressionHandler
-                = new DefaultMethodSecurityExpressionHandler();
-        AclPermissionEvaluator permissionEvaluator
-                = new AclPermissionEvaluator( aclService() );
+    public MethodSecurityExpressionHandler defaultMethodSecurityExpressionHandler() {
+        DefaultMethodSecurityExpressionHandler expressionHandler = new DefaultMethodSecurityExpressionHandler();
+        AclPermissionEvaluator permissionEvaluator = new AclPermissionEvaluator( aclService() );
         expressionHandler.setPermissionEvaluator( permissionEvaluator );
         return expressionHandler;
     }
 
     @Bean
     public JdbcMutableAclService aclService() {
-        return new JdbcMutableAclService(
-                dataSource, lookupStrategy(), aclCache() );
+        return new JdbcMutableAclService( dataSource, lookupStrategy(), aclCache() );
     }
 
     @Bean
     public AclAuthorizationStrategy aclAuthorizationStrategy() {
-        return new AclAuthorizationStrategyImpl(
-                new SimpleGrantedAuthority( "ROLE_ADMIN" ) );
+        return new AclAuthorizationStrategyImpl( new SimpleGrantedAuthority( "ROLE_ADMIN" ) );
     }
 
     @Bean
     public PermissionGrantingStrategy permissionGrantingStrategy() {
-        return new DefaultPermissionGrantingStrategy(
-                new ConsoleAuditLogger() );
+        return new DefaultPermissionGrantingStrategy( new ConsoleAuditLogger() );
     }
 
     @Bean
     public EhCacheBasedAclCache aclCache() {
-        return new EhCacheBasedAclCache(
-                aclEhCacheFactoryBean().getObject(),
-                permissionGrantingStrategy(),
-                aclAuthorizationStrategy()
-        );
+        return new EhCacheBasedAclCache( aclEhCacheFactoryBean().getObject(), permissionGrantingStrategy(),
+                                         aclAuthorizationStrategy() );
     }
 
     @Bean
@@ -120,11 +112,6 @@ class AclMethodSecurityConfiguration extends GlobalMethodSecurityConfiguration {
 
     @Bean
     public LookupStrategy lookupStrategy() {
-        return new BasicLookupStrategy(
-                dataSource,
-                aclCache(),
-                aclAuthorizationStrategy(),
-                new ConsoleAuditLogger()
-        );
+        return new BasicLookupStrategy( dataSource, aclCache(), aclAuthorizationStrategy(), new ConsoleAuditLogger() );
     }
 }

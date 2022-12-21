@@ -24,20 +24,22 @@ class AuthorityMapperTest {
         // GIVEN
         var authorityName = AUTH_USER_ROLE.getName();
         var account = prepareSimpleAccountData();
-        var authority = Authority.builder()
-                .name( authorityName )
-                .authoritiesOwner( account )
-                .build();
+        var authority = new Authority();
+        authority.setName( authorityName );
+        authority.setAuthoritiesOwner( account );
 
         // WHEN
         var authorityDO = AuthorityMapper.mapToDomain( authority );
 
         // THEN
-        var expectedAuthorityDO = AuthorityDO.builder()
+        var expectedAuthorityDO = AuthorityDO
+                .builder()
                 .authorityName( authorityName )
                 .owner( AccountMapper.mapToDomain( account ) )
                 .build();
-        assertThat( authorityDO ).usingRecursiveComparison().isEqualTo( expectedAuthorityDO );
+        assertThat( authorityDO )
+                .usingRecursiveComparison()
+                .isEqualTo( expectedAuthorityDO );
     }
 
     @Test
@@ -51,11 +53,14 @@ class AuthorityMapperTest {
         var authorityDO = AuthorityMapper.mapToDomain( authorityName, authorityOwner );
 
         // THEN
-        var expectedAuthorityDO = AuthorityDO.builder()
+        var expectedAuthorityDO = AuthorityDO
+                .builder()
                 .authorityName( authorityName )
                 .owner( authorityOwner )
                 .build();
-        assertThat( authorityDO ).usingRecursiveComparison().isEqualTo( expectedAuthorityDO );
+        assertThat( authorityDO )
+                .usingRecursiveComparison()
+                .isEqualTo( expectedAuthorityDO );
     }
 
     @Test
@@ -69,11 +74,14 @@ class AuthorityMapperTest {
         var authorityDO = AuthorityMapper.mapToDomain( authoritiesNames, authorityOwner );
 
         // THEN
-        var expectedAuthorityDO = AuthorityDO.builder()
+        var expectedAuthorityDO = AuthorityDO
+                .builder()
                 .authorityName( AUTH_USER_ROLE.getName() )
                 .owner( authorityOwner )
                 .build();
         var expectedDOs = Set.of( expectedAuthorityDO );
-        assertThat( authorityDO ).usingRecursiveComparison().isEqualTo( expectedDOs );
+        assertThat( authorityDO )
+                .usingRecursiveComparison()
+                .isEqualTo( expectedDOs );
     }
 }

@@ -74,7 +74,9 @@ class PermissionsServiceTest {
         when( mutableAclService.readAclById( TEST_EXISTING_ACL_ID ) ).thenReturn( returnedAcl );
         when( mutableAclService.readAclById( TEST_VALID_NON_EXISTING_ACL_ID ) ).thenReturn( null );
 
-        doNothing().when( returnedAcl ).insertAce( anyInt(), any(), any(), anyBoolean() );
+        doNothing()
+                .when( returnedAcl )
+                .insertAce( anyInt(), any(), any(), anyBoolean() );
     }
 
     @Test
@@ -89,22 +91,26 @@ class PermissionsServiceTest {
 
     @Test
     void shouldThrowNullPointerException_whenUsernameIsNullAndTypedDetailsGiven() {
-        assertThatThrownBy( () -> underTest.addPermission( null, TEST_OBJECT_TYPE, TEST_EXISTING_OBJECT_ID, BasePermission.READ ) );
+        assertThatThrownBy(
+                () -> underTest.addPermission( null, TEST_OBJECT_TYPE, TEST_EXISTING_OBJECT_ID, BasePermission.READ ) );
     }
 
     @Test
     void shouldThrowNullPointerException_whenObjectTypeIsNullAndTypedDetailsGiven() {
-        assertThatThrownBy( () -> underTest.addPermission( TEST_VALID_USERNAME, null, TEST_EXISTING_OBJECT_ID, BasePermission.READ ) );
+        assertThatThrownBy( () -> underTest.addPermission( TEST_VALID_USERNAME, null, TEST_EXISTING_OBJECT_ID,
+                                                           BasePermission.READ ) );
     }
 
     @Test
     void shouldThrowNullPointerException_whenObjectIdIsNullAndTypedDetailsGiven() {
-        assertThatThrownBy( () -> underTest.addPermission( TEST_VALID_USERNAME, TEST_OBJECT_TYPE, null, BasePermission.READ ) );
+        assertThatThrownBy(
+                () -> underTest.addPermission( TEST_VALID_USERNAME, TEST_OBJECT_TYPE, null, BasePermission.READ ) );
     }
 
     @Test
     void shouldThrowNullPointerException_whenPermissionIsNullAndTypedDetailsGiven() {
-        assertThatThrownBy( () -> underTest.addPermission( TEST_VALID_USERNAME, TEST_OBJECT_TYPE, TEST_EXISTING_OBJECT_ID, null ) );
+        assertThatThrownBy(
+                () -> underTest.addPermission( TEST_VALID_USERNAME, TEST_OBJECT_TYPE, TEST_EXISTING_OBJECT_ID, null ) );
     }
 
     @Test
@@ -124,11 +130,13 @@ class PermissionsServiceTest {
 
     @Test
     void shouldThrowNullPointerException_whenUsernameIsEmpty() {
-        assertThatThrownBy( () -> underTest.addPermission( StringUtils.EMPTY, TEST_TYPED_CLASS_OBJECT, BasePermission.READ ) );
+        assertThatThrownBy(
+                () -> underTest.addPermission( StringUtils.EMPTY, TEST_TYPED_CLASS_OBJECT, BasePermission.READ ) );
     }
 
     @Test
     void shouldThrowNullPointerException_whenUsernameIsEmptyAndTypedDetailsGiven() {
-        assertThatThrownBy( () -> underTest.addPermission( StringUtils.EMPTY, TEST_OBJECT_TYPE, TEST_EXISTING_OBJECT_ID, BasePermission.READ ) );
+        assertThatThrownBy( () -> underTest.addPermission( StringUtils.EMPTY, TEST_OBJECT_TYPE, TEST_EXISTING_OBJECT_ID,
+                                                           BasePermission.READ ) );
     }
 }

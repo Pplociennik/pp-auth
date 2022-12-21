@@ -26,8 +26,8 @@ package com.github.pplociennik.auth.api.exc;
 
 import com.github.pplociennik.auth.api.shared.ResponseEntityExceptionParams;
 import com.github.pplociennik.auth.common.exc.AccountConfirmationException;
-import com.github.pplociennik.util.exc.ValidationException;
-import com.github.pplociennik.util.utility.LanguageUtil;
+import com.github.pplociennik.commons.exc.ValidationException;
+import com.github.pplociennik.commons.utility.LanguageUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -38,8 +38,8 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import static com.github.pplociennik.auth.common.lang.AuthResExcMsgTranslationKey.UNEXPECTED_EXCEPTION;
-import static com.github.pplociennik.util.utility.CustomCollectors.toSingleton;
-import static com.github.pplociennik.util.utility.CustomObjects.arrayOf;
+import static com.github.pplociennik.commons.utility.CustomCollectors.toSingleton;
+import static com.github.pplociennik.commons.utility.CustomObjects.arrayOf;
 
 /**
  * An exception handler for controllers.
@@ -79,7 +79,8 @@ class ControllerAdvisor extends ResponseEntityExceptionHandler {
      * @return a response with BAD_REQUEST status
      */
     @ExceptionHandler( AccountConfirmationException.class )
-    ResponseEntity< ResponseEntityExceptionParams > handleAccountConfirmationException( AccountConfirmationException aException ) {
+    ResponseEntity< ResponseEntityExceptionParams > handleAccountConfirmationException(
+            AccountConfirmationException aException ) {
 
         var message = aException.getMessage();
 
@@ -114,7 +115,8 @@ class ControllerAdvisor extends ResponseEntityExceptionHandler {
 
     private Throwable getSuppressedException( Exception aException, Class aClass ) {
         var allSuppressed = aException.getSuppressed();
-        return Arrays.stream( allSuppressed )
+        return Arrays
+                .stream( allSuppressed )
                 .filter( aClass::isInstance )
                 .collect( toSingleton() );
     }

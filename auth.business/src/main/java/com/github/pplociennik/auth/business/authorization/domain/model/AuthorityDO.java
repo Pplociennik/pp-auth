@@ -16,20 +16,24 @@ import java.util.Objects;
 @NoArgsConstructor
 @Builder
 public class AuthorityDO {
-
+    private String uniqueObjectIdentifier;
     private String authorityName;
     private AccountDO owner;
 
     @Override
-    public boolean equals( Object aO ) {
-        if ( this == aO ) return true;
-        if ( aO == null || getClass() != aO.getClass() ) return false;
-        AuthorityDO that = ( AuthorityDO ) aO;
-        return authorityName.equals( that.authorityName );
+    public int hashCode() {
+        return Objects.hash( authorityName );
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash( authorityName );
+    public boolean equals( Object aO ) {
+        if ( this == aO ) {
+            return true;
+        }
+        if ( aO == null || getClass() != aO.getClass() ) {
+            return false;
+        }
+        AuthorityDO that = ( AuthorityDO ) aO;
+        return authorityName.equals( that.authorityName );
     }
 }
