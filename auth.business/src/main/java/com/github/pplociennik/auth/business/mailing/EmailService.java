@@ -13,6 +13,7 @@ import org.thymeleaf.TemplateEngine;
 
 import static com.github.pplociennik.auth.business.mailing.EmailContentDataCreationStrategy.EMAIL_CONFIRMATION_MESSAGE;
 import static com.github.pplociennik.auth.business.mailing.EmailContentDataCreationStrategy.WELCOME_EMAIL_MESSAGE;
+import static com.github.pplociennik.auth.business.shared.system.SystemProperty.GLOBAL_EMAILS_SENDING;
 import static com.github.pplociennik.auth.business.shared.system.SystemProperty.MAILING_SENDER_ADDRESS;
 import static com.github.pplociennik.auth.common.lang.AuthResEmailMsgTranslationKey.EMAIL_ACCOUNT_CONFIRMATION_SUBJECT;
 import static com.github.pplociennik.auth.common.lang.AuthResEmailMsgTranslationKey.WELCOME_EMAIL_SUBJECT;
@@ -32,7 +33,9 @@ class EmailService {
     private final JavaMailSender mailSender;
 
     @Autowired
-    EmailService( @NonNull EnvironmentPropertiesProvider aPropertiesProvider, @NonNull TemplateEngine aTemplateEngine, @NonNull JavaMailSender aMailSender ) {
+    EmailService(
+            @NonNull EnvironmentPropertiesProvider aPropertiesProvider, @NonNull TemplateEngine aTemplateEngine,
+            @NonNull JavaMailSender aMailSender ) {
         propertiesProvider = requireNonNull( aPropertiesProvider );
         templateEngine = requireNonNull( aTemplateEngine );
         mailSender = requireNonNull( aMailSender );
@@ -54,7 +57,8 @@ class EmailService {
         var locale = contentData.getLocale();
         var content = templateEngine.process( contentData.getTemplateFile(), contentData.getContext() );
 
-        var message = prepareMessage( senderAddress, recipientAddress, content, getLocalizedMessage( EMAIL_ACCOUNT_CONFIRMATION_SUBJECT, locale ), true );
+        var message = prepareMessage( senderAddress, recipientAddress, content,
+                                      getLocalizedMessage( EMAIL_ACCOUNT_CONFIRMATION_SUBJECT, locale ), true );
 
         send( message );
     }
@@ -75,12 +79,15 @@ class EmailService {
         var locale = contentData.getLocale();
         var content = templateEngine.process( contentData.getTemplateFile(), contentData.getContext() );
 
-        var message = prepareMessage( senderAddress, recipientAddress, content, getLocalizedMessage( WELCOME_EMAIL_SUBJECT, locale ), true );
+        var message = prepareMessage( senderAddress, recipientAddress, content,
+                                      getLocalizedMessage( WELCOME_EMAIL_SUBJECT, locale ), true );
 
         send( message );
     }
 
-    private MimeMessagePreparator prepareMessage( @NonNull String aSenderAddress, @NonNull String aRecipientAddress, @NonNull String aContent, @NonNull String aSubject, boolean aHtml ) {
+    private MimeMessagePreparator prepareMessage(
+            @NonNull String aSenderAddress, @NonNull String aRecipientAddress, @NonNull String aContent,
+            @NonNull String aSubject, boolean aHtml ) {
         requireNonEmpty( aSenderAddress );
         requireNonEmpty( aRecipientAddress );
         requireNonEmpty( aContent );
@@ -97,8 +104,8 @@ class EmailService {
     }
 
     private EmailContentData getContentData(
-            @NonNull EmailContentDataCreationStrategy
-                    aEmailConfirmationMessage, @NonNull AddressableDataDO aSendingDO ) {
+            @NonNull EmailContentDataCreationStrategy aEmailConfirmationMessage,
+            @NonNull AddressableDataDO aSendingDO ) {
         requireNonNull( aEmailConfirmationMessage );
         requireNonNull( aSendingDO );
 
@@ -107,6 +114,14 @@ class EmailService {
 
     private void send( @NonNull MimeMessagePreparator aMessagePreparator ) {
         requireNonNull( aMessagePreparator );
-        mailSender.send( aMessagePreparator );
+        
+        if ( checkIfCanBeSent() ) {
+            mailSender.send( aMessagePreparator );
+        }
+    }
+
+    private Boolean checkIfCanBeSent() {
+        var property = propertiesProvider.getPropertyValue( GLOBAL_EMAILS_SENDING );
+        return Boolean.parseBoolean( property );
     }
 }

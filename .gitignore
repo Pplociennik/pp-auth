@@ -34,3 +34,7 @@ build/
 ### VS Code ###
 .vscode/
 /auth.e2e/src/main/resources/
+/auth.core/src/main/resources/.env
+/repository/com/github/pplociennik/pp-base/1.0.0-SNAPSHOT/pp-base-1.0.0-SNAPSHOT.pom.lastUpdated
+/repository/com/github/pplociennik/pp-base/1.0.0-SNAPSHOT/resolver-status.properties
+/.run/Runner.run.xml
