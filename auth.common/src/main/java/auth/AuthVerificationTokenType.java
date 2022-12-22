@@ -8,7 +8,8 @@ import java.time.temporal.TemporalUnit;
 import static java.time.temporal.ChronoUnit.MINUTES;
 
 /**
- * An enum defining a type of the verification token and holding an amount and unit of the specified token's expiration time.
+ * An enum defining a type of the verification token and holding an amount and unit of the specified token's expiration
+ * time.
  *
  * @author Created by: Pplociennik at 01.07.2022 13:10
  */

@@ -1,6 +1,6 @@
 package com.github.pplociennik.auth.common.mailing.dto;
 
-import com.github.pplociennik.util.utility.CustomObjects;
+import com.github.pplociennik.commons.utility.CustomObjects;
 import org.springframework.lang.NonNull;
 
 import java.util.Locale;
@@ -14,7 +14,8 @@ public final class WelcomeEmailDataDto extends EmailDataDto {
 
     private final String username;
 
-    public WelcomeEmailDataDto( @NonNull String aRecipientAddress, @NonNull Locale aLocale, @NonNull String aUsername ) {
+    public WelcomeEmailDataDto(
+            @NonNull String aRecipientAddress, @NonNull Locale aLocale, @NonNull String aUsername ) {
         super( aRecipientAddress, aLocale );
         username = CustomObjects.requireNonEmpty( aUsername );
     }

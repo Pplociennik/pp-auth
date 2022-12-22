@@ -27,7 +27,7 @@ package com.github.pplociennik.auth.business.authentication;
 import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
 import com.github.pplociennik.auth.business.authentication.domain.model.RegistrationDO;
 import com.github.pplociennik.auth.business.authentication.ports.inside.AuthenticationValidationRepository;
-import com.github.pplociennik.util.validation.ValidatorIf;
+import com.github.pplociennik.commons.validation.ValidatorIf;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
@@ -47,8 +47,10 @@ import static java.util.regex.Pattern.compile;
 class AuthenticationValidator {
 
     private static final Pattern USERNAME_PATTERN = compile( "^[a-zA-Z0-9]{6,15}$" );
-    private static final Pattern PASSWORD_PATTERN = compile( "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$&+,:;=?@#|'<>.^*()%!-]).{8,128}$" );
-    private static final Pattern EMAIL_PATTERN = compile( "[a-zA-Z0-9!#$%&'*+-\\/=?^_`{|}~]+@[a-z0-9-]{2,}\\.[a-z]{2,}", Pattern.CASE_INSENSITIVE );
+    private static final Pattern PASSWORD_PATTERN = compile(
+            "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$&+,:;=?@#|'<>.^*()%!-]).{8,128}$" );
+    private static final Pattern EMAIL_PATTERN = compile( "[a-zA-Z0-9!#$%&'*+-\\/=?^_`{|}~]+@[a-z0-9-]{2,}\\.[a-z]{2,}",
+                                                          Pattern.CASE_INSENSITIVE );
     private final AuthenticationValidationRepository authenticationValidationRepository;
 
     @Autowired
@@ -58,20 +60,26 @@ class AuthenticationValidator {
 
     void validateRegistration( @NonNull RegistrationDO aRegistrationDO ) {
 
-        ValidatorIf.of( aRegistrationDO )
+        ValidatorIf
+                .of( aRegistrationDO )
                 .validate( Objects::nonNull, AUTHENTICATION_NO_REGISTRATION_DATA )
-                .validate( RegistrationDO::getUsername, this::checkIfUsernameCorrect, AUTHENTICATION_USERNAME_NOT_MATCHING_PATTERN )
-                .validate( RegistrationDO::getPassword, this::checkIfPasswordCorrect, AUTHENTICATION_PASSWORD_NOT_MATCHING_PATTERN )
-                .validate( RegistrationDO::getEmail, this::checkIfEmailCorrect, AUTHENTICATION_EMAIL_NOT_MATCHING_PATTERN )
+                .validate( RegistrationDO::getUsername, this::checkIfUsernameCorrect,
+                           AUTHENTICATION_USERNAME_NOT_MATCHING_PATTERN )
+                .validate( RegistrationDO::getPassword, this::checkIfPasswordCorrect,
+                           AUTHENTICATION_PASSWORD_NOT_MATCHING_PATTERN )
+                .validate( RegistrationDO::getEmail, this::checkIfEmailCorrect,
+                           AUTHENTICATION_EMAIL_NOT_MATCHING_PATTERN )
                 .validate( this::checkIfPasswordsEqual, AUTHENTICATION_PASSWORDS_NOT_EQUAL )
-                .validate( RegistrationDO::getUsername, this::checkIfUsernameNotExists, AUTHENTICATION_USERNAME_ALREADY_IN_USE )
+                .validate( RegistrationDO::getUsername, this::checkIfUsernameNotExists,
+                           AUTHENTICATION_USERNAME_ALREADY_IN_USE )
                 .validate( RegistrationDO::getEmail, this::checkIfEmailNotExists, AUTHENTICATION_EMAIL_ALREADY_IN_USE )
                 .perform();
     }
 
     void validateConfirmationLinkGeneration( @NonNull AccountDO aAccountDO ) {
 
-        ValidatorIf.of( aAccountDO )
+        ValidatorIf
+                .of( aAccountDO )
                 .validate( Objects::nonNull, NO_DATA_PROVIDED )
                 .validate( AccountDO::getEmailAddress, this::checkIfAccountExists, AUTHENTICATION_USER_DOES_NOT_EXIST )
                 .perform();
@@ -79,7 +87,8 @@ class AuthenticationValidator {
 
     public void validateRegistrationConfirmation( String aToken ) {
 
-        ValidatorIf.of( aToken )
+        ValidatorIf
+                .of( aToken )
                 .validate( StringUtils::isNotBlank, NO_DATA_PROVIDED )
                 .validate( this::checkIfTokenExists, ACCOUNT_CONFIRMATION_TOKEN_NOT_FOUND )
                 .validate( this::checkIfTokenActive, ACCOUNT_CONFIRMATION_TOKEN_NOT_ACTIVE )
@@ -121,7 +130,9 @@ class AuthenticationValidator {
     }
 
     private boolean checkIfPasswordsEqual( RegistrationDO aRegistrationDO ) {
-        return aRegistrationDO.getPassword().equals( aRegistrationDO.getRepeatedPassword() );
+        return aRegistrationDO
+                .getPassword()
+                .equals( aRegistrationDO.getRepeatedPassword() );
     }
 
     private boolean checkIfMatches( String aText, Pattern aPattern ) {

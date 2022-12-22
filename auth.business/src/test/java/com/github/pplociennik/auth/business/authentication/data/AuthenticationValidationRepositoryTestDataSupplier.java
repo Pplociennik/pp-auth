@@ -17,7 +17,7 @@ public class AuthenticationValidationRepositoryTestDataSupplier {
         account.setEnabled( true );
         account.setCredentialsNonExpired( true );
         account.setEmailAddress( "test1@testMail.com" );
-        account.setId( 1L );
+        account.setUniqueObjectIdentifier( "Account_221222_002000_test_username_1" );
         account.setUsername( "test_username_1" );
 
         return account;
@@ -31,7 +31,7 @@ public class AuthenticationValidationRepositoryTestDataSupplier {
         account.setEnabled( true );
         account.setCredentialsNonExpired( true );
         account.setEmailAddress( "test2@testMail.com" );
-        account.setId( 1L );
+        account.setUniqueObjectIdentifier( "Account_221222_002000_test_username_2" );
         account.setUsername( "test_username_2" );
 
         return account;
@@ -45,7 +45,7 @@ public class AuthenticationValidationRepositoryTestDataSupplier {
         account.setEnabled( true );
         account.setCredentialsNonExpired( true );
         account.setEmailAddress( "test3@testMail.com" );
-        account.setId( 1L );
+        account.setUniqueObjectIdentifier( "Account_221222_002000_test_username_3" );
         account.setUsername( "test_username_3" );
 
         return account;

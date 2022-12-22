@@ -57,7 +57,8 @@ public class AuthorizationFacade {
      * @param aPermission
      *         a permission which will be granted.
      */
-    void addPermission( @NonNull String aUsername, @NonNull Class< ? > aType, Long aId, @NonNull Permission aPermission ) {
+    void addPermission(
+            @NonNull String aUsername, @NonNull Class< ? > aType, Long aId, @NonNull Permission aPermission ) {
         permissionsService.addPermission( aUsername, aType, aId, aPermission );
     }
 

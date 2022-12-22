@@ -45,7 +45,7 @@ class AccountRepositoryTest {
 
     @Test
     void shouldThrowNullPointerException_whenTryingToSaveAndNullPassedViaParameter() {
-        assertThatThrownBy( () -> sut.update( null ) ).isInstanceOf( NullPointerException.class );
+        assertThatThrownBy( () -> sut.persist( null ) ).isInstanceOf( NullPointerException.class );
     }
 
     @Test

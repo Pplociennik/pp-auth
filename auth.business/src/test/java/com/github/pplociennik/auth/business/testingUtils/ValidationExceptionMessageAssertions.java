@@ -1,6 +1,6 @@
 package com.github.pplociennik.auth.business.testingUtils;
 
-import com.github.pplociennik.util.exc.ValidationException;
+import com.github.pplociennik.commons.exc.ValidationException;
 import org.assertj.core.api.ThrowableAssert;
 
 import java.util.Arrays;
@@ -18,14 +18,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ValidationExceptionMessageAssertions {
 
     /**
-     * Asserts that the method being called will throw the {@link ValidationException} with a proper suppressed message.
+     * Asserts that the method being called will throw the {@link ValidationException} with a proper suppressed
+     * message.
      *
      * @param aCallable
      *         a method being called.
      * @param aExpectedMessage
      *         an expected suppressed message.
      */
-    public static void assertSuppressedValidationMessagesContain( ThrowableAssert.ThrowingCallable aCallable, String aExpectedMessage ) {
+    public static void assertSuppressedValidationMessagesContain(
+            ThrowableAssert.ThrowingCallable aCallable, String aExpectedMessage ) {
         List< String > messages = new LinkedList<>();
         try {
             aCallable.call();
@@ -38,7 +40,8 @@ public class ValidationExceptionMessageAssertions {
     }
 
     private static List< String > getMessages( Throwable[] aSuppressed ) {
-        return Arrays.stream( aSuppressed )
+        return Arrays
+                .stream( aSuppressed )
                 .map( Throwable::getMessage )
                 .map( ValidationExceptionMessageAssertions::mapMessagesToTable )
                 .flatMap( Arrays::stream )

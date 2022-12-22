@@ -2,14 +2,13 @@ package com.github.pplociennik.auth.common.mailing.dto;
 
 import org.springframework.lang.NonNull;
 
-import java.io.Serializable;
 import java.util.Locale;
 
 import static java.util.Objects.requireNonNull;
 
 /**
- * Basic data dto for transferring info necessary for creating and sending email messages.
- * Contains elementary information being used in all messages' creation and needs to be extended.
+ * Basic data dto for transferring info necessary for creating and sending email messages. Contains elementary
+ * information being used in all messages' creation and needs to be extended.
  *
  * @author Created by: Pplociennik at 30.06.2022 21:18
  */

@@ -155,7 +155,9 @@ public class AccountSecurityDataServiceTestDataSupplier {
     }
 
     private static Set< Authority > prepareTestAccountAuthorities( Account aOwner ) {
-        var authority = Authority.builder().authoritiesOwner( aOwner ).name( AUTH_USER_ROLE.getName() ).build();
+        var authority = new Authority();
+        authority.setAuthoritiesOwner( aOwner );
+        authority.setName( AUTH_USER_ROLE.getName() );
 
         return Set.of( authority );
     }

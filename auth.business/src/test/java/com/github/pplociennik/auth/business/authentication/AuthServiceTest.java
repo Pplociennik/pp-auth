@@ -61,6 +61,7 @@ class AuthServiceTest {
     private static final String TEST_VALID_PASSWORD = "TestValidPassword1!";
     private static final String TEST_ENCODED_PASSWORD = "EncodedPass";
     private static final long TEST_TOKEN_ID = 1L;
+    private static final String TEST_TOKEN_UNIQUE_ID = "VerificationToken#221222#210700";
     private static final String TEST_TOKEN = "testToken";
     private static final ZoneId TEST_ZONE_ID = ZoneId.of( "UTC" );
     private static final ZonedDateTime TEST_CURRENT_TIME = ZonedDateTime.now( TEST_ZONE_ID );
@@ -103,9 +104,10 @@ class AuthServiceTest {
 
         // GIVEN
         var accountDO = getDummyAccountDO();
-        var token = new VerificationTokenDO( TEST_TOKEN_ID, EMAIL_CONFIRMATION_TOKEN, accountDO, TEST_TOKEN, Instant
-                .now()
-                .plus( 15, MINUTES ), true );
+        var token = new VerificationTokenDO( TEST_TOKEN_ID, TEST_TOKEN_UNIQUE_ID, EMAIL_CONFIRMATION_TOKEN, accountDO,
+                                             TEST_TOKEN, Instant
+                                                     .now()
+                                                     .plus( 15, MINUTES ), true );
         TEST_TOKEN_DATABASE.add( token );
 
         // THEN
@@ -119,9 +121,10 @@ class AuthServiceTest {
         // GIVEN
         var accountDO = getDummyAccountDO();
         TEST_ACCOUNT_DATABASE.add( accountDO );
-        var token = new VerificationTokenDO( TEST_TOKEN_ID, EMAIL_CONFIRMATION_TOKEN, accountDO, TEST_TOKEN, Instant
-                .now()
-                .minus( 15, MINUTES ), true );
+        var token = new VerificationTokenDO( TEST_TOKEN_ID, TEST_TOKEN_UNIQUE_ID, EMAIL_CONFIRMATION_TOKEN, accountDO,
+                                             TEST_TOKEN, Instant
+                                                     .now()
+                                                     .minus( 15, MINUTES ), true );
         TEST_TOKEN_DATABASE.add( token );
 
         // THEN

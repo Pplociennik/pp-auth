@@ -27,7 +27,8 @@ package com.github.pplociennik.auth.business.authorization.domain.model;
 import org.springframework.security.core.GrantedAuthority;
 
 /**
- * A class being the implementation of the {@link GrantedAuthority} interface being responsible for managing the users' authorities.
+ * A class being the implementation of the {@link GrantedAuthority} interface being responsible for managing the users'
+ * authorities.
  *
  * @author Created by: Pplociennik at 15.10.2021 20:13
  */

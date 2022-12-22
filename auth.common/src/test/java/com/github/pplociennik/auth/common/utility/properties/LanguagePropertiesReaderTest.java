@@ -43,7 +43,9 @@ class LanguagePropertiesReaderTest {
         var expectedValue = "lang/AuthResExcMsg";
         var result = READER.getTranslationsBasename( EXCEPTIONS_TRANSLATIONS_BASENAME_PROPERTY );
 
-        Assertions.assertThat( result ).isEqualTo( expectedValue );
+        Assertions
+                .assertThat( result )
+                .isEqualTo( expectedValue );
     }
 
 }

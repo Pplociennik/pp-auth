@@ -56,13 +56,15 @@ class PermissionsServiceTestDataSupplier {
         var grantedAuthority = new AuthorityDetails( "USER" );
         var authorizationStrategy = new AclAuthorizationStrategyImpl( grantedAuthority );
 
-        return new AclImpl( prepareTestExistingObjectIdentity(), TEST_EXISTING_OBJECT_ID, authorizationStrategy, new ConsoleAuditLogger() );
+        return new AclImpl( prepareTestExistingObjectIdentity(), TEST_EXISTING_OBJECT_ID, authorizationStrategy,
+                            new ConsoleAuditLogger() );
     }
 
     static Acl prepareTestNonExistingAcl() {
         var grantedAuthority = new AuthorityDetails( "USER" );
         var authorizationStrategy = new AclAuthorizationStrategyImpl( grantedAuthority );
 
-        return new AclImpl( prepareTestExistingObjectIdentity(), TEST_NON_EXISTING_OBJECT_ID, authorizationStrategy, new ConsoleAuditLogger() );
+        return new AclImpl( prepareTestExistingObjectIdentity(), TEST_NON_EXISTING_OBJECT_ID, authorizationStrategy,
+                            new ConsoleAuditLogger() );
     }
 }

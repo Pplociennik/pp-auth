@@ -40,6 +40,7 @@ class AuthSchemaConstants {
     public static final String AUTH_AUTHORITY_TABLE_SCHEMA_NAME = "AUTH_AUTHORITIES";
     public static final String AUTH_AUTHORITY_TABLE_USERNAME_COLUMN_NAME = "USERNAME";
     public static final String AUTH_AUTHORITY_TABLE_AUTHORITY_COLUMN_NAME = "AUTHORITY";
+
     /**
      * The class cannot be instantiable.
      */

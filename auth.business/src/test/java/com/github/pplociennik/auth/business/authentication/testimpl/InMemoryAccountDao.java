@@ -29,42 +29,54 @@ public class InMemoryAccountDao implements AccountDao {
 
     @Override
     public Optional< Account > getAccountByEmailAddress( String aEmailAddress ) {
-        return database.stream()
-                .filter( account -> account.getEmailAddress().equals( aEmailAddress ) )
+        return database
+                .stream()
+                .filter( account -> account
+                        .getEmailAddress()
+                        .equals( aEmailAddress ) )
                 .findAny();
     }
 
     @Override
     public Optional< Account > findAccountByUsername( String aUsername ) {
-        return database.stream()
-                .filter( account -> account.getUsername().equals( aUsername ) )
+        return database
+                .stream()
+                .filter( account -> account
+                        .getUsername()
+                        .equals( aUsername ) )
                 .findAny();
     }
 
     @Override
     public Optional< Account > findAccountByEmailAddress( String aEmailAddress ) {
-        return database.stream()
-                .filter( account -> account.getEmailAddress().equals( aEmailAddress ) )
+        return database
+                .stream()
+                .filter( account -> account
+                        .getEmailAddress()
+                        .equals( aEmailAddress ) )
                 .findAny();
     }
 
     @Override
     public Optional< Account > findAccountById( long aId ) {
-        return database.stream()
+        return database
+                .stream()
                 .filter( account -> account.getId() == aId )
                 .findAny();
     }
 
     @Override
     public boolean existsAccountByUsername( String aUsername ) {
-        return database.stream()
+        return database
+                .stream()
                 .map( Account::getUsername )
                 .anyMatch( aUsername::equals );
     }
 
     @Override
     public boolean existsAccountByEmailAddress( String aEmail ) {
-        return database.stream()
+        return database
+                .stream()
                 .map( Account::getEmailAddress )
                 .anyMatch( aEmail::equals );
     }

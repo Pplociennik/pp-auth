@@ -29,13 +29,13 @@ import com.github.pplociennik.auth.business.authentication.domain.model.AccountD
 import com.github.pplociennik.auth.business.authentication.domain.model.RegistrationDO;
 import com.github.pplociennik.auth.business.shared.events.OnAccountConfirmationCompleteEvent;
 import com.github.pplociennik.auth.business.shared.events.OnRegistrationCompleteEvent;
-import com.github.pplociennik.util.utility.LanguageUtil;
+import com.github.pplociennik.commons.utility.LanguageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.lang.NonNull;
 
 import static com.github.pplociennik.auth.business.authentication.domain.map.AccountMapper.mapToDto;
-import static com.github.pplociennik.util.utility.CustomObjects.requireNonEmpty;
+import static com.github.pplociennik.commons.utility.CustomObjects.requireNonEmpty;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -50,7 +50,9 @@ public class AuthenticationFacade {
     private final ApplicationEventPublisher eventPublisher;
 
     @Autowired
-    public AuthenticationFacade( @NonNull AuthService aAuthService, @NonNull AuthenticationValidator aValidationService, @NonNull ApplicationEventPublisher aEventPublisher ) {
+    public AuthenticationFacade(
+            @NonNull AuthService aAuthService, @NonNull AuthenticationValidator aValidationService,
+            @NonNull ApplicationEventPublisher aEventPublisher ) {
         authService = aAuthService;
         validationService = aValidationService;
         eventPublisher = aEventPublisher;
@@ -60,7 +62,8 @@ public class AuthenticationFacade {
      * Creates a new user account.
      *
      * @param aRegistrationDO
-     *         a registration data necessary for a new account creation. The data is being validated before the process starts.
+     *         a registration data necessary for a new account creation. The data is being validated before the process
+     *         starts.
      */
     public AccountDto registerNewAccount( @NonNull RegistrationDO aRegistrationDO ) {
         requireNonNull( aRegistrationDO );

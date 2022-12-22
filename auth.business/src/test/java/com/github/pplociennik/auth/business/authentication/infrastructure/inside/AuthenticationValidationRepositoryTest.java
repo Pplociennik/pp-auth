@@ -41,7 +41,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class AuthenticationValidationRepositoryTest {
     private InMemoryAccountRepository accountRepository = new InMemoryAccountRepository();
     private InMemoryVerificationTokenRepository tokenRepository = new InMemoryVerificationTokenRepository();
-    private final AuthenticationValidationRepository sut = new AuthenticationValidationRepositoryImpl( accountRepository, tokenRepository );
+    private final AuthenticationValidationRepository sut = new AuthenticationValidationRepositoryImpl(
+            accountRepository, tokenRepository );
 
     @Test
     void shouldThrowNullPointerException_whenUsernameNull() {

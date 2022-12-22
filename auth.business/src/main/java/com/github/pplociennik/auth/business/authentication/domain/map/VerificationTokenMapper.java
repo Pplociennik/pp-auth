@@ -21,12 +21,16 @@ public class VerificationTokenMapper {
     public static VerificationTokenDO mapToDomain( @NonNull VerificationToken aVerificationToken ) {
         requireNonNull( aVerificationToken );
 
-        return VerificationTokenDO.builder()
+        return VerificationTokenDO
+                .builder()
+                .uniqueObjectIdentifier( aVerificationToken.getUniqueObjectIdentifier() )
                 .token( aVerificationToken.getToken() )
                 .id( aVerificationToken.getId() )
                 .type( aVerificationToken.getType() )
                 .expirationDate( getInstant( aVerificationToken.getExpirationDate() ) )
-                .zoneId( aVerificationToken.getExpirationDate().getZone() )
+                .zoneId( aVerificationToken
+                                 .getExpirationDate()
+                                 .getZone() )
                 .owner( AccountMapper.mapToDomain( aVerificationToken.getOwner() ) )
                 .isActive( aVerificationToken.isActive() )
                 .build();
@@ -35,13 +39,16 @@ public class VerificationTokenMapper {
     public static VerificationToken mapToEntity( @NonNull VerificationTokenDO aVerificationToken, Account aOwner ) {
         requireNonNull( aVerificationToken );
 
-        return VerificationToken.builder()
-                .token( aVerificationToken.getToken() )
-                .expirationDate( getZonedExpirationDate( aVerificationToken.getExpirationDate(), aVerificationToken.getZoneId() ) )
-                .owner( aOwner )
-                .type( aVerificationToken.getType() )
-                .isActive( aVerificationToken.isActive() )
-                .build();
+        var token = new VerificationToken();
+        token.setUniqueObjectIdentifier( aVerificationToken.getUniqueObjectIdentifier() );
+        token.setToken( aVerificationToken.getToken() );
+        token.setExpirationDate(
+                getZonedExpirationDate( aVerificationToken.getExpirationDate(), aVerificationToken.getZoneId() ) );
+        token.setOwner( aOwner );
+        token.setType( aVerificationToken.getType() );
+        token.setActive( aVerificationToken.isActive() );
+
+        return token;
     }
 
     private static ZonedDateTime getZonedExpirationDate( Instant aExpirationDate, ZoneId aZoneId ) {

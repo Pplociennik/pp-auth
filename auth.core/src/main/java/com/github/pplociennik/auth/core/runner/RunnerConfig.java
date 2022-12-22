@@ -42,10 +42,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  */
 @Configuration
 @EnableSwagger2
-@Import( {
-        DefaultStaticSecurityConfiguration.class,
-        SystemLangTranslateConfiguration.class
-} ) // Using default configuration for testing
+@Import( { DefaultStaticSecurityConfiguration.class, SystemLangTranslateConfiguration.class } ) // Using default configuration for testing
 class RunnerConfig {
 
     @Configuration

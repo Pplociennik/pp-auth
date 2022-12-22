@@ -52,6 +52,26 @@
         <createSequence sequenceName="SEQ_AUTH_ACCOUNT" incrementBy="1" startValue="1"/>
     </changeSet>
 
+    <changeSet id="2022.12.22 21:23:00" author="pplociennik" dbms="mssql" context="ctx.auth">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="hibernate_sequence"/>
+            </not>
+        </preConditions>
+        <comment>Creates a sequence hibernate_sequence.</comment>
+        <createSequence sequenceName="hibernate_sequence" incrementBy="1" startValue="1"/>
+    </changeSet>
+
+    <changeSet id="22022.12.22 21:24:00" author="pplociennik" dbms="h2" context="ctx.auth">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="hibernate_sequence"/>
+            </not>
+        </preConditions>
+        <comment>Creates a sequence hibernate_sequence.</comment>
+        <createSequence sequenceName="hibernate_sequence" incrementBy="1" startValue="1"/>
+    </changeSet>
+
     <!-- Tokens -->
 
     <changeSet id="2022.07.01 13:50:00" author="pplociennik" dbms="mssql" context="ctx.auth">

@@ -31,7 +31,9 @@ class MailingMapperTest {
 
         // THEN
         var expectedDO = new EmailConfirmationDataDO( recipientAddress, confirmationLink, locale );
-        assertThat( resultDO ).usingRecursiveComparison().isEqualTo( expectedDO );
+        assertThat( resultDO )
+                .usingRecursiveComparison()
+                .isEqualTo( expectedDO );
     }
 
     @Test
@@ -48,7 +50,9 @@ class MailingMapperTest {
 
         // THEN
         var expectedDO = new WelcomeEmailDataDO( recipientAddress, locale, username );
-        assertThat( resultDO ).usingRecursiveComparison().isEqualTo( expectedDO );
+        assertThat( resultDO )
+                .usingRecursiveComparison()
+                .isEqualTo( expectedDO );
     }
 
 }

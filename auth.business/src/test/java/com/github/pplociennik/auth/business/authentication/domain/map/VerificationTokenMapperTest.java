@@ -23,7 +23,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 class VerificationTokenMapperTest {
 
     private static final ZoneId TEST_ZONE_ID = ZoneId.of( "Europe/Warsaw" );
-    private static final ZonedDateTime TEST_ZONED_DATE_TIME = Instant.now().plus( 15, MINUTES ).atZone( TEST_ZONE_ID );
+    private static final ZonedDateTime TEST_ZONED_DATE_TIME = Instant
+            .now()
+            .plus( 15, MINUTES )
+            .atZone( TEST_ZONE_ID );
 
     @Test
     void shouldReturnValidVerificationTokenDO_whenVerificationTokenValid() {
@@ -34,20 +37,20 @@ class VerificationTokenMapperTest {
         var type = EMAIL_CONFIRMATION_TOKEN;
         var expirationDate = TEST_ZONED_DATE_TIME;
         var active = true;
-        var verificationToken = VerificationToken.builder()
-                .token( token )
-                .owner( account )
-                .type( type )
-                .expirationDate( expirationDate )
-                .isActive( active )
-                .build();
+        var verificationToken = new VerificationToken();
+        verificationToken.setToken( token );
+        verificationToken.setOwner( account );
+        verificationToken.setType( type );
+        verificationToken.setExpirationDate( expirationDate );
+        verificationToken.setActive( active );
 
         // WHEN
         var resultDO = mapToDomain( verificationToken );
 
         // THEN
         var accountDO = AccountMapper.mapToDomain( account );
-        var expectedDO = VerificationTokenDO.builder()
+        var expectedDO = VerificationTokenDO
+                .builder()
                 .token( token )
                 .owner( accountDO )
                 .type( type )
@@ -55,7 +58,9 @@ class VerificationTokenMapperTest {
                 .zoneId( TEST_ZONE_ID )
                 .isActive( true )
                 .build();
-        assertThat( resultDO ).usingRecursiveComparison().isEqualTo( expectedDO );
+        assertThat( resultDO )
+                .usingRecursiveComparison()
+                .isEqualTo( expectedDO );
     }
 
     @Test
@@ -68,7 +73,8 @@ class VerificationTokenMapperTest {
         var expirationDate = TEST_ZONED_DATE_TIME;
         var active = true;
         var accountDO = AccountMapper.mapToDomain( account );
-        var tokenDO = VerificationTokenDO.builder()
+        var tokenDO = VerificationTokenDO
+                .builder()
                 .token( token )
                 .owner( accountDO )
                 .type( type )
@@ -81,13 +87,14 @@ class VerificationTokenMapperTest {
         var result = mapToEntity( tokenDO, account );
 
         // THEN
-        var expectedToken = VerificationToken.builder()
-                .token( token )
-                .owner( account )
-                .type( type )
-                .expirationDate( expirationDate )
-                .isActive( active )
-                .build();
-        assertThat( result ).usingRecursiveComparison().isEqualTo( expectedToken );
+        var expectedToken = new VerificationToken();
+        expectedToken.setToken( token );
+        expectedToken.setOwner( account );
+        expectedToken.setType( type );
+        expectedToken.setExpirationDate( expirationDate );
+        expectedToken.setActive( active );
+        assertThat( result )
+                .usingRecursiveComparison()
+                .isEqualTo( expectedToken );
     }
 }

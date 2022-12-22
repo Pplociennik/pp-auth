@@ -40,8 +40,8 @@ import java.util.Locale;
 
 import static com.github.pplociennik.auth.business.testingUtils.ValidationExceptionMessageAssertions.assertSuppressedValidationMessagesContain;
 import static com.github.pplociennik.auth.common.lang.AuthResExcMsgTranslationKey.*;
-import static com.github.pplociennik.util.utility.LanguageUtil.getLocalizedMessage;
-import static com.github.pplociennik.util.utility.LanguageUtil.setLocale;
+import static com.github.pplociennik.commons.utility.LanguageUtil.getLocalizedMessage;
+import static com.github.pplociennik.commons.utility.LanguageUtil.setLocale;
 import static java.util.Locale.ENGLISH;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -72,7 +72,8 @@ class AuthenticationValidatorTest {
     private static final String TEST_OCCUPIED_EMAIL = "occupied@email.com";
     private List< AccountDO > TEST_DATABASE = new LinkedList<>();
 
-    private InMemoryAuthenticationValidationRepository validationRepository = new InMemoryAuthenticationValidationRepository( TEST_DATABASE );
+    private InMemoryAuthenticationValidationRepository validationRepository = new InMemoryAuthenticationValidationRepository(
+            TEST_DATABASE );
     private AuthenticationValidator sut = new AuthenticationValidator( validationRepository );
 
     @BeforeEach
@@ -92,7 +93,8 @@ class AuthenticationValidatorTest {
 
             // GIVEN
             validationRepository.setUsernameExists( true );
-            var registrationDO = new RegistrationDO( TEST_VALID_EMAIL, TEST_OCCUPIED_USERNAME, TEST_VALID_PASSWORD, TEST_VALID_PASSWORD );
+            var registrationDO = new RegistrationDO( TEST_VALID_EMAIL, TEST_OCCUPIED_USERNAME, TEST_VALID_PASSWORD,
+                                                     TEST_VALID_PASSWORD );
 
             // WHEN
             // THEN
@@ -105,7 +107,8 @@ class AuthenticationValidatorTest {
 
             // GIVEN
             validationRepository.setEmailExists( true );
-            var registrationDO = new RegistrationDO( TEST_OCCUPIED_EMAIL, TEST_VALID_USERNAME, TEST_VALID_PASSWORD, TEST_VALID_PASSWORD );
+            var registrationDO = new RegistrationDO( TEST_OCCUPIED_EMAIL, TEST_VALID_USERNAME, TEST_VALID_PASSWORD,
+                                                     TEST_VALID_PASSWORD );
 
             // WHEN
             // THEN
@@ -117,7 +120,8 @@ class AuthenticationValidatorTest {
         void shouldThrowValidationExceptionWithProperSuppressedExceptionMessage_whenUsernameInvalid() {
 
             // GIVEN
-            var registrationDO = new RegistrationDO( TEST_VALID_EMAIL, TEST_INVALID_USERNAME, TEST_VALID_PASSWORD, TEST_VALID_PASSWORD );
+            var registrationDO = new RegistrationDO( TEST_VALID_EMAIL, TEST_INVALID_USERNAME, TEST_VALID_PASSWORD,
+                                                     TEST_VALID_PASSWORD );
 
             // WHEN
             // THEN
@@ -129,7 +133,8 @@ class AuthenticationValidatorTest {
         void shouldThrowValidationExceptionWithProperSuppressedExceptionMessage_whenPasswordInvalid() {
 
             // GIVEN
-            var registrationDO = new RegistrationDO( TEST_VALID_EMAIL, TEST_VALID_USERNAME, TEST_INVALID_PASSWORD, TEST_VALID_PASSWORD );
+            var registrationDO = new RegistrationDO( TEST_VALID_EMAIL, TEST_VALID_USERNAME, TEST_INVALID_PASSWORD,
+                                                     TEST_VALID_PASSWORD );
 
             // WHEN
             // THEN
@@ -141,7 +146,8 @@ class AuthenticationValidatorTest {
         void shouldThrowValidationExceptionWithProperSuppressedExceptionMessage_whenPasswordsNotEqual() {
 
             // GIVEN
-            var registrationDO = new RegistrationDO( TEST_VALID_EMAIL, TEST_VALID_USERNAME, TEST_VALID_PASSWORD, TEST_NOT_EQUAL_PASSWORD );
+            var registrationDO = new RegistrationDO( TEST_VALID_EMAIL, TEST_VALID_USERNAME, TEST_VALID_PASSWORD,
+                                                     TEST_NOT_EQUAL_PASSWORD );
 
             // WHEN
             // THEN
@@ -165,7 +171,8 @@ class AuthenticationValidatorTest {
         void shouldThrowValidationExceptionWithProperSuppressedExceptionMessage_whenUsernameIsEmpty() {
 
             // GIVEN
-            var registrationDO = new RegistrationDO( TEST_VALID_EMAIL, StringUtils.EMPTY, TEST_VALID_PASSWORD, TEST_VALID_PASSWORD );
+            var registrationDO = new RegistrationDO( TEST_VALID_EMAIL, StringUtils.EMPTY, TEST_VALID_PASSWORD,
+                                                     TEST_VALID_PASSWORD );
 
             // WHEN
             // THEN
@@ -177,7 +184,8 @@ class AuthenticationValidatorTest {
         void shouldThrowValidationExceptionWithProperSuppressedExceptionMessage_whenEmailIsEmpty() {
 
             // GIVEN
-            var registrationDO = new RegistrationDO( StringUtils.EMPTY, TEST_VALID_USERNAME, TEST_VALID_PASSWORD, TEST_VALID_PASSWORD );
+            var registrationDO = new RegistrationDO( StringUtils.EMPTY, TEST_VALID_USERNAME, TEST_VALID_PASSWORD,
+                                                     TEST_VALID_PASSWORD );
 
             // WHEN
             // THEN
@@ -189,7 +197,8 @@ class AuthenticationValidatorTest {
         void shouldThrowValidationExceptionWithProperSuppressedExceptionMessage_whenPasswordIsEmpty() {
 
             // GIVEN
-            var registrationDO = new RegistrationDO( TEST_VALID_EMAIL, TEST_VALID_USERNAME, StringUtils.EMPTY, TEST_VALID_PASSWORD );
+            var registrationDO = new RegistrationDO( TEST_VALID_EMAIL, TEST_VALID_USERNAME, StringUtils.EMPTY,
+                                                     TEST_VALID_PASSWORD );
 
             // WHEN
             // THEN
@@ -201,7 +210,8 @@ class AuthenticationValidatorTest {
         void shouldThrowValidationExceptionWithProperSuppressedExceptionMessage_whenSecondPasswordIsEmpty() {
 
             // GIVEN
-            var registrationDO = new RegistrationDO( TEST_VALID_EMAIL, TEST_VALID_USERNAME, TEST_VALID_PASSWORD, StringUtils.EMPTY );
+            var registrationDO = new RegistrationDO( TEST_VALID_EMAIL, TEST_VALID_USERNAME, TEST_VALID_PASSWORD,
+                                                     StringUtils.EMPTY );
 
             // WHEN
             // THEN
@@ -214,7 +224,8 @@ class AuthenticationValidatorTest {
         void shouldNotFail_whenThereIsCorrectEmailAddressAndTheRestOfDataValid( String aEmailAddress ) {
 
             // GIVEN
-            var registrationDO = new RegistrationDO( aEmailAddress, TEST_VALID_USERNAME, TEST_VALID_PASSWORD, TEST_VALID_PASSWORD );
+            var registrationDO = new RegistrationDO( aEmailAddress, TEST_VALID_USERNAME, TEST_VALID_PASSWORD,
+                                                     TEST_VALID_PASSWORD );
 
             // WHEN
             // THEN
@@ -222,12 +233,12 @@ class AuthenticationValidatorTest {
         }
 
         @ParameterizedTest
-        @ValueSource( strings = { TEST_INVALID_EMAIL, TEST_INVALID_EMAIL_DOMAIN_SPACE, TEST_INVALID_EMAIL_LOCAL_SPACE,
-                TEST_INVALID_EMAIL_TOO_LESS_CHARS_DOMAIN, TEST_INVALID_EMAIL_NOT_PERMITTED_SPEC_CHAR_DOMAIN } )
+        @ValueSource( strings = { TEST_INVALID_EMAIL, TEST_INVALID_EMAIL_DOMAIN_SPACE, TEST_INVALID_EMAIL_LOCAL_SPACE, TEST_INVALID_EMAIL_TOO_LESS_CHARS_DOMAIN, TEST_INVALID_EMAIL_NOT_PERMITTED_SPEC_CHAR_DOMAIN } )
         void shouldThrowValidationException_whenEmailInvalid( String aEmailAddress ) {
 
             // GIVEN
-            var registrationDO = new RegistrationDO( aEmailAddress, TEST_VALID_USERNAME, TEST_VALID_PASSWORD, TEST_VALID_PASSWORD );
+            var registrationDO = new RegistrationDO( aEmailAddress, TEST_VALID_USERNAME, TEST_VALID_PASSWORD,
+                                                     TEST_VALID_PASSWORD );
 
             // WHEN
             // THEN
@@ -246,40 +257,47 @@ class AuthenticationValidatorTest {
 
                 // WHEN
                 // THEN
-                assertThatThrownBy( () -> sut.validateRegistration( registrationDO ) ).isInstanceOf( NullPointerException.class );
+                assertThatThrownBy( () -> sut.validateRegistration( registrationDO ) ).isInstanceOf(
+                        NullPointerException.class );
             }
 
             @Test
             void shouldThrowNullPointerException_whenUsernameIsNull() {
 
                 // GIVEN
-                var registrationDO = new RegistrationDO( TEST_VALID_EMAIL, null, TEST_VALID_PASSWORD, TEST_VALID_PASSWORD );
+                var registrationDO = new RegistrationDO( TEST_VALID_EMAIL, null, TEST_VALID_PASSWORD,
+                                                         TEST_VALID_PASSWORD );
 
                 // WHEN
                 // THEN
-                assertThatThrownBy( () -> sut.validateRegistration( registrationDO ) ).isInstanceOf( NullPointerException.class );
+                assertThatThrownBy( () -> sut.validateRegistration( registrationDO ) ).isInstanceOf(
+                        NullPointerException.class );
             }
 
             @Test
             void shouldThrowNullPointerException_whenEmailIsNull() {
 
                 // GIVEN
-                var registrationDO = new RegistrationDO( null, TEST_VALID_USERNAME, TEST_VALID_PASSWORD, TEST_VALID_PASSWORD );
+                var registrationDO = new RegistrationDO( null, TEST_VALID_USERNAME, TEST_VALID_PASSWORD,
+                                                         TEST_VALID_PASSWORD );
 
                 // WHEN
                 // THEN
-                assertThatThrownBy( () -> sut.validateRegistration( registrationDO ) ).isInstanceOf( NullPointerException.class );
+                assertThatThrownBy( () -> sut.validateRegistration( registrationDO ) ).isInstanceOf(
+                        NullPointerException.class );
             }
 
             @Test
             void shouldThrowNullPointerException_whenPasswordIsNull() {
 
                 // GIVEN
-                var registrationDO = new RegistrationDO( TEST_VALID_EMAIL, TEST_VALID_USERNAME, null, TEST_VALID_PASSWORD );
+                var registrationDO = new RegistrationDO( TEST_VALID_EMAIL, TEST_VALID_USERNAME, null,
+                                                         TEST_VALID_PASSWORD );
 
                 // WHEN
                 // THEN
-                assertThatThrownBy( () -> sut.validateRegistration( registrationDO ) ).isInstanceOf( NullPointerException.class );
+                assertThatThrownBy( () -> sut.validateRegistration( registrationDO ) ).isInstanceOf(
+                        NullPointerException.class );
             }
         }
 
@@ -297,14 +315,16 @@ class AuthenticationValidatorTest {
 
             // GIVEN
             validationRepository.setEmailExists( false );
-            var accountDO = AccountDO.builder()
+            var accountDO = AccountDO
+                    .builder()
                     .emailAddress( TEST_VALID_EMAIL )
                     .build();
 
             // WHEN
             // THEN
             var message = getLocalizedMessage( AUTHENTICATION_USER_DOES_NOT_EXIST, ENGLISH );
-            assertSuppressedValidationMessagesContain( () -> sut.validateConfirmationLinkGeneration( accountDO ), message );
+            assertSuppressedValidationMessagesContain( () -> sut.validateConfirmationLinkGeneration( accountDO ),
+                                                       message );
         }
 
         @Test
@@ -312,7 +332,8 @@ class AuthenticationValidatorTest {
 
             // GIVEN
             validationRepository.setEmailExists( true );
-            var accountDO = AccountDO.builder()
+            var accountDO = AccountDO
+                    .builder()
                     .emailAddress( TEST_VALID_EMAIL )
                     .build();
 
@@ -329,7 +350,8 @@ class AuthenticationValidatorTest {
 
                 // WHEN
                 // THEN
-                assertThatThrownBy( () -> sut.validateConfirmationLinkGeneration( null ) ).isInstanceOf( NullPointerException.class );
+                assertThatThrownBy( () -> sut.validateConfirmationLinkGeneration( null ) ).isInstanceOf(
+                        NullPointerException.class );
             }
 
         }
@@ -354,7 +376,8 @@ class AuthenticationValidatorTest {
             // WHEN
             // THEN
             var message = getLocalizedMessage( ACCOUNT_CONFIRMATION_TOKEN_NOT_ACTIVE, ENGLISH );
-            assertSuppressedValidationMessagesContain( () -> sut.validateRegistrationConfirmation( givenToken ), message );
+            assertSuppressedValidationMessagesContain( () -> sut.validateRegistrationConfirmation( givenToken ),
+                                                       message );
         }
 
         @Test
@@ -392,7 +415,8 @@ class AuthenticationValidatorTest {
                 // GIVEN
                 // WHEN
                 // THEN
-                assertThatThrownBy( () -> sut.validateRegistrationConfirmation( null ) ).isInstanceOf( NullPointerException.class );
+                assertThatThrownBy( () -> sut.validateRegistrationConfirmation( null ) ).isInstanceOf(
+                        NullPointerException.class );
             }
 
             @Test
@@ -402,7 +426,8 @@ class AuthenticationValidatorTest {
                 // WHEN
                 // THEN
                 var message = getLocalizedMessage( NO_DATA_PROVIDED, ENGLISH );
-                assertSuppressedValidationMessagesContain( () -> sut.validateRegistrationConfirmation( StringUtils.EMPTY ), message );
+                assertSuppressedValidationMessagesContain(
+                        () -> sut.validateRegistrationConfirmation( StringUtils.EMPTY ), message );
             }
 
         }

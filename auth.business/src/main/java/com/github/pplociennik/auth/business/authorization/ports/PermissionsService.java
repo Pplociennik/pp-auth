@@ -28,7 +28,8 @@ import org.springframework.lang.NonNull;
 import org.springframework.security.acls.model.Permission;
 
 /**
- * A service managing users'/roles' permissions to the specified business objects. A component of Access Control List (ACL) system.
+ * A service managing users'/roles' permissions to the specified business objects. A component of Access Control List
+ * (ACL) system.
  *
  * @author Created by: Pplociennik at 12.04.2022 21:26
  */
@@ -46,7 +47,8 @@ public interface PermissionsService {
      * @param aPermission
      *         a permission which will be granted.
      */
-    void addPermission( @NonNull String aUsername, @NonNull Class< ? > aType, Long aId, @NonNull Permission aPermission );
+    void addPermission(
+            @NonNull String aUsername, @NonNull Class< ? > aType, Long aId, @NonNull Permission aPermission );
 
     /**
      * Adds specified permission for the user to the specific object.

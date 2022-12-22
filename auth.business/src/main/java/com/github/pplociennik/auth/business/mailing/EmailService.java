@@ -17,8 +17,8 @@ import static com.github.pplociennik.auth.business.shared.system.SystemProperty.
 import static com.github.pplociennik.auth.business.shared.system.SystemProperty.MAILING_SENDER_ADDRESS;
 import static com.github.pplociennik.auth.common.lang.AuthResEmailMsgTranslationKey.EMAIL_ACCOUNT_CONFIRMATION_SUBJECT;
 import static com.github.pplociennik.auth.common.lang.AuthResEmailMsgTranslationKey.WELCOME_EMAIL_SUBJECT;
-import static com.github.pplociennik.util.utility.CustomObjects.requireNonEmpty;
-import static com.github.pplociennik.util.utility.LanguageUtil.getLocalizedMessage;
+import static com.github.pplociennik.commons.utility.CustomObjects.requireNonEmpty;
+import static com.github.pplociennik.commons.utility.LanguageUtil.getLocalizedMessage;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -114,7 +114,7 @@ class EmailService {
 
     private void send( @NonNull MimeMessagePreparator aMessagePreparator ) {
         requireNonNull( aMessagePreparator );
-        
+
         if ( checkIfCanBeSent() ) {
             mailSender.send( aMessagePreparator );
         }

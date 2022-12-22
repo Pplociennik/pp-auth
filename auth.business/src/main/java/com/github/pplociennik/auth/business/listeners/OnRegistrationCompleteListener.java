@@ -24,7 +24,8 @@ class OnRegistrationCompleteListener implements ApplicationListener< OnRegistrat
     private final EmailFacade emailFacade;
 
     @Autowired
-    OnRegistrationCompleteListener( @NonNull AuthenticationFacade aAuthenticationFacade, @NonNull EmailFacade aEmailFacade ) {
+    OnRegistrationCompleteListener(
+            @NonNull AuthenticationFacade aAuthenticationFacade, @NonNull EmailFacade aEmailFacade ) {
         authenticationFacade = requireNonNull( aAuthenticationFacade );
         emailFacade = requireNonNull( aEmailFacade );
     }
@@ -40,7 +41,8 @@ class OnRegistrationCompleteListener implements ApplicationListener< OnRegistrat
         var accountDto = getSourceOfTheProperType( source, AccountDto.class );
 
         var recipientAddress = accountDto.getEmailAddress();
-        var confirmationLink = authenticationFacade.createNewAccountConfirmationLink( AccountMapper.mapToDto( accountDto ) );
+        var confirmationLink = authenticationFacade.createNewAccountConfirmationLink(
+                AccountMapper.mapToDomain( accountDto ) );
 
         var emailData = new EmailConfirmationDataDto( recipientAddress, confirmationLink, locale );
         emailFacade.sendEmailConfirmationRequest( emailData );

@@ -37,12 +37,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  * @author Created by: Pplociennik at 03.02.2022 18:26
  */
 @Configuration
-@EnableJpaRepositories( basePackageClasses = {
-        AccountDao.class
-} )
-@EntityScan( basePackageClasses = {
-        Account.class,
-        Authority.class
-} )
+@EnableJpaRepositories( basePackageClasses = { AccountDao.class } )
+@EntityScan( basePackageClasses = { Account.class, Authority.class } )
 public class AuthDbBeansConfig {
 }

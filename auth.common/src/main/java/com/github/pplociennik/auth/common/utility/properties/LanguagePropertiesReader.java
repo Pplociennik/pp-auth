@@ -24,8 +24,8 @@
 
 package com.github.pplociennik.auth.common.utility.properties;
 
-import com.github.pplociennik.util.exc.ReadingPropertiesException;
-import com.github.pplociennik.util.utility.properties.PropertiesReader;
+import com.github.pplociennik.commons.exc.ReadingPropertiesException;
+import com.github.pplociennik.commons.utility.properties.PropertiesReader;
 import org.springframework.lang.NonNull;
 
 /**

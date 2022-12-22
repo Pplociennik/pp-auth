@@ -9,7 +9,7 @@ import org.springframework.lang.NonNull;
 
 import java.util.Set;
 
-import static com.github.pplociennik.util.utility.CustomObjects.requireNonEmpty;
+import static com.github.pplociennik.commons.utility.CustomObjects.requireNonEmpty;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toUnmodifiableSet;
 

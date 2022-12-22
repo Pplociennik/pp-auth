@@ -40,8 +40,9 @@ import java.io.IOException;
 class RestAuthenticationFailureHandlerImpl extends SimpleUrlAuthenticationFailureHandler {
 
     @Override
-    public void onAuthenticationFailure( HttpServletRequest request, HttpServletResponse response,
-                                         AuthenticationException exception ) throws ServletException, IOException {
+    public void onAuthenticationFailure(
+            HttpServletRequest request, HttpServletResponse response,
+            AuthenticationException exception ) throws ServletException, IOException {
         super.onAuthenticationFailure( request, response, exception );
     }
 }

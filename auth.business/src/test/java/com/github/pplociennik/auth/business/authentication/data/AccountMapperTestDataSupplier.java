@@ -45,6 +45,7 @@ public class AccountMapperTestDataSupplier {
     private static final String TEST_EMAIL = "testEmail@gmail.com";
     private static final String TEST_PASSWORD = "TestPassword1!";
     private static final String TEST_HASHED_PASSWORD = "VeryLongTestHashedPasswordForConversion";
+    private static final String TEST_AUTHORITY_UNIQUE_IDENTIFIER = "Authority_221222_001800_USER";
 
     public static Account prepareSimpleAccountData() {
 
@@ -78,10 +79,10 @@ public class AccountMapperTestDataSupplier {
     }
 
     private static Set< Authority > prepareTestAccountAuthorities( Account aOwner ) {
-        var authority = Authority.builder()
-                .authoritiesOwner( aOwner )
-                .name( AUTH_USER_ROLE.getName() )
-                .build();
+        var authority = new Authority();
+        authority.setAuthoritiesOwner( aOwner );
+        authority.setName( AUTH_USER_ROLE.getName() );
+        authority.setUniqueObjectIdentifier( TEST_AUTHORITY_UNIQUE_IDENTIFIER );
 
         return Set.of( authority );
     }

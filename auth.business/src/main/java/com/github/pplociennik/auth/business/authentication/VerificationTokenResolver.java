@@ -4,6 +4,8 @@ import auth.AuthVerificationTokenType;
 import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
 import com.github.pplociennik.auth.business.authentication.domain.model.VerificationTokenDO;
 import com.github.pplociennik.auth.business.authentication.ports.inside.VerificationTokenRepository;
+import com.github.pplociennik.auth.db.entity.authentication.VerificationToken;
+import com.github.pplociennik.commons.utility.identifier.UniqueIdentifierGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 
@@ -12,6 +14,7 @@ import java.time.ZoneId;
 import java.util.UUID;
 
 import static java.util.Objects.requireNonNull;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 /**
  * A service for verification tokens' generation.
@@ -28,7 +31,8 @@ class VerificationTokenResolver {
     }
 
     /**
-     * Generates a new unique verification token of the specified type assigned to the specified account and persists it to the database.
+     * Generates a new unique verification token of the specified type assigned to the specified account and persists it
+     * to the database.
      *
      * @param aAccountDO
      *         the account the token is being assigned to
@@ -36,13 +40,17 @@ class VerificationTokenResolver {
      *         a type of the token being generated
      * @return a domain object being the representation of the verification token
      */
-    VerificationTokenDO resolveUniqueToken( @NonNull AccountDO aAccountDO, @NonNull AuthVerificationTokenType aVerificationTokenType ) {
+    VerificationTokenDO resolveUniqueToken(
+            @NonNull AccountDO aAccountDO, @NonNull AuthVerificationTokenType aVerificationTokenType ) {
         requireNonNull( aAccountDO );
         requireNonNull( aVerificationTokenType );
 
         var token = generateUniqueToken();
+        var identifier = UniqueIdentifierGenerator.generateIdentifier( VerificationToken.class, EMPTY );
 
-        var verificationToken = VerificationTokenDO.builder()
+        var verificationToken = VerificationTokenDO
+                .builder()
+                .uniqueObjectIdentifier( identifier )
                 .token( token )
                 .owner( aAccountDO )
                 .type( aVerificationTokenType )
@@ -58,7 +66,8 @@ class VerificationTokenResolver {
         return getExpirationDateForToken( Instant.now(), aVerificationTokenType );
     }
 
-    private Instant getExpirationDateForToken( @NonNull Instant aStartDate, AuthVerificationTokenType aVerificationTokenType ) {
+    private Instant getExpirationDateForToken(
+            @NonNull Instant aStartDate, AuthVerificationTokenType aVerificationTokenType ) {
         requireNonNull( aStartDate );
 
         var zoneId = ZoneId.systemDefault();
@@ -73,12 +82,14 @@ class VerificationTokenResolver {
 
     private String generateUniqueToken() {
 
-        var token = UUID.randomUUID().toString();
+        var token = UUID
+                .randomUUID()
+                .toString();
 
         var foundToken = tokenRepository.findByToken( token );
 
         return foundToken == null
-                ? token
-                : generateUniqueToken();
+               ? token
+               : generateUniqueToken();
     }
 }

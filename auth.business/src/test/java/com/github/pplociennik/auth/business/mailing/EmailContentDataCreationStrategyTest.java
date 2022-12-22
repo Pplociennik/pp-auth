@@ -15,7 +15,7 @@ import static com.github.pplociennik.auth.business.mailing.EmailContentDataCreat
 import static com.github.pplociennik.auth.common.lang.AuthResEmailMsgTranslationKey.EMAIL_ACCOUNT_CONFIRMATION_DISCLAIMER;
 import static com.github.pplociennik.auth.common.lang.AuthResEmailMsgTranslationKey.EMAIL_ACCOUNT_CONFIRMATION_MESSAGE;
 import static com.github.pplociennik.auth.common.lang.AuthResUnitTranslationKey.MINUTES;
-import static com.github.pplociennik.util.utility.LanguageUtil.getLocalizedMessage;
+import static com.github.pplociennik.commons.utility.LanguageUtil.getLocalizedMessage;
 import static java.util.Locale.ENGLISH;
 import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,7 +28,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  */
 class EmailContentDataCreationStrategyTest {
 
-    private static String getLocalizedDisclaimer( @NonNull AuthResEmailMsgTranslationKey aBaseMessage, Locale aLocale, long aAmount, @NonNull AuthResUnitTranslationKey aUnit ) {
+    private static String getLocalizedDisclaimer(
+            @NonNull AuthResEmailMsgTranslationKey aBaseMessage, Locale aLocale, long aAmount,
+            @NonNull AuthResUnitTranslationKey aUnit ) {
         requireNonNull( aBaseMessage );
         requireNonNull( aUnit );
 
@@ -58,7 +60,8 @@ class EmailContentDataCreationStrategyTest {
 
             // WHEN
             // THEN
-            assertThatThrownBy( () -> sut.prepare( wrongTypeImplementation ) ).isInstanceOf( IllegalArgumentException.class );
+            assertThatThrownBy( () -> sut.prepare( wrongTypeImplementation ) ).isInstanceOf(
+                    IllegalArgumentException.class );
         }
 
         @Test
@@ -77,10 +80,14 @@ class EmailContentDataCreationStrategyTest {
             var context = new Context();
             context.setVariable( "message", getLocalizedMessage( EMAIL_ACCOUNT_CONFIRMATION_MESSAGE, locale ) );
             context.setVariable( "confirmationLink", confirmationLink );
-            context.setVariable( "disclaimer", getLocalizedDisclaimer( EMAIL_ACCOUNT_CONFIRMATION_DISCLAIMER, locale, 15L, MINUTES ) );
+            context.setVariable( "disclaimer",
+                                 getLocalizedDisclaimer( EMAIL_ACCOUNT_CONFIRMATION_DISCLAIMER, locale, 15L,
+                                                         MINUTES ) );
             var expectedContentData = EmailContentData.of( context, "confirmationRequestEmailTemplate", locale );
 
-            assertThat( result ).usingRecursiveComparison().isEqualTo( expectedContentData );
+            assertThat( result )
+                    .usingRecursiveComparison()
+                    .isEqualTo( expectedContentData );
         }
 
         private class TestInvalidTypeImplementationOfAddressableDataDO implements AddressableDataDO {

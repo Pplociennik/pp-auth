@@ -25,7 +25,9 @@ class AuthEmailBeanConfig {
     private final EnvironmentPropertiesProvider propertiesProvider;
 
     @Autowired
-    public AuthEmailBeanConfig( @NonNull Environment aEnvironment, @NonNull TemplateEngine aTemplateEngine, @NonNull JavaMailSender aMailSender, EnvironmentPropertiesProvider aPropertiesProvider ) {
+    public AuthEmailBeanConfig(
+            @NonNull Environment aEnvironment, @NonNull TemplateEngine aTemplateEngine,
+            @NonNull JavaMailSender aMailSender, EnvironmentPropertiesProvider aPropertiesProvider ) {
         environment = requireNonNull( aEnvironment );
         templateEngine = requireNonNull( aTemplateEngine );
         mailSender = requireNonNull( aMailSender );

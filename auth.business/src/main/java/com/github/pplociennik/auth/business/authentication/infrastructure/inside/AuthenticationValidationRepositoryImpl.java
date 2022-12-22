@@ -43,7 +43,8 @@ class AuthenticationValidationRepositoryImpl implements AuthenticationValidation
     private final VerificationTokenRepository tokenRepository;
 
     @Autowired
-    AuthenticationValidationRepositoryImpl( @NonNull AccountRepository aAccountRepository, VerificationTokenRepository aTokenRepository ) {
+    AuthenticationValidationRepositoryImpl(
+            @NonNull AccountRepository aAccountRepository, VerificationTokenRepository aTokenRepository ) {
         accountRepository = aAccountRepository;
         tokenRepository = aTokenRepository;
     }

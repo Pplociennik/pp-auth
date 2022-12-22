@@ -4,7 +4,7 @@ import org.springframework.lang.NonNull;
 
 import java.util.Locale;
 
-import static com.github.pplociennik.util.utility.CustomObjects.requireNonEmpty;
+import static com.github.pplociennik.commons.utility.CustomObjects.requireNonEmpty;
 
 /**
  * A domain object holding all the information necessary for welcome email message creation and sending.

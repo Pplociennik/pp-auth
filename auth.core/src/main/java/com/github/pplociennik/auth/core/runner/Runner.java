@@ -36,10 +36,7 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
  * @author Created by: Pplociennik at 03.02.2022 19:04
  */
 @Log4j2
-@SpringBootApplication( exclude = {
-        SecurityAutoConfiguration.class,
-        ManagementWebSecurityAutoConfiguration.class
-} )
+@SpringBootApplication( exclude = { SecurityAutoConfiguration.class, ManagementWebSecurityAutoConfiguration.class } )
 public class Runner {
 
     public static void main( String[] args ) {

@@ -28,8 +28,8 @@ import auth.dto.RegistrationDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static com.github.pplociennik.auth.business.authentication.domain.map.RegistrationMapper.mapToDO;
 import static com.github.pplociennik.auth.business.authentication.data.RegistrationMapperTestDataSupplier.prepareSimpleRegistrationDto;
+import static com.github.pplociennik.auth.business.authentication.domain.map.RegistrationMapper.mapToDO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 

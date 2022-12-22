@@ -1,7 +1,7 @@
 package com.github.pplociennik.auth.common.exc;
 
-import com.github.pplociennik.util.exc.BaseRuntimeException;
-import com.github.pplociennik.util.lang.TranslationKey;
+import com.github.pplociennik.commons.exc.BaseRuntimeException;
+import com.github.pplociennik.commons.lang.TranslationKey;
 
 import java.io.Serializable;
 

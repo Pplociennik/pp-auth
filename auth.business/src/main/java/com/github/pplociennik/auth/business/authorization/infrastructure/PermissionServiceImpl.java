@@ -31,11 +31,12 @@ import org.springframework.security.acls.domain.ObjectIdentityImpl;
 import org.springframework.security.acls.domain.PrincipalSid;
 import org.springframework.security.acls.model.*;
 
-import static com.github.pplociennik.util.utility.CustomObjects.requireNonEmpty;
+import static com.github.pplociennik.commons.utility.CustomObjects.requireNonEmpty;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A service managing users'/roles' permissions to the specified business objects. A component of Access Control List (ACL) system.
+ * A service managing users'/roles' permissions to the specified business objects. A component of Access Control List
+ * (ACL) system.
  *
  * @author Created by: Pplociennik at 12.04.2022 21:29
  */
@@ -62,7 +63,8 @@ class PermissionServiceImpl implements PermissionsService {
      *         a permission which will be granted.
      */
     @Override
-    public void addPermission( @NonNull String aUsername, @NonNull Class< ? > aType, @NonNull Long aId, @NonNull Permission aPermission ) {
+    public void addPermission(
+            @NonNull String aUsername, @NonNull Class< ? > aType, @NonNull Long aId, @NonNull Permission aPermission ) {
 
         requireNonEmpty( aUsername );
         requireNonNull( aType );

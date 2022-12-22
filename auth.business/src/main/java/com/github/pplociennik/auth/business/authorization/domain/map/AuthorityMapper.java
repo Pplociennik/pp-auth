@@ -21,6 +21,7 @@ public class AuthorityMapper {
     public static AuthorityDO mapToDomain( Authority aAuthority ) {
         return AuthorityDO
                 .builder()
+                .uniqueObjectIdentifier( aAuthority.getUniqueObjectIdentifier() )
                 .authorityName( aAuthority.getName() )
                 .owner( AccountMapper.mapToDomain( aAuthority.getAuthoritiesOwner() ) )
                 .build();

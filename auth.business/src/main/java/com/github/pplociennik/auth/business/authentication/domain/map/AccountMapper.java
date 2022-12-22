@@ -61,19 +61,19 @@ public class AccountMapper {
 
         var authorities = createAuthorities( aAccountDO.getAuthorities() );
 
-        var account = Account
-                .builder()
-                .emailAddress( aAccountDO.getEmailAddress() )
-                .accountNonExpired( aAccountDO.isAccountNonExpired() )
-                .accountNonLocked( aAccountDO.isAccountNonLocked() )
-                .password( aAccountDO.getPassword() )
-                .username( aAccountDO.getUsername() )
-                .credentialsNonExpired( aAccountDO.isCredentialsNonExpired() )
-                .authorities( authorities )
-                .enabled( aAccountDO.isEnabled() )
-                .creationDate( aAccountDO.getCreationDate() )
-                .lastLoginDate( aAccountDO.getLastLoginDate() )
-                .build();
+        var account = new Account();
+        account.setEmailAddress( aAccountDO.getEmailAddress() );
+        account.setAccountNonExpired( aAccountDO.isAccountNonExpired() );
+        account.setAccountNonLocked( aAccountDO.isAccountNonLocked() );
+        account.setPassword( aAccountDO.getPassword() );
+        account.setUsername( aAccountDO.getUsername() );
+        account.setCredentialsNonExpired( aAccountDO.isCredentialsNonExpired() );
+        account.setAuthorities( authorities );
+        account.setEnabled( aAccountDO.isEnabled() );
+
+        account.setUniqueObjectIdentifier( aAccountDO.getUniqueObjectIdentifier() );
+        account.setCreationDate( aAccountDO.getCreationDate() );
+        account.setLastModification( aAccountDO.getLastModificationDate() );
 
         updateAuthoritiesSetAccount( authorities, account );
 
@@ -87,15 +87,16 @@ public class AccountMapper {
 
         var accountDO = AccountDO
                 .builder()
+                .uniqueObjectIdentifier( aAccount.getUniqueObjectIdentifier() )
                 .accountNonExpired( aAccount.isAccountNonExpired() )
                 .accountNonLocked( aAccount.isAccountNonLocked() )
                 .enabled( aAccount.isEnabled() )
                 .emailAddress( aAccount.getEmailAddress() )
                 .username( aAccount.getUsername() )
                 .credentialsNonExpired( aAccount.isCredentialsNonExpired() )
-                .id( aAccount.getId() )
                 .authorities( authorities )
                 .creationDate( aAccount.getCreationDate() )
+                .lastModificationDate( aAccount.getLastModification() )
                 .lastLoginDate( aAccount.getLastLoginDate() )
                 .build();
 
@@ -111,11 +112,12 @@ public class AccountMapper {
                 .map( aAuthority -> AuthorityDO
                         .builder()
                         .authorityName( aAuthority.getName() )
+                        .uniqueObjectIdentifier( aAuthority.getUniqueObjectIdentifier() )
                         .build() )
                 .collect( toSet() );
     }
 
-    public static AccountDO mapToDto( @NonNull AccountDto aDto ) {
+    public static AccountDO mapToDomain( @NonNull AccountDto aDto ) {
         requireNonNull( aDto );
 
         var accountDO = AccountDO
@@ -156,10 +158,13 @@ public class AccountMapper {
             Set< AuthorityDO > aAuthorities ) {
         return aAuthorities
                 .stream()
-                .map( authority -> Authority
-                        .builder()
-                        .name( authority.getAuthorityName() )
-                        .build() )
+                .map( authority -> {
+                    var result = new Authority();
+                    result.setName( authority.getAuthorityName() );
+                    result.setUniqueObjectIdentifier( authority.getUniqueObjectIdentifier() );
+
+                    return result;
+                } )
                 .collect( toUnmodifiableSet() );
     }
 

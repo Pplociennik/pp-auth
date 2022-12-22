@@ -17,10 +17,12 @@ class ListenerParametersUtil {
         requireNonNull( aSource );
         requireNonNull( aType );
 
-        var object = Optional.of( aSource )
+        var object = Optional
+                .of( aSource )
                 .filter( aType::isInstance )
                 .stream()
-                .findAny().orElseThrow( () -> new IllegalArgumentException( "Wrong type!" ) );
+                .findAny()
+                .orElseThrow( () -> new IllegalArgumentException( "Wrong type!" ) );
         return aType.cast( object );
     }
 }
