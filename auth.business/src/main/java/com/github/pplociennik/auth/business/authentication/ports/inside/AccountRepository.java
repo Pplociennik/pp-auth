@@ -43,6 +43,15 @@ public interface AccountRepository {
     AccountDO persist( @NonNull AccountDO aAccount );
 
     /**
+     * Updates an account object in the database.
+     *
+     * @param aAccount
+     *         an account to be updated.
+     * @return updated account.
+     */
+    AccountDO update( @NonNull AccountDO aAccount );
+
+    /**
      * Returns an account with the specified username if it exists in the database.
      *
      * @param aUsername

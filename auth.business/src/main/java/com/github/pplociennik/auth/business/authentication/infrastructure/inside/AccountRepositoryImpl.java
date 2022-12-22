@@ -28,6 +28,7 @@ import com.github.pplociennik.auth.business.authentication.domain.map.AccountMap
 import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
 import com.github.pplociennik.auth.business.authentication.ports.inside.AccountRepository;
 import com.github.pplociennik.auth.common.exc.AccountConfirmationException;
+import com.github.pplociennik.auth.db.entity.authentication.Account;
 import com.github.pplociennik.auth.db.repository.authentication.AccountDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
@@ -35,6 +36,7 @@ import org.springframework.lang.NonNull;
 import static com.github.pplociennik.auth.business.authentication.domain.map.AccountMapper.mapToDomain;
 import static com.github.pplociennik.auth.business.authentication.domain.map.AccountMapper.mapToEntity;
 import static com.github.pplociennik.auth.common.lang.AuthResExcMsgTranslationKey.ACCOUNT_CONFIRMATION_USER_NOT_EXISTS;
+import static com.github.pplociennik.commons.utility.CustomCollectors.toSingleton;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -60,6 +62,17 @@ class AccountRepositoryImpl implements AccountRepository {
 
         var account = mapToEntity( aAccountDO );
         return mapToDomain( accountDao.saveAndFlush( account ) );
+    }
+
+    @Override
+    public AccountDO update( @NonNull AccountDO aAccount ) {
+        requireNonNull( aAccount );
+
+        var toBeUpdated = accountDao.getAccountByUniqueObjectIdentifier( aAccount.getUniqueObjectIdentifier() );
+        return toBeUpdated
+                .map( forUpdate -> updateAccount( forUpdate, aAccount ) )
+                .stream()
+                .collect( toSingleton() );
     }
 
     /**
@@ -109,5 +122,15 @@ class AccountRepositoryImpl implements AccountRepository {
 
         var enabledAccount = accountDao.save( toUpdate );
         return mapToDomain( enabledAccount );
+    }
+
+    private AccountDO updateAccount( Account aToBeUpdated, AccountDO aAccount ) {
+
+        requireNonNull( aToBeUpdated );
+
+        aToBeUpdated.setLastLoginDate( aAccount.getLastLoginDate() );
+        accountDao.saveAndFlush( aToBeUpdated );
+
+        return mapToDomain( aToBeUpdated );
     }
 }
