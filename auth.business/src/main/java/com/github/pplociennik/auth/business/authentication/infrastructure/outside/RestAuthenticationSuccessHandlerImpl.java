@@ -24,6 +24,10 @@
 
 package com.github.pplociennik.auth.business.authentication.infrastructure.outside;
 
+import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
+import com.github.pplociennik.auth.business.authentication.ports.inside.AccountRepository;
+import com.github.pplociennik.auth.business.shared.system.TimeService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
@@ -37,9 +41,33 @@ import javax.servlet.http.HttpServletResponse;
  */
 class RestAuthenticationSuccessHandlerImpl extends SimpleUrlAuthenticationSuccessHandler {
 
+    private final AccountRepository accountRepository;
+    private final TimeService timeService;
+
+    @Autowired
+    RestAuthenticationSuccessHandlerImpl( AccountRepository aAccountRepository, TimeService aTimeService ) {
+        accountRepository = aAccountRepository;
+        timeService = aTimeService;
+    }
+
     @Override
     public void onAuthenticationSuccess(
             HttpServletRequest request, HttpServletResponse response, Authentication authentication ) {
+
+        var authenticatedUser = getAuthenticatedUser( authentication );
+        updateLastLoginDate( authenticatedUser );
         clearAuthenticationAttributes( request );
+    }
+
+    private void updateLastLoginDate( AccountDO aAuthenticatedUser ) {
+        var currentZonedDateTime = timeService.getCurrentSystemDateTime();
+        aAuthenticatedUser.setLastLoginDate( currentZonedDateTime );
+
+        accountRepository.update( aAuthenticatedUser );
+    }
+
+    private AccountDO getAuthenticatedUser( Authentication aAuthentication ) {
+        var username = aAuthentication.getName();
+        return accountRepository.findAccountByUsername( username );
     }
 }

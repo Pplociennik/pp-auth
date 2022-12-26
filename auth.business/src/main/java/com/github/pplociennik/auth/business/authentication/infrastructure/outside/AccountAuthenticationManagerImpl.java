@@ -64,7 +64,7 @@ class AccountAuthenticationManagerImpl implements AuthenticationManager {
     private void updateLastLoginDate( AccountDO aAccountDO ) {
         var currentDateTime = timeService.getCurrentSystemDateTime();
         aAccountDO.setLastLoginDate( currentDateTime );
-        accountRepository.persist( aAccountDO );
+        accountRepository.update( aAccountDO );
     }
 
     private boolean executeValidation( AccountDO aAccount, String aName, String aPassword ) {

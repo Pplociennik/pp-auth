@@ -50,6 +50,15 @@ public interface AccountDao extends JpaRepository< Account, Long >, CrudReposito
     Optional< Account > getAccountByEmailAddress( String aEmailAddress );
 
     /**
+     * Returns an {@link Account} linked to the given unique identifier.
+     *
+     * @param aUniqueIdentifier
+     *         an unique identifier
+     * @return an {@link Account} object
+     */
+    Optional< Account > getAccountByUniqueObjectIdentifier( @NonNull String aUniqueIdentifier );
+
+    /**
      * Returns an {@link Account} linked to the given username.
      *
      * @param aUsername

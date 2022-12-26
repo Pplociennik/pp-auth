@@ -38,6 +38,16 @@ public class InMemoryAccountDao implements AccountDao {
     }
 
     @Override
+    public Optional< Account > getAccountByUniqueObjectIdentifier( String aUniqueIdentifier ) {
+        return database
+                .stream()
+                .filter( account -> account
+                        .getUniqueObjectIdentifier()
+                        .equals( aUniqueIdentifier ) )
+                .findAny();
+    }
+
+    @Override
     public Optional< Account > findAccountByUsername( String aUsername ) {
         return database
                 .stream()

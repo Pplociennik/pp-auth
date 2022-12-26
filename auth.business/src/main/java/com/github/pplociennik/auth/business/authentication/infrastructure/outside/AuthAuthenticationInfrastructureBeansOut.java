@@ -69,7 +69,7 @@ class AuthAuthenticationInfrastructureBeansOut {
 
     @Bean
     SimpleUrlAuthenticationSuccessHandler restAuthenticationSuccessHandler() {
-        return new RestAuthenticationSuccessHandlerImpl();
+        return new RestAuthenticationSuccessHandlerImpl(accountRepository, timeService);
     }
 
 }

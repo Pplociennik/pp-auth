@@ -72,6 +72,11 @@ public class InMemoryAccountRepository implements AccountRepository {
     }
 
     @Override
+    public AccountDO update( AccountDO aAccount ) {
+        return aAccount;
+    }
+
+    @Override
     public AccountDO findAccountByUsername( @NonNull String aUsername ) {
         requireNonNull( aUsername );
         var account = database

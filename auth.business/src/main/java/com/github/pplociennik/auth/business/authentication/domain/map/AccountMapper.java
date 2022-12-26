@@ -93,6 +93,7 @@ public class AccountMapper {
                 .enabled( aAccount.isEnabled() )
                 .emailAddress( aAccount.getEmailAddress() )
                 .username( aAccount.getUsername() )
+                .password( aAccount.getPassword() )
                 .credentialsNonExpired( aAccount.isCredentialsNonExpired() )
                 .authorities( authorities )
                 .creationDate( aAccount.getCreationDate() )
