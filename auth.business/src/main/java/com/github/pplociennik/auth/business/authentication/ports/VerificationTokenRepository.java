@@ -1,4 +1,4 @@
-package com.github.pplociennik.auth.business.authentication.ports.inside;
+package com.github.pplociennik.auth.business.authentication.ports;
 
 import com.github.pplociennik.auth.business.authentication.domain.model.VerificationTokenDO;
 import org.springframework.lang.NonNull;

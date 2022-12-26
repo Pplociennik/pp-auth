@@ -24,9 +24,13 @@
 
 package com.github.pplociennik.auth.api.controller;
 
+import auth.dto.LoginDto;
 import auth.dto.RegistrationDto;
 import com.github.pplociennik.auth.business.authentication.AuthenticationFacade;
+import com.github.pplociennik.auth.business.authentication.domain.map.LoginMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -57,6 +61,13 @@ class AuthController {
     void registerNewUserAccount( @RequestBody RegistrationDto aRegistrationDto ) {
         var registrationDO = mapToDO( aRegistrationDto );
         authenticationFacade.registerNewAccount( registrationDO );
+    }
+
+    @Transactional
+    @PostMapping( path = AUTH_CONTROLLER_LOGIN_MAPPING_VALUE, consumes = APPLICATION_JSON_VALUE )
+    void login( @RequestBody LoginDto aLoginDto ) {
+        var loginDO = LoginMapper.mapToDomain( aLoginDto );
+        authenticationFacade.authenticateAccount( loginDO );
     }
 
     @Transactional

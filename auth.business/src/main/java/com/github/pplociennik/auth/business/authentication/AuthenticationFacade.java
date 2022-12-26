@@ -26,13 +26,18 @@ package com.github.pplociennik.auth.business.authentication;
 
 import auth.dto.AccountDto;
 import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
+import com.github.pplociennik.auth.business.authentication.domain.model.LoginDO;
 import com.github.pplociennik.auth.business.authentication.domain.model.RegistrationDO;
+import com.github.pplociennik.auth.business.authentication.ports.AccountRepository;
 import com.github.pplociennik.auth.business.shared.events.OnAccountConfirmationCompleteEvent;
 import com.github.pplociennik.auth.business.shared.events.OnRegistrationCompleteEvent;
 import com.github.pplociennik.commons.utility.LanguageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.lang.NonNull;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import static com.github.pplociennik.auth.business.authentication.domain.map.AccountMapper.mapToDto;
 import static com.github.pplociennik.commons.utility.CustomObjects.requireNonEmpty;
@@ -48,14 +53,19 @@ public class AuthenticationFacade {
     private final AuthService authService;
     private final AuthenticationValidator validationService;
     private final ApplicationEventPublisher eventPublisher;
+    private final AuthenticationManager authenticationManager;
+    private final AccountRepository accountRepository;
 
     @Autowired
     public AuthenticationFacade(
             @NonNull AuthService aAuthService, @NonNull AuthenticationValidator aValidationService,
-            @NonNull ApplicationEventPublisher aEventPublisher ) {
+            @NonNull ApplicationEventPublisher aEventPublisher, AuthenticationManager aAuthenticationManager,
+            AccountRepository aAccountRepository ) {
         authService = aAuthService;
         validationService = aValidationService;
         eventPublisher = aEventPublisher;
+        authenticationManager = aAuthenticationManager;
+        accountRepository = aAccountRepository;
     }
 
     /**
@@ -99,6 +109,24 @@ public class AuthenticationFacade {
         validationService.validateRegistrationConfirmation( aToken );
         var enabledAccount = mapToDto( authService.confirmRegistration( aToken ) );
         publishEventOnAccountConfirmationFinished( enabledAccount );
+    }
+
+    /**
+     * Validates login data and authenticates user.
+     *
+     * @param aLoginDO
+     *         a login data.
+     */
+    public void authenticateAccount( @NonNull LoginDO aLoginDO ) {
+        requireNonNull( aLoginDO );
+        validationService.validateLoginData( aLoginDO );
+        var account = accountRepository.findAccountByUsernameOrEmail( aLoginDO.getUsernameOrEmail() );
+        validationService.preValidateLogin( aLoginDO );
+        var token = new UsernamePasswordAuthenticationToken( account.getUsername(), account.getPassword() );
+        var authenticationObject = authenticationManager.authenticate( token );
+        SecurityContextHolder
+                .getContext()
+                .setAuthentication( authenticationObject );
     }
 
     private void publishEventOnRegistrationFinished( @NonNull AccountDto aRegisteredAccount ) {

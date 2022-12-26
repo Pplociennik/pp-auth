@@ -22,8 +22,9 @@
  * SOFTWARE.
  */
 
-package com.github.pplociennik.auth.business.authentication.ports.inside;
+package com.github.pplociennik.auth.business.authentication.ports;
 
+import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
 import org.springframework.lang.NonNull;
 
 /**
@@ -72,4 +73,22 @@ public interface AuthenticationValidationRepository {
      *         if the parameter is null.
      */
     boolean checkIfTokenExists( @NonNull String aToken );
+
+    /**
+     * Returns an account by email address.
+     *
+     * @param aEmail
+     *         an email address.
+     * @return an account linked to the specified email address.
+     */
+    AccountDO findByEmail( @NonNull String aEmail );
+
+    /**
+     * Returns an account by username.
+     *
+     * @param aUsername
+     *         a username.
+     * @return an account linked to the specified username.
+     */
+    AccountDO findByUsername( @NonNull String aUsername );
 }

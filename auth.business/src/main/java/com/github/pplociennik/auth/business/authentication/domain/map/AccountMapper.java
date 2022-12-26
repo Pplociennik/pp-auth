@@ -32,7 +32,6 @@ import com.github.pplociennik.auth.business.authorization.domain.model.Authority
 import com.github.pplociennik.auth.business.authorization.domain.model.AuthorityDetails;
 import com.github.pplociennik.auth.db.entity.authentication.Account;
 import com.github.pplociennik.auth.db.entity.authorization.Authority;
-import org.springframework.lang.NonNull;
 
 import java.util.Collection;
 import java.util.List;
@@ -49,16 +48,20 @@ import static java.util.stream.Collectors.*;
 public class AccountMapper {
 
     public static AccountSecurityCoreDO mapToSecurityCoreDO(
-            @NonNull Account aAccount ) {
-        requireNonNull( aAccount );
+            Account aAccount ) {
+        if ( aAccount == null ) {
+            return null;
+        }
         return new AccountSecurityCoreDO( aAccount.getUsername(), aAccount.getPassword(), aAccount.isEnabled(),
                                           aAccount.isAccountNonExpired(), aAccount.isCredentialsNonExpired(),
                                           aAccount.isAccountNonLocked(), getAuthorities( aAccount.getAuthorities() ) );
     }
 
-    public static Account mapToEntity( @NonNull AccountDO aAccountDO ) {
-        requireNonNull( aAccountDO );
+    public static Account mapToEntity( AccountDO aAccountDO ) {
 
+        if ( aAccountDO == null ) {
+            return null;
+        }
         var authorities = createAuthorities( aAccountDO.getAuthorities() );
 
         var account = new Account();
@@ -80,9 +83,11 @@ public class AccountMapper {
         return account;
     }
 
-    public static AccountDO mapToDomain( @NonNull Account aAccount ) {
-        requireNonNull( aAccount );
+    public static AccountDO mapToDomain( Account aAccount ) {
 
+        if ( aAccount == null ) {
+            return null;
+        }
         var authorities = mapAuthoritiesToDomain( aAccount.getAuthorities() );
 
         var accountDO = AccountDO
@@ -118,9 +123,11 @@ public class AccountMapper {
                 .collect( toSet() );
     }
 
-    public static AccountDO mapToDomain( @NonNull AccountDto aDto ) {
-        requireNonNull( aDto );
+    public static AccountDO mapToDomain( AccountDto aDto ) {
 
+        if ( aDto == null ) {
+            return null;
+        }
         var accountDO = AccountDO
                 .builder()
                 .accountNonExpired( aDto.isAccountNonExpired() )
@@ -135,9 +142,11 @@ public class AccountMapper {
         return accountDO;
     }
 
-    public static AccountDto mapToDto( @NonNull AccountDO aAccountDO ) {
-        requireNonNull( aAccountDO );
+    public static AccountDto mapToDto( AccountDO aAccountDO ) {
 
+        if ( aAccountDO == null ) {
+            return null;
+        }
         return AccountDto
                 .builder()
                 .emailAddress( aAccountDO.getEmailAddress() )

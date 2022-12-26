@@ -24,21 +24,44 @@
 
 package auth.dto;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.*;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * A Data Transfer Object representing data being used during the logging process.
  *
  * @author Created by: Pplociennik at 29.01.2022 22:47
  */
-@EqualsAndHashCode
 @Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class LoginDto implements Serializable {
 
-    private String username;
-
+    private String usernameOrEmail;
     private String password;
+
+    @Override
+    public boolean equals( Object aO ) {
+        if ( this == aO ) {
+            return true;
+        }
+        if ( aO == null || getClass() != aO.getClass() ) {
+            return false;
+        }
+        LoginDto loginDto = ( LoginDto ) aO;
+        return Objects.equals( usernameOrEmail, loginDto.usernameOrEmail );
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash( usernameOrEmail );
+    }
+
+    @Override
+    public String toString() {
+        return "LoginDto{" + "usernameOrEmail='" + usernameOrEmail + '\'' + '}';
+    }
 }

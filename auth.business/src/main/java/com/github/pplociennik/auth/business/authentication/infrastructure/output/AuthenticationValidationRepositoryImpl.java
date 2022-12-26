@@ -22,11 +22,12 @@
  * SOFTWARE.
  */
 
-package com.github.pplociennik.auth.business.authentication.infrastructure.inside;
+package com.github.pplociennik.auth.business.authentication.infrastructure.output;
 
-import com.github.pplociennik.auth.business.authentication.ports.inside.AccountRepository;
-import com.github.pplociennik.auth.business.authentication.ports.inside.AuthenticationValidationRepository;
-import com.github.pplociennik.auth.business.authentication.ports.inside.VerificationTokenRepository;
+import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
+import com.github.pplociennik.auth.business.authentication.ports.AccountRepository;
+import com.github.pplociennik.auth.business.authentication.ports.AuthenticationValidationRepository;
+import com.github.pplociennik.auth.business.authentication.ports.VerificationTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 
@@ -87,5 +88,23 @@ class AuthenticationValidationRepositoryImpl implements AuthenticationValidation
 
         var verificationToken = tokenRepository.findByToken( aToken );
         return verificationToken != null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public AccountDO findByEmail( @NonNull String aEmail ) {
+        requireNonNull( aEmail );
+        return accountRepository.findAccountByEmailAddress( aEmail );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public AccountDO findByUsername( @NonNull String aUsername ) {
+        requireNonNull( aUsername );
+        return accountRepository.findAccountByUsername( aUsername );
     }
 }

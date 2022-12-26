@@ -3,7 +3,7 @@ package com.github.pplociennik.auth.business.authentication;
 import auth.AuthVerificationTokenType;
 import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
 import com.github.pplociennik.auth.business.authentication.domain.model.VerificationTokenDO;
-import com.github.pplociennik.auth.business.authentication.ports.inside.VerificationTokenRepository;
+import com.github.pplociennik.auth.business.authentication.ports.VerificationTokenRepository;
 import com.github.pplociennik.auth.db.entity.authentication.VerificationToken;
 import com.github.pplociennik.commons.utility.identifier.UniqueIdentifierGenerator;
 import org.springframework.beans.factory.annotation.Autowired;

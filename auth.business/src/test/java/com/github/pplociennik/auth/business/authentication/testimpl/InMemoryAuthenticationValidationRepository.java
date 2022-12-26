@@ -25,7 +25,7 @@
 package com.github.pplociennik.auth.business.authentication.testimpl;
 
 import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
-import com.github.pplociennik.auth.business.authentication.ports.inside.AuthenticationValidationRepository;
+import com.github.pplociennik.auth.business.authentication.ports.AuthenticationValidationRepository;
 import org.springframework.lang.NonNull;
 
 import java.util.LinkedList;
@@ -100,5 +100,29 @@ public class InMemoryAuthenticationValidationRepository implements Authenticatio
     @Override
     public boolean checkIfTokenExists( String aToken ) {
         return tokenExists;
+    }
+
+    @Override
+    public AccountDO findByEmail( @NonNull String aEmail ) {
+        requireNonNull( aEmail );
+        return database
+                .stream()
+                .filter( account -> account
+                        .getEmailAddress()
+                        .equals( aEmail ) )
+                .findAny()
+                .orElse( null );
+    }
+
+    @Override
+    public AccountDO findByUsername( @NonNull String aUsername ) {
+        requireNonNull( aUsername );
+        return database
+                .stream()
+                .filter( account -> account
+                        .getEmailAddress()
+                        .equals( aUsername ) )
+                .findAny()
+                .orElse( null );
     }
 }

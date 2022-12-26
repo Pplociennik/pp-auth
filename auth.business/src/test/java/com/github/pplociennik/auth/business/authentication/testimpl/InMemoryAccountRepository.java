@@ -25,13 +25,15 @@
 package com.github.pplociennik.auth.business.authentication.testimpl;
 
 import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
-import com.github.pplociennik.auth.business.authentication.ports.inside.AccountRepository;
+import com.github.pplociennik.auth.business.authentication.ports.AccountRepository;
 import org.springframework.lang.NonNull;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.regex.Pattern.compile;
 
 /**
  * In memory implementation of {@link AccountRepository} for unit tests.
@@ -39,6 +41,9 @@ import static java.util.Objects.requireNonNull;
  * @author Created by: Pplociennik at 12.04.2022 22:27
  */
 public class InMemoryAccountRepository implements AccountRepository {
+
+    private static final Pattern EMAIL_PATTERN = compile( "[a-zA-Z0-9!#$%&'*+-\\/=?^_`{|}~]+@[a-z0-9-]{2,}\\.[a-z]{2,}",
+                                                          Pattern.CASE_INSENSITIVE );
 
     private List< AccountDO > database;
     private boolean existsAccountByUsername;
@@ -79,14 +84,36 @@ public class InMemoryAccountRepository implements AccountRepository {
     @Override
     public AccountDO findAccountByUsername( @NonNull String aUsername ) {
         requireNonNull( aUsername );
-        var account = database
+        return database
                 .stream()
                 .filter( acc -> acc
                         .getUsername()
                         .equals( aUsername ) )
-                .findAny();
+                .findAny()
+                .orElse( null );
 
-        return account.orElse( null );
+    }
+
+    @Override
+    public AccountDO findAccountByEmailAddress( @NonNull String aEmail ) {
+        requireNonNull( aEmail );
+        return database
+                .stream()
+                .filter( account -> account
+                        .getEmailAddress()
+                        .equals( aEmail ) )
+                .findAny()
+                .orElse( null );
+    }
+
+    @Override
+    public AccountDO findAccountByUsernameOrEmail( @NonNull String aUsernameOrEmail ) {
+        requireNonNull( aUsernameOrEmail );
+        return database
+                .stream()
+                .filter( account -> matchesUsernameOrEmail( account, aUsernameOrEmail ) )
+                .findAny()
+                .orElse( null );
     }
 
     @Override
@@ -106,5 +133,18 @@ public class InMemoryAccountRepository implements AccountRepository {
         requireNonNull( aAccountToBeConfirmed );
         return null;
         // TODO: add tests and fix this!!!
+    }
+
+    private boolean matchesUsernameOrEmail( AccountDO aAccount, String aUsernameOrEmail ) {
+        var toBeCompared = checkIfMatches( aUsernameOrEmail, EMAIL_PATTERN )
+                           ? aAccount.getEmailAddress()
+                           : aAccount.getUsername();
+
+        return toBeCompared.equals( aUsernameOrEmail );
+    }
+
+    private boolean checkIfMatches( String aText, Pattern aPattern ) {
+        var matcher = aPattern.matcher( aText );
+        return matcher.matches();
     }
 }

@@ -25,12 +25,14 @@
 package com.github.pplociennik.auth.business.authentication;
 
 import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
+import com.github.pplociennik.auth.business.authentication.domain.model.LoginDO;
 import com.github.pplociennik.auth.business.authentication.domain.model.RegistrationDO;
-import com.github.pplociennik.auth.business.authentication.ports.inside.AuthenticationValidationRepository;
+import com.github.pplociennik.auth.business.authentication.ports.AuthenticationValidationRepository;
 import com.github.pplociennik.commons.validation.ValidatorIf;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -52,10 +54,14 @@ class AuthenticationValidator {
     private static final Pattern EMAIL_PATTERN = compile( "[a-zA-Z0-9!#$%&'*+-\\/=?^_`{|}~]+@[a-z0-9-]{2,}\\.[a-z]{2,}",
                                                           Pattern.CASE_INSENSITIVE );
     private final AuthenticationValidationRepository authenticationValidationRepository;
+    private final PasswordEncoder encoder;
 
     @Autowired
-    AuthenticationValidator( @NonNull AuthenticationValidationRepository aAuthenticationValidationRepository ) {
+    AuthenticationValidator(
+            @NonNull AuthenticationValidationRepository aAuthenticationValidationRepository,
+            PasswordEncoder aEncoder ) {
         authenticationValidationRepository = aAuthenticationValidationRepository;
+        encoder = aEncoder;
     }
 
     void validateRegistration( @NonNull RegistrationDO aRegistrationDO ) {
@@ -85,14 +91,46 @@ class AuthenticationValidator {
                 .perform();
     }
 
-    public void validateRegistrationConfirmation( String aToken ) {
+    public void validateRegistrationConfirmation( @NonNull String aToken ) {
 
         ValidatorIf
                 .of( aToken )
+                .validate( Objects::nonNull, NO_DATA_PROVIDED )
                 .validate( StringUtils::isNotBlank, NO_DATA_PROVIDED )
                 .validate( this::checkIfTokenExists, ACCOUNT_CONFIRMATION_TOKEN_NOT_FOUND )
                 .validate( this::checkIfTokenActive, ACCOUNT_CONFIRMATION_TOKEN_NOT_ACTIVE )
                 .perform();
+    }
+
+    void validateLoginData( LoginDO aLoginDO ) {
+        ValidatorIf
+                .of( aLoginDO )
+                .validate( Objects::nonNull, NO_DATA_PROVIDED )
+                .validate( LoginDO::getUsernameOrEmail, this::checkIfNotEmpty, AUTHENTICATION_USERNAME_OR_EMAIL_EMPTY )
+                .validate( LoginDO::getPassword, this::checkIfNotEmpty, AUTHENTICATION_PASSWORD_EMPTY )
+                .perform();
+    }
+
+    void preValidateLogin( LoginDO aLoginDO ) {
+        ValidatorIf
+                .of( aLoginDO )
+                .validate( Objects::nonNull, NO_DATA_PROVIDED )
+                .validate( LoginDO::getUsernameOrEmail, this::checkIfNotEmpty, INCORRECT_DATA )
+                .validate( this::checkIfAccountExists, AUTHENTICATION_USER_DOES_NOT_EXIST )
+                .validate( LoginDO::getPassword, this::checkIfNotEmpty, INCORRECT_DATA )
+                .perform();
+    }
+
+    private boolean checkIfAccountExists( LoginDO aLoginDO ) {
+        var usernameOrEmail = aLoginDO.getUsernameOrEmail();
+
+        return checkIfMatches( usernameOrEmail, EMAIL_PATTERN )
+               ? checkIfEmailExists( usernameOrEmail )
+               : checkIfUsernameExists( usernameOrEmail );
+    }
+
+    private boolean checkIfNotEmpty( String aText ) {
+        return ! Objects.equals( aText, "" );
     }
 
     private boolean checkIfTokenExists( String aToken ) {
@@ -115,6 +153,16 @@ class AuthenticationValidator {
     private boolean checkIfUsernameNotExists( String aUsername ) {
         requireNonNull( aUsername );
         return ! authenticationValidationRepository.checkIfUsernameExists( aUsername );
+    }
+
+    private boolean checkIfEmailExists( String aEmail ) {
+        requireNonNull( aEmail );
+        return authenticationValidationRepository.checkIfEmailExists( aEmail );
+    }
+
+    private boolean checkIfUsernameExists( String aUsername ) {
+        requireNonNull( aUsername );
+        return authenticationValidationRepository.checkIfUsernameExists( aUsername );
     }
 
     private boolean checkIfUsernameCorrect( String aUsername ) {

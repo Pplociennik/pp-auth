@@ -41,9 +41,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  */
 @Configuration
 @ComponentScan( basePackages = { "com.github.pplociennik.auth.core.configuration" } )
-@EnableAutoConfiguration
 @EnableJpaRepositories
-@EnableWebSecurity
 @EnableSwagger2
 @EnableAsync
 @Import( { SpringModulesConfiguration.class, SecurityConfiguration.class } )
