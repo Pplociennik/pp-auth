@@ -24,17 +24,16 @@
 
 package com.github.pplociennik.auth.business.authentication;
 
-import com.github.pplociennik.auth.business.authentication.ports.inside.AccountRepository;
-import com.github.pplociennik.auth.business.authentication.ports.inside.AuthenticationValidationRepository;
-import com.github.pplociennik.auth.business.authentication.ports.inside.VerificationTokenRepository;
+import com.github.pplociennik.auth.business.authentication.ports.AccountRepository;
+import com.github.pplociennik.auth.business.authentication.ports.AuthenticationValidationRepository;
+import com.github.pplociennik.auth.business.authentication.ports.VerificationTokenRepository;
 import com.github.pplociennik.auth.business.shared.system.EnvironmentPropertiesProvider;
 import com.github.pplociennik.auth.business.shared.system.TimeService;
-import com.github.pplociennik.auth.business.shared.system.time.SystemTimeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
@@ -49,51 +48,47 @@ class AuthAuthenticationBeansConfig {
     private final AuthenticationValidationRepository authenticationValidationRepository;
     private final PasswordEncoder encoder;
     private final ApplicationEventPublisher eventPublisher;
-    private final Environment environment;
     private final VerificationTokenRepository verificationTokenRepository;
+    private final AuthenticationManager authenticationManager;
+    private final TimeService timeService;
+    private final EnvironmentPropertiesProvider propertiesProvider;
 
     @Autowired
     AuthAuthenticationBeansConfig(
             AccountRepository aAccountRepository,
             AuthenticationValidationRepository aAuthenticationValidationRepository, PasswordEncoder aEncoder,
-            ApplicationEventPublisher aEventPublisher, Environment aEnvironment,
-            VerificationTokenRepository aVerificationTokenRepository ) {
+            ApplicationEventPublisher aEventPublisher, VerificationTokenRepository aVerificationTokenRepository,
+            AuthenticationManager aAuthenticationManager, TimeService aTimeService,
+            EnvironmentPropertiesProvider aPropertiesProvider ) {
         accountRepository = aAccountRepository;
         authenticationValidationRepository = aAuthenticationValidationRepository;
         encoder = aEncoder;
         eventPublisher = aEventPublisher;
-        environment = aEnvironment;
         verificationTokenRepository = aVerificationTokenRepository;
+        authenticationManager = aAuthenticationManager;
+        timeService = aTimeService;
+        propertiesProvider = aPropertiesProvider;
     }
 
     @Bean
     AuthenticationFacade authenticationFacade() {
-        return new AuthenticationFacade( authService(), authenticationValidator(), eventPublisher );
+        return new AuthenticationFacade( authService(), authenticationValidator(), eventPublisher,
+                                         authenticationManager, accountRepository );
     }
 
     @Bean
     AuthenticationValidator authenticationValidator() {
-        return new AuthenticationValidator( authenticationValidationRepository );
+        return new AuthenticationValidator( authenticationValidationRepository, encoder );
     }
 
     @Bean
     AuthService authService() {
         return new AuthService( encoder, accountRepository, verificationTokenResolver(), verificationTokenRepository,
-                                environmentPropertiesProvider(), timeService() );
-    }
-
-    @Bean
-    EnvironmentPropertiesProvider environmentPropertiesProvider() {
-        return new EnvironmentPropertiesProvider( environment );
+                                propertiesProvider, timeService );
     }
 
     @Bean
     VerificationTokenResolver verificationTokenResolver() {
         return new VerificationTokenResolver( verificationTokenRepository );
-    }
-
-    @Bean
-    TimeService timeService() {
-        return new SystemTimeServiceImpl( environmentPropertiesProvider() );
     }
 }

@@ -22,11 +22,11 @@
  * SOFTWARE.
  */
 
-package com.github.pplociennik.auth.business.authentication.infrastructure.inside;
+package com.github.pplociennik.auth.business.authentication.infrastructure.output;
 
-import com.github.pplociennik.auth.business.authentication.ports.inside.AccountRepository;
-import com.github.pplociennik.auth.business.authentication.ports.inside.AuthenticationValidationRepository;
-import com.github.pplociennik.auth.business.authentication.ports.inside.VerificationTokenRepository;
+import com.github.pplociennik.auth.business.authentication.ports.AccountRepository;
+import com.github.pplociennik.auth.business.authentication.ports.AuthenticationValidationRepository;
+import com.github.pplociennik.auth.business.authentication.ports.VerificationTokenRepository;
 import com.github.pplociennik.auth.db.repository.authentication.AccountDao;
 import com.github.pplociennik.auth.db.repository.authentication.VerificationTokenDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,16 +42,16 @@ import static java.util.Objects.requireNonNull;
  * @author Created by: Pplociennik at 13.10.2021 17:42
  */
 @Configuration
-class AuthAuthenticationInfrastructureBeansIn {
+class AuthAuthenticationInfrastructureOutputBeans {
 
     private final AccountDao accountDao;
-    private final VerificationTokenDao springTokenRepository;
+    private final VerificationTokenDao verificationTokenDao;
 
     @Autowired
-    AuthAuthenticationInfrastructureBeansIn(
-            @NonNull AccountDao aAccountDao, @NonNull VerificationTokenDao aSpringTokenRepository ) {
+    AuthAuthenticationInfrastructureOutputBeans(
+            @NonNull AccountDao aAccountDao, @NonNull VerificationTokenDao aVerificationTokenDao ) {
         accountDao = requireNonNull( aAccountDao );
-        springTokenRepository = requireNonNull( aSpringTokenRepository );
+        verificationTokenDao = requireNonNull( aVerificationTokenDao );
     }
 
     @Bean
@@ -61,7 +61,7 @@ class AuthAuthenticationInfrastructureBeansIn {
 
     @Bean
     VerificationTokenRepository verificationTokenRepository() {
-        return new VerificationTokenRepositoryImpl( springTokenRepository, accountDao );
+        return new VerificationTokenRepositoryImpl( verificationTokenDao, accountDao );
     }
 
     @Bean

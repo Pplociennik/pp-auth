@@ -1,17 +1,19 @@
-package com.github.pplociennik.auth.business.authentication.infrastructure.outside;
+package com.github.pplociennik.auth.business.authentication.infrastructure.input;
 
 import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
-import com.github.pplociennik.auth.business.authentication.ports.inside.AccountRepository;
-import com.github.pplociennik.auth.business.authentication.ports.inside.AuthenticationValidationRepository;
+import com.github.pplociennik.auth.business.authentication.ports.AccountRepository;
 import com.github.pplociennik.auth.business.authorization.domain.map.AuthorityMapper;
 import com.github.pplociennik.auth.business.shared.system.TimeService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.regex.Pattern;
 
 import static com.github.pplociennik.auth.common.lang.AuthResExcMsgTranslationKey.*;
 import static com.github.pplociennik.commons.utility.LanguageUtil.getLocalizedMessage;
+import static java.util.regex.Pattern.compile;
 
 /**
  * Custom authentication provider.
@@ -20,18 +22,17 @@ import static com.github.pplociennik.commons.utility.LanguageUtil.getLocalizedMe
  */
 class AccountAuthenticationManagerImpl implements AuthenticationManager {
 
-    private final AccountRepository accountRepository;
-    private final AuthenticationValidationRepository validationRepository;
-    private final TimeService timeService;
-    private final PasswordEncoder passwordEncoder;
+    private static final Pattern EMAIL_PATTERN = compile( "[a-zA-Z0-9!#$%&'*+-\\/=?^_`{|}~]+@[a-z0-9-]{2,}\\.[a-z]{2,}",
+                                                          Pattern.CASE_INSENSITIVE );
 
+    private final AccountRepository accountRepository;
+    private final TimeService timeService;
+
+    @Autowired
     AccountAuthenticationManagerImpl(
-            AccountRepository aAccountRepository, AuthenticationValidationRepository aValidationRepository,
-            TimeService aTimeService, PasswordEncoder aPasswordEncoder ) {
+            AccountRepository aAccountRepository, TimeService aTimeService ) {
         accountRepository = aAccountRepository;
-        validationRepository = aValidationRepository;
         timeService = aTimeService;
-        passwordEncoder = aPasswordEncoder;
     }
 
     @Override
@@ -46,7 +47,9 @@ class AccountAuthenticationManagerImpl implements AuthenticationManager {
                 .getCredentials()
                 .toString();
 
-        var account = accountRepository.findAccountByUsername( name );
+        var account = checkIfMatches( name, EMAIL_PATTERN )
+                      ? accountRepository.findAccountByEmailAddress( name )
+                      : accountRepository.findAccountByUsername( name );
         var isDataValid = executeValidation( account, name, password );
 
         return isDataValid
@@ -56,9 +59,9 @@ class AccountAuthenticationManagerImpl implements AuthenticationManager {
 
     private Authentication authenticateUser( AccountDO aAccountDO ) {
         updateLastLoginDate( aAccountDO );
-        var accountAuthorites = AuthorityMapper.mapToAuthorityDetails( aAccountDO.getAuthorities() );
+        var accountAuthorities = AuthorityMapper.mapToAuthorityDetails( aAccountDO.getAuthorities() );
         return new UsernamePasswordAuthenticationToken( aAccountDO.getUsername(), aAccountDO.getPassword(),
-                                                        accountAuthorites );
+                                                        accountAuthorities );
     }
 
     private void updateLastLoginDate( AccountDO aAccountDO ) {
@@ -69,11 +72,11 @@ class AccountAuthenticationManagerImpl implements AuthenticationManager {
 
     private boolean executeValidation( AccountDO aAccount, String aName, String aPassword ) {
 
-        validateName( aName );
-
         validatePassword( aAccount, aPassword );
         validateIfEnabled( aAccount );
         validateIfNonLocked( aAccount );
+        validateIfAccountNonExpired( aAccount );
+        validateIfCredentialsNonExpired( aAccount );
 
         return true;
     }
@@ -90,19 +93,26 @@ class AccountAuthenticationManagerImpl implements AuthenticationManager {
         }
     }
 
+    private void validateIfAccountNonExpired( AccountDO aAccount ) {
+        if ( ! aAccount.isAccountNonExpired() ) {
+            throw new AccountExpiredException( getLocalizedMessage( AUTHENTICATION_ACCOUNT_EXPIRED ) );
+        }
+    }
+
+    private void validateIfCredentialsNonExpired( AccountDO aAccount ) {
+        if ( ! aAccount.isCredentialsNonExpired() ) {
+            throw new CredentialsExpiredException( getLocalizedMessage( AUTHENTICATION_CREDENTIALS_EXPIRED ) );
+        }
+    }
+
     private void validatePassword( AccountDO aAccount, String aPassword ) {
-        if ( ! passwordEncoder.matches( aPassword, aAccount.getPassword() ) ) {
+        if ( ! aPassword.equals( aAccount.getPassword() ) ) {
             throw new BadCredentialsException( getLocalizedMessage( AUTHENTICATION_INCORRECT_PASSWORD ) );
         }
     }
 
-    private void validateName( String aName ) {
-        if ( ! checkIfNameExistsInDatabase( aName ) ) {
-            throw new BadCredentialsException( getLocalizedMessage( AUTHENTICATION_USERNAME_NOT_FOUND ) );
-        }
-    }
-
-    private boolean checkIfNameExistsInDatabase( String aName ) {
-        return validationRepository.checkIfUsernameExists( aName );
+    private boolean checkIfMatches( String aText, Pattern aPattern ) {
+        var matcher = aPattern.matcher( aText );
+        return matcher.matches();
     }
 }

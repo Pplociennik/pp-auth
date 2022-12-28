@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.github.pplociennik.auth.business.authentication.ports.inside;
+package com.github.pplociennik.auth.business.authentication.ports;
 
 import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
 import org.springframework.lang.NonNull;
@@ -59,6 +59,24 @@ public interface AccountRepository {
      * @return a user account.
      */
     AccountDO findAccountByUsername( @NonNull String aUsername );
+
+    /**
+     * Returns an account with the specified email address if it exists in the database.
+     *
+     * @param aEmail
+     *         an email address.
+     * @return a user account.
+     */
+    AccountDO findAccountByEmailAddress( @NonNull String aEmail );
+
+    /**
+     * Returns an account with the specified username or email address if it exists in the database.
+     *
+     * @param aUsernameOrEmail
+     *         a username or email.
+     * @return a user account.
+     */
+    AccountDO findAccountByUsernameOrEmail( @NonNull String aUsernameOrEmail );
 
     /**
      * Returns true if an account with the specified username exists in the database.

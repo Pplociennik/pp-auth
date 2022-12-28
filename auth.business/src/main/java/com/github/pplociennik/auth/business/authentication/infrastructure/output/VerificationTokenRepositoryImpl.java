@@ -1,8 +1,8 @@
-package com.github.pplociennik.auth.business.authentication.infrastructure.inside;
+package com.github.pplociennik.auth.business.authentication.infrastructure.output;
 
 import com.github.pplociennik.auth.business.authentication.domain.map.VerificationTokenMapper;
 import com.github.pplociennik.auth.business.authentication.domain.model.VerificationTokenDO;
-import com.github.pplociennik.auth.business.authentication.ports.inside.VerificationTokenRepository;
+import com.github.pplociennik.auth.business.authentication.ports.VerificationTokenRepository;
 import com.github.pplociennik.auth.db.repository.authentication.AccountDao;
 import com.github.pplociennik.auth.db.repository.authentication.VerificationTokenDao;
 import org.springframework.beans.factory.annotation.Autowired;

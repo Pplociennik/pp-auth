@@ -94,6 +94,26 @@ public enum AuthResExcMsgTranslationKey implements TranslationKey {
     AUTHENTICATION_ACCOUNT_LOCKED,
 
     /**
+     * Authentication process: Account has expired!
+     */
+    AUTHENTICATION_ACCOUNT_EXPIRED,
+
+    /**
+     * Authentication process: Credentials have expired!
+     */
+    AUTHENTICATION_CREDENTIALS_EXPIRED,
+
+    /**
+     * Authentication process: Username or email empty.
+     */
+    AUTHENTICATION_USERNAME_OR_EMAIL_EMPTY,
+
+    /**
+     * Authentication process: Password is empty.
+     */
+    AUTHENTICATION_PASSWORD_EMPTY,
+
+    /**
      * Account confirmation: Account does not exist!
      */
     ACCOUNT_CONFIRMATION_USER_NOT_EXISTS,
@@ -122,6 +142,11 @@ public enum AuthResExcMsgTranslationKey implements TranslationKey {
      * All: No data has been provided.
      */
     NO_DATA_PROVIDED,
+
+    /**
+     * All: Incorrect data.
+     */
+    INCORRECT_DATA,
 
     /**
      * Unexpected exception being thrown.

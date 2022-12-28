@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.github.pplociennik.auth.api.exc;
+package com.github.pplociennik.auth.api.controller;
 
 import com.github.pplociennik.auth.api.shared.ResponseEntityExceptionParams;
 import com.github.pplociennik.auth.common.exc.AccountConfirmationException;
@@ -30,6 +30,7 @@ import com.github.pplociennik.commons.exc.ValidationException;
 import com.github.pplociennik.commons.utility.LanguageUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.*;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
@@ -46,8 +47,8 @@ import static com.github.pplociennik.commons.utility.CustomObjects.arrayOf;
  *
  * @author Created by: Pplociennik at 30.01.2022 09:56
  */
-@ControllerAdvice
-class ControllerAdvisor extends ResponseEntityExceptionHandler {
+@ControllerAdvice( assignableTypes = { AuthController.class } )
+class AuthControllerAdvisor extends ResponseEntityExceptionHandler {
 
     /**
      * Handles the {@link ValidationException}.
@@ -91,6 +92,116 @@ class ControllerAdvisor extends ResponseEntityExceptionHandler {
         aException.printStackTrace();
 
         return new ResponseEntity<>( params, HttpStatus.BAD_REQUEST );
+    }
+
+    /**
+     * Handles the {@link AccountConfirmationException}.
+     *
+     * @param aException
+     *         a caught exception
+     * @return a response with BAD_REQUEST status
+     */
+    @ExceptionHandler( BadCredentialsException.class )
+    ResponseEntity< ResponseEntityExceptionParams > handleBadCredentialsException(
+            BadCredentialsException aException ) {
+
+        var message = aException.getMessage();
+
+        var params = new ResponseEntityExceptionParams();
+        params.setTimestamp( LocalDateTime.now() );
+        params.setMessage( message );
+
+        aException.printStackTrace();
+
+        return new ResponseEntity<>( params, HttpStatus.UNAUTHORIZED );
+    }
+
+    /**
+     * Handles the {@link CredentialsExpiredException}.
+     *
+     * @param aException
+     *         a caught exception
+     * @return a response with BAD_REQUEST status
+     */
+    @ExceptionHandler( CredentialsExpiredException.class )
+    ResponseEntity< ResponseEntityExceptionParams > handleCredentialsExpiredException(
+            CredentialsExpiredException aException ) {
+
+        var message = aException.getMessage();
+
+        var params = new ResponseEntityExceptionParams();
+        params.setTimestamp( LocalDateTime.now() );
+        params.setMessage( message );
+
+        aException.printStackTrace();
+
+        return new ResponseEntity<>( params, HttpStatus.UNAUTHORIZED );
+    }
+
+    /**
+     * Handles the {@link AccountExpiredException}.
+     *
+     * @param aException
+     *         a caught exception
+     * @return a response with BAD_REQUEST status
+     */
+    @ExceptionHandler( AccountExpiredException.class )
+    ResponseEntity< ResponseEntityExceptionParams > handleAccountExpiredException(
+            AccountExpiredException aException ) {
+
+        var message = aException.getMessage();
+
+        var params = new ResponseEntityExceptionParams();
+        params.setTimestamp( LocalDateTime.now() );
+        params.setMessage( message );
+
+        aException.printStackTrace();
+
+        return new ResponseEntity<>( params, HttpStatus.UNAUTHORIZED );
+    }
+
+    /**
+     * Handles the {@link DisabledException}.
+     *
+     * @param aException
+     *         a caught exception
+     * @return a response with BAD_REQUEST status
+     */
+    @ExceptionHandler( DisabledException.class )
+    ResponseEntity< ResponseEntityExceptionParams > handleDisabledException(
+            DisabledException aException ) {
+
+        var message = aException.getMessage();
+
+        var params = new ResponseEntityExceptionParams();
+        params.setTimestamp( LocalDateTime.now() );
+        params.setMessage( message );
+
+        aException.printStackTrace();
+
+        return new ResponseEntity<>( params, HttpStatus.UNAUTHORIZED );
+    }
+
+    /**
+     * Handles the {@link LockedException}.
+     *
+     * @param aException
+     *         a caught exception
+     * @return a response with BAD_REQUEST status
+     */
+    @ExceptionHandler( LockedException.class )
+    ResponseEntity< ResponseEntityExceptionParams > handleLockedException(
+            LockedException aException ) {
+
+        var message = aException.getMessage();
+
+        var params = new ResponseEntityExceptionParams();
+        params.setTimestamp( LocalDateTime.now() );
+        params.setMessage( message );
+
+        aException.printStackTrace();
+
+        return new ResponseEntity<>( params, HttpStatus.UNAUTHORIZED );
     }
 
     /**

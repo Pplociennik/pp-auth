@@ -36,7 +36,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.mockito.Answers;
+import org.mockito.Mock;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.ZoneId;
@@ -73,6 +76,8 @@ class AuthenticationFacadeTest {
     private InMemoryVerificationTokenRepository verificationTokenRepository;
     private EnvironmentPropertiesProvider propertiesProvider;
     private InMemoryTimeService timeService;
+    @Mock( answer = Answers.RETURNS_SMART_NULLS )
+    private AuthenticationManager authenticationManager;
     private AuthenticationFacade sut;
 
     @BeforeEach
@@ -88,9 +93,10 @@ class AuthenticationFacadeTest {
 
         authService = new AuthService( encoder, accountRepository, tokenResolver, verificationTokenRepository,
                                        propertiesProvider, timeService );
-        validator = new AuthenticationValidator( validationRepository );
+        validator = new AuthenticationValidator( validationRepository, encoder );
 
-        sut = new AuthenticationFacade( authService, validator, eventPublisher );
+        sut = new AuthenticationFacade( authService, validator, eventPublisher, authenticationManager,
+                                        accountRepository );
         LanguageUtil.setLocale( Locale.ENGLISH );
     }
 

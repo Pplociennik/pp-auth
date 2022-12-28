@@ -46,6 +46,6 @@ class AuthSecurityConstants {
      * The class cannot be instantiable.
      */
     private AuthSecurityConstants() {
-        throw new RuntimeException( format( "The class \"%s\" is not instantiable!", this ) );
+        throw new AssertionError( format( "The class \"%s\" is not instantiable!", this ) );
     }
 }

@@ -242,11 +242,6 @@ class AccountMapperTest {
                 .isEqualTo( expectedAAccountDto );
     }
 
-    @Test
-    void shouldThrowNullPointerException_whenRegistrationDOIsNull() {
-        assertThatThrownBy( () -> mapToEntity( null ) ).isInstanceOf( NullPointerException.class );
-    }
-
     private Set< AuthorityDO > prepareTestAuthoritiesDOs() {
         var baseAuthority = AuthorityDO
                 .builder()
