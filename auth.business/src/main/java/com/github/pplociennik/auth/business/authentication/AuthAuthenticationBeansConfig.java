@@ -78,7 +78,7 @@ class AuthAuthenticationBeansConfig {
 
     @Bean
     AuthenticationValidator authenticationValidator() {
-        return new AuthenticationValidator( authenticationValidationRepository, encoder );
+        return new AuthenticationValidator( authenticationValidationRepository );
     }
 
     @Bean

@@ -33,9 +33,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.Answers;
-import org.mockito.Mock;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -73,14 +70,11 @@ class AuthenticationValidatorTest {
 
     private static final String TEST_OCCUPIED_USERNAME = "InvalidUserName";
     private static final String TEST_OCCUPIED_EMAIL = "occupied@email.com";
-
-    @Mock( answer = Answers.RETURNS_SMART_NULLS )
-    private PasswordEncoder encoder;
     private List< AccountDO > TEST_DATABASE = new LinkedList<>();
 
     private InMemoryAuthenticationValidationRepository validationRepository = new InMemoryAuthenticationValidationRepository(
             TEST_DATABASE );
-    private AuthenticationValidator sut = new AuthenticationValidator( validationRepository, encoder );
+    private AuthenticationValidator sut = new AuthenticationValidator( validationRepository );
 
     @BeforeEach
     void prepare() {

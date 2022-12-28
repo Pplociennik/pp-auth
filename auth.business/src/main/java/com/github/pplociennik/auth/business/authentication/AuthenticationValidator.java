@@ -32,7 +32,6 @@ import com.github.pplociennik.commons.validation.ValidatorIf;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -54,14 +53,11 @@ class AuthenticationValidator {
     private static final Pattern EMAIL_PATTERN = compile( "[a-zA-Z0-9!#$%&'*+-\\/=?^_`{|}~]+@[a-z0-9-]{2,}\\.[a-z]{2,}",
                                                           Pattern.CASE_INSENSITIVE );
     private final AuthenticationValidationRepository authenticationValidationRepository;
-    private final PasswordEncoder encoder;
 
     @Autowired
     AuthenticationValidator(
-            @NonNull AuthenticationValidationRepository aAuthenticationValidationRepository,
-            PasswordEncoder aEncoder ) {
+            @NonNull AuthenticationValidationRepository aAuthenticationValidationRepository ) {
         authenticationValidationRepository = aAuthenticationValidationRepository;
-        encoder = aEncoder;
     }
 
     void validateRegistration( @NonNull RegistrationDO aRegistrationDO ) {

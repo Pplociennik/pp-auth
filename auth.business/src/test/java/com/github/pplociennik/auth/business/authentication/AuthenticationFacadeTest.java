@@ -93,7 +93,7 @@ class AuthenticationFacadeTest {
 
         authService = new AuthService( encoder, accountRepository, tokenResolver, verificationTokenRepository,
                                        propertiesProvider, timeService );
-        validator = new AuthenticationValidator( validationRepository, encoder );
+        validator = new AuthenticationValidator( validationRepository );
 
         sut = new AuthenticationFacade( authService, validator, eventPublisher, authenticationManager,
                                         accountRepository );
