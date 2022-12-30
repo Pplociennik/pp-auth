@@ -18,7 +18,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @author Created by: Pplociennik at 30.12.2022 02:52
  */
-enum AuthenticationPublishableEventsFactory {
+enum AuthenticationPublishableEventsSupplier {
 
     ON_REGISTRATION_FINISHED( AccountDto.class ) {
         @Override
@@ -54,7 +54,7 @@ enum AuthenticationPublishableEventsFactory {
 
     private final Class< ? > sourceType;
 
-    AuthenticationPublishableEventsFactory( Class< ? > aSourceType ) {
+    AuthenticationPublishableEventsSupplier( Class< ? > aSourceType ) {
         sourceType = aSourceType;
     }
 

@@ -36,8 +36,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import static com.github.pplociennik.auth.business.authentication.AuthenticationPublishableEventsFactory.ON_ACCOUNT_CONFIRMATION_FINISHED;
-import static com.github.pplociennik.auth.business.authentication.AuthenticationPublishableEventsFactory.ON_REGISTRATION_FINISHED;
+import static com.github.pplociennik.auth.business.authentication.AuthenticationPublishableEventsSupplier.ON_ACCOUNT_CONFIRMATION_FINISHED;
+import static com.github.pplociennik.auth.business.authentication.AuthenticationPublishableEventsSupplier.ON_REGISTRATION_FINISHED;
 import static com.github.pplociennik.auth.business.authentication.domain.map.AccountMapper.mapToDto;
 import static com.github.pplociennik.commons.utility.CustomObjects.requireNonEmpty;
 import static java.util.Objects.requireNonNull;
