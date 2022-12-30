@@ -29,9 +29,6 @@ import com.github.pplociennik.auth.business.authentication.domain.model.AccountD
 import com.github.pplociennik.auth.business.authentication.domain.model.LoginDO;
 import com.github.pplociennik.auth.business.authentication.domain.model.RegistrationDO;
 import com.github.pplociennik.auth.business.authentication.ports.AccountRepository;
-import com.github.pplociennik.auth.business.shared.events.OnAccountConfirmationCompleteEvent;
-import com.github.pplociennik.auth.business.shared.events.OnRegistrationCompleteEvent;
-import com.github.pplociennik.commons.utility.LanguageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.lang.NonNull;
@@ -39,6 +36,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import static com.github.pplociennik.auth.business.authentication.AuthenticationPublishableEventsFactory.ON_ACCOUNT_CONFIRMATION_FINISHED;
+import static com.github.pplociennik.auth.business.authentication.AuthenticationPublishableEventsFactory.ON_REGISTRATION_FINISHED;
 import static com.github.pplociennik.auth.business.authentication.domain.map.AccountMapper.mapToDto;
 import static com.github.pplociennik.commons.utility.CustomObjects.requireNonEmpty;
 import static java.util.Objects.requireNonNull;
@@ -79,7 +78,8 @@ public class AuthenticationFacade {
         requireNonNull( aRegistrationDO );
         validationService.validateRegistration( aRegistrationDO );
         var registeredAccount = mapToDto( authService.registerNewAccount( aRegistrationDO ) );
-        publishEventOnRegistrationFinished( registeredAccount );
+        var event = ON_REGISTRATION_FINISHED.getEvent( registeredAccount );
+        eventPublisher.publishEvent( event );
         return registeredAccount;
     }
 
@@ -108,7 +108,8 @@ public class AuthenticationFacade {
         requireNonEmpty( aToken );
         validationService.validateRegistrationConfirmation( aToken );
         var enabledAccount = mapToDto( authService.confirmRegistration( aToken ) );
-        publishEventOnAccountConfirmationFinished( enabledAccount );
+        var event = ON_ACCOUNT_CONFIRMATION_FINISHED.getEvent( enabledAccount );
+        eventPublisher.publishEvent( event );
     }
 
     /**
@@ -127,19 +128,5 @@ public class AuthenticationFacade {
         SecurityContextHolder
                 .getContext()
                 .setAuthentication( authenticationObject );
-    }
-
-    private void publishEventOnRegistrationFinished( @NonNull AccountDto aRegisteredAccount ) {
-        requireNonNull( aRegisteredAccount );
-
-        var event = new OnRegistrationCompleteEvent( aRegisteredAccount, LanguageUtil.getLocale() );
-        eventPublisher.publishEvent( event );
-    }
-
-    private void publishEventOnAccountConfirmationFinished( @NonNull AccountDto aEnabledAccount ) {
-        requireNonNull( aEnabledAccount );
-
-        var event = new OnAccountConfirmationCompleteEvent( aEnabledAccount, LanguageUtil.getLocale() );
-        eventPublisher.publishEvent( event );
     }
 }
