@@ -25,8 +25,7 @@
 package com.github.pplociennik.auth.core.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.ehcache.EhCacheFactoryBean;
-import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
+import org.springframework.cache.support.NoOpCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -37,6 +36,7 @@ import org.springframework.security.acls.domain.*;
 import org.springframework.security.acls.jdbc.BasicLookupStrategy;
 import org.springframework.security.acls.jdbc.JdbcMutableAclService;
 import org.springframework.security.acls.jdbc.LookupStrategy;
+import org.springframework.security.acls.model.AclCache;
 import org.springframework.security.acls.model.PermissionGrantingStrategy;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration;
@@ -55,6 +55,7 @@ class AclMethodSecurityConfiguration extends GlobalMethodSecurityConfiguration {
 
     private final MethodSecurityExpressionHandler defaultMethodSecurityExpressionHandler;
     private final DataSource dataSource;
+    private final String DEFAULT_NO_OPERATION_CACHE_NAME = "NO_OPERATION_CACHE";
 
     @Autowired
     public AclMethodSecurityConfiguration(
@@ -92,22 +93,15 @@ class AclMethodSecurityConfiguration extends GlobalMethodSecurityConfiguration {
     }
 
     @Bean
-    public EhCacheBasedAclCache aclCache() {
-        return new EhCacheBasedAclCache( aclEhCacheFactoryBean().getObject(), permissionGrantingStrategy(),
-                                         aclAuthorizationStrategy() );
+    public AclCache aclCache() {
+        // TODO: Upgrade cache in the future.
+        var cache = cacheManager().getCache( DEFAULT_NO_OPERATION_CACHE_NAME );
+        return new SpringCacheBasedAclCache( cache, permissionGrantingStrategy(), aclAuthorizationStrategy() );
     }
 
     @Bean
-    public EhCacheFactoryBean aclEhCacheFactoryBean() {
-        EhCacheFactoryBean ehCacheFactoryBean = new EhCacheFactoryBean();
-        ehCacheFactoryBean.setCacheManager( aclCacheManager().getObject() );
-        ehCacheFactoryBean.setCacheName( "aclCache" );
-        return ehCacheFactoryBean;
-    }
-
-    @Bean
-    public EhCacheManagerFactoryBean aclCacheManager() {
-        return new EhCacheManagerFactoryBean();
+    public NoOpCacheManager cacheManager() {
+        return new NoOpCacheManager();
     }
 
     @Bean

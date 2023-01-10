@@ -28,7 +28,7 @@ import com.github.pplociennik.auth.business.authentication.domain.model.AccountD
 import com.github.pplociennik.auth.business.authentication.domain.model.LoginDO;
 import com.github.pplociennik.auth.business.authentication.domain.model.RegistrationDO;
 import com.github.pplociennik.auth.business.authentication.ports.AuthenticationValidationRepository;
-import com.github.pplociennik.commons.validation.ValidatorIf;
+import com.github.pplociennik.commons.validation.Validator;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
@@ -62,7 +62,7 @@ class AuthenticationValidator {
 
     void validateRegistration( @NonNull RegistrationDO aRegistrationDO ) {
 
-        ValidatorIf
+        Validator
                 .of( aRegistrationDO )
                 .validate( Objects::nonNull, AUTHENTICATION_NO_REGISTRATION_DATA )
                 .validate( RegistrationDO::getUsername, this::checkIfUsernameCorrect,
@@ -80,7 +80,7 @@ class AuthenticationValidator {
 
     void validateConfirmationLinkGeneration( @NonNull AccountDO aAccountDO ) {
 
-        ValidatorIf
+        Validator
                 .of( aAccountDO )
                 .validate( Objects::nonNull, NO_DATA_PROVIDED )
                 .validate( AccountDO::getEmailAddress, this::checkIfAccountExists, AUTHENTICATION_USER_DOES_NOT_EXIST )
@@ -89,7 +89,7 @@ class AuthenticationValidator {
 
     public void validateRegistrationConfirmation( @NonNull String aToken ) {
 
-        ValidatorIf
+        Validator
                 .of( aToken )
                 .validate( Objects::nonNull, NO_DATA_PROVIDED )
                 .validate( StringUtils::isNotBlank, NO_DATA_PROVIDED )
@@ -99,7 +99,7 @@ class AuthenticationValidator {
     }
 
     void validateLoginData( LoginDO aLoginDO ) {
-        ValidatorIf
+        Validator
                 .of( aLoginDO )
                 .validate( Objects::nonNull, NO_DATA_PROVIDED )
                 .validate( LoginDO::getUsernameOrEmail, this::checkIfNotEmpty, AUTHENTICATION_USERNAME_OR_EMAIL_EMPTY )
@@ -108,7 +108,7 @@ class AuthenticationValidator {
     }
 
     void preValidateLogin( LoginDO aLoginDO ) {
-        ValidatorIf
+        Validator
                 .of( aLoginDO )
                 .validate( Objects::nonNull, NO_DATA_PROVIDED )
                 .validate( LoginDO::getUsernameOrEmail, this::checkIfNotEmpty, INCORRECT_DATA )

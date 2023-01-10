@@ -2,10 +2,10 @@ package com.github.pplociennik.auth.db.entity.authentication;
 
 import auth.AuthVerificationTokenType;
 import com.github.pplociennik.commons.persistence.BaseIdentifiableDataEntity;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
 import java.time.ZonedDateTime;
 
 /**
@@ -28,8 +28,8 @@ public class VerificationToken extends BaseIdentifiableDataEntity {
     /**
      * An owner of the token.
      */
-    @OneToOne( fetch = FetchType.EAGER, optional = false )
-    @JoinColumn( name = "OWNER_ID", referencedColumnName = "ID" )
+    @PrimaryKeyJoinColumn( name = "OWNER_ID" )
+    @OneToOne( optional = false )
     private Account owner;
 
     /**

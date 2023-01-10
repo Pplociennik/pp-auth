@@ -26,14 +26,10 @@ package com.github.pplociennik.auth.core.runner;
 
 import com.github.pplociennik.auth.core.configuration.DefaultStaticSecurityConfiguration;
 import com.github.pplociennik.auth.core.configuration.lang.SystemLangTranslateConfiguration;
+import org.springdoc.core.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
  * A test configuration for Auth runner.
@@ -41,18 +37,18 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  * @author Created by: Pplociennik at 03.02.2022 19:07
  */
 @Configuration
-@EnableSwagger2
 @Import( { DefaultStaticSecurityConfiguration.class, SystemLangTranslateConfiguration.class } ) // Using default configuration for testing
 class RunnerConfig {
 
     @Configuration
-    public class SpringFoxConfig {
+    public class OpenApiUiConfig {
+        // TODO: fix swagger
         @Bean
-        public Docket api() {
-            return new Docket( DocumentationType.SWAGGER_2 )
-                    .select()
-                    .apis( RequestHandlerSelectors.any() )
-                    .paths( PathSelectors.any() )
+        public GroupedOpenApi api() {
+            return GroupedOpenApi
+                    .builder()
+                    .group( "pp.auth-all" )
+                    .pathsToMatch( "/*" )
                     .build();
         }
     }

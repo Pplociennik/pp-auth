@@ -1,0 +1,30 @@
+POST http://localhost:8080/auth/confirmAccount
+Accept-Language: en
+Content-Type: application/x-www-form-urlencoded
+
+aToken=
+
+###
+POST http://localhost:8080/auth/login
+Accept-Language: en
+Content-Type: application/json
+
+{
+  "usernameOrEmail": "",
+  "password": ""
+}
+
+###
+POST http://localhost:8080/auth/register
+Accept-Language: en
+Content-Type: application/json
+
+{
+  "email": "",
+  "username": "",
+  "password": "",
+  "repeatedPassword": ""
+}
+
+###
+

@@ -24,11 +24,13 @@
 
 package com.github.pplociennik.auth.core.configuration;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.SecurityFilterChain;
 
 import static com.github.pplociennik.auth.business.shared.authorization.RolesDefinition.AUTH_ADMIN_ROLE;
 import static com.github.pplociennik.auth.business.shared.authorization.RolesDefinition.AUTH_USER_ROLE;
@@ -43,39 +45,72 @@ import static com.github.pplociennik.auth.core.configuration.AuthSecurityConstan
 @Configuration
 @EnableWebSecurity
 @Import( { SpringModulesConfiguration.class, AclMethodSecurityConfiguration.class } )
-class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+class SecurityConfiguration {
 
-    private static final String[] AUTH_WHITELIST = {
-            // -- Swagger UI v2
-            "/v2/api-docs", "/swagger-resources", "/swagger-resources/**", "/configuration/ui", "/configuration/security", "/swagger-ui.html", "/webjars/**",
-            // -- Swagger UI v3 (OpenAPI)
-            "/v3/api-docs/**", "/swagger-ui/**"
-            // other public endpoints of your API may be appended to this array
-    };
+    private static final String[] AUTH_WHITELIST = {};
 
-    @Override
-    protected void configure( final HttpSecurity http ) throws Exception {
-        http
-                .authorizeRequests()
-                .antMatchers( ROOT_URI, AUTH_LOGIN_URI, AUTH_LOGOUT_URI, AUTH_REGISTRATION_URI,
-                              AUTH_ACCOUNT_CONFIRMATION_URI )
-                .permitAll();
-        http
-                .authorizeRequests()
-                .antMatchers( AUTH_ADMIN_URI )
-                .hasRole( AUTH_ADMIN_ROLE.getName() );
-        http
-                .authorizeRequests()
-                .antMatchers( AUTH_USER_URI )
-                .hasAnyRole( AUTH_ADMIN_ROLE.getName(), AUTH_USER_ROLE.getName() );
-        http
+    @Bean
+    @Order( 1 )
+    SecurityFilterChain authFilterChain( HttpSecurity aHttp ) throws Exception {
+        return aHttp
+                .securityMatcher( ROOT_URI, AUTH_LOGIN_URI, AUTH_LOGOUT_URI, AUTH_REGISTRATION_URI,
+                                  AUTH_ACCOUNT_CONFIRMATION_URI )
+                .authorizeHttpRequests( authorize -> authorize
+                        .anyRequest()
+                        .permitAll() )
                 .csrf()
                 .disable()
-                .authorizeRequests()
-                .antMatchers( AUTH_WHITELIST )
-                .permitAll()
-                .antMatchers( "/**" )
-                .authenticated();
+                .build();
+    }
+
+    @Bean
+    @Order( 2 )
+    SecurityFilterChain adminFilterChain( HttpSecurity aHttp ) throws Exception {
+        return aHttp
+                .securityMatcher( AUTH_ADMIN_URI )
+                .authorizeHttpRequests( authorize -> authorize
+                        .anyRequest()
+                        .hasRole( AUTH_ADMIN_ROLE.getName() ) )
+                .csrf()
+                .disable()
+                .build();
+    }
+
+    @Bean
+    @Order( 3 )
+    SecurityFilterChain userFilterChain( HttpSecurity aHttp ) throws Exception {
+        return aHttp
+                .securityMatcher( AUTH_USER_URI )
+                .authorizeHttpRequests( authorize -> authorize
+                        .anyRequest()
+                        .hasAnyRole( AUTH_ADMIN_ROLE.getName(), AUTH_USER_ROLE.getName() ) )
+                .csrf()
+                .disable()
+                .build();
+    }
+
+    @Bean
+    @Order( 4 )
+    SecurityFilterChain whiteListedChain( HttpSecurity aHttp ) throws Exception {
+        return aHttp
+                .securityMatcher( AUTH_WHITELIST )
+                .authorizeHttpRequests( authorize -> authorize
+                        .anyRequest()
+                        .permitAll() )
+                .csrf()
+                .disable()
+                .build();
+    }
+
+    @Bean
+    SecurityFilterChain defaultChain( HttpSecurity aHttp ) throws Exception {
+        return aHttp
+                .authorizeHttpRequests( authorize -> authorize
+                        .anyRequest()
+                        .authenticated() )
+                .csrf()
+                .disable()
+                .build();
     }
 
 }

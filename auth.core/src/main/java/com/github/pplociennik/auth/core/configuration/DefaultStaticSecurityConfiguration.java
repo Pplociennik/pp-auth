@@ -24,14 +24,11 @@
 
 package com.github.pplociennik.auth.core.configuration;
 
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
  * A class defining default security configuration. Should be imported in Spring's configuration class if there's a need
@@ -42,7 +39,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Configuration
 @ComponentScan( basePackages = { "com.github.pplociennik.auth.core.configuration" } )
 @EnableJpaRepositories
-@EnableSwagger2
 @EnableAsync
 @Import( { SpringModulesConfiguration.class, SecurityConfiguration.class } )
 public class DefaultStaticSecurityConfiguration {

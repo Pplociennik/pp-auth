@@ -29,6 +29,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.context.annotation.Import;
 
 /**
  * A test runner for Auth project.
@@ -37,6 +38,7 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
  */
 @Log4j2
 @SpringBootApplication( exclude = { SecurityAutoConfiguration.class, ManagementWebSecurityAutoConfiguration.class } )
+@Import( RunnerConfig.class )
 public class Runner {
 
     public static void main( String[] args ) {
