@@ -26,6 +26,7 @@ package com.github.pplociennik.auth.core.configuration;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -39,7 +40,8 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @Configuration
 @ComponentScan( basePackages = { "com.github.pplociennik.auth.core.configuration" } )
 @EnableJpaRepositories
-@EnableAsync
+@EnableAsync( proxyTargetClass = true )
+@EnableAspectJAutoProxy( proxyTargetClass = true )
 @Import( { SpringModulesConfiguration.class, SecurityConfiguration.class } )
 public class DefaultStaticSecurityConfiguration {
 

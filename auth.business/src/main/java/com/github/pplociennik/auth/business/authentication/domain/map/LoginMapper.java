@@ -1,7 +1,9 @@
 package com.github.pplociennik.auth.business.authentication.domain.map;
 
+import auth.dto.AuthenticatedUserDto;
 import auth.dto.LoginDto;
 import com.github.pplociennik.auth.business.authentication.domain.model.LoginDO;
+import org.springframework.security.core.Authentication;
 
 /**
  * A mapper for conversion data being used during the signing in process.
@@ -16,5 +18,11 @@ public class LoginMapper {
         }
 
         return new LoginDO( aLoginDto.getUsernameOrEmail(), aLoginDto.getPassword() );
+    }
+
+    public static AuthenticatedUserDto mapToAuthenticatedUserDto( Authentication aAuthenticationObject, String aSessionId ) {
+        var principal = ( ( String ) aAuthenticationObject.getPrincipal() );
+        var token = ( ( String ) aAuthenticationObject.getCredentials() );
+        return new AuthenticatedUserDto( aSessionId, principal, token );
     }
 }

@@ -2,7 +2,9 @@ package com.github.pplociennik.auth.business.shared;
 
 import com.github.pplociennik.auth.business.shared.events.SystemEventsPublisher;
 import com.github.pplociennik.auth.business.shared.system.EnvironmentPropertiesProvider;
+import com.github.pplociennik.auth.business.shared.system.SessionService;
 import com.github.pplociennik.auth.business.shared.system.TimeService;
+import com.github.pplociennik.auth.business.shared.system.session.SessionServiceImpl;
 import com.github.pplociennik.auth.business.shared.system.time.SystemTimeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -41,4 +43,7 @@ class AuthSharedBeansConfig {
     SystemEventsPublisher systemEventsPublisher() {
         return new SystemEventsPublisher( applicationEventPublisher );
     }
+
+    @Bean
+    SessionService sessionService() { return new SessionServiceImpl(); }
 }

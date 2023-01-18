@@ -25,10 +25,13 @@
 package com.github.pplociennik.auth.business.authentication;
 
 import auth.dto.AccountDto;
+import auth.dto.AuthenticatedUserDto;
+import com.github.pplociennik.auth.business.authentication.domain.map.LoginMapper;
 import com.github.pplociennik.auth.business.authentication.domain.model.LoginDO;
 import com.github.pplociennik.auth.business.authentication.domain.model.RegistrationDO;
 import com.github.pplociennik.auth.business.authentication.ports.AccountRepository;
 import com.github.pplociennik.auth.business.shared.events.SystemEventsPublisher;
+import com.github.pplociennik.auth.business.shared.system.SessionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -54,17 +57,19 @@ public class AuthenticationFacade {
     private final SystemEventsPublisher systemEventsPublisher;
     private final AuthenticationManager authenticationManager;
     private final AccountRepository accountRepository;
+    private final SessionService sessionService;
 
     @Autowired
     public AuthenticationFacade(
-            @NonNull AuthService aAuthService, @NonNull AuthenticationValidator aValidationService,
+            AuthService aAuthService, AuthenticationValidator aValidationService,
             SystemEventsPublisher aSystemEventsPublisher, AuthenticationManager aAuthenticationManager,
-            AccountRepository aAccountRepository ) {
+            AccountRepository aAccountRepository, SessionService aSessionService ) {
         authService = aAuthService;
         validationService = aValidationService;
         systemEventsPublisher = aSystemEventsPublisher;
         authenticationManager = aAuthenticationManager;
         accountRepository = aAccountRepository;
+        sessionService = aSessionService;
     }
 
     /**
@@ -88,6 +93,7 @@ public class AuthenticationFacade {
      *
      * @param aUniqueAccountIdentifier
      *         the account for which the confirmation link is going to be generated.
+     *
      * @return the confirmation link as a {@link String}.
      */
     public String createNewAccountConfirmationLink( @NonNull String aUniqueAccountIdentifier ) {
@@ -101,6 +107,7 @@ public class AuthenticationFacade {
      *
      * @param aToken
      *         the verification token.
+     *
      * @throws NullPointerException
      *         when the token is null or empty.
      */
@@ -117,7 +124,7 @@ public class AuthenticationFacade {
      * @param aLoginDO
      *         a login data.
      */
-    public void authenticateAccount( @NonNull LoginDO aLoginDO ) {
+    public AuthenticatedUserDto authenticateAccount( @NonNull LoginDO aLoginDO ) {
         requireNonNull( aLoginDO );
         validationService.validateLoginData( aLoginDO );
         var account = accountRepository.findAccountByUsernameOrEmail( aLoginDO.getUsernameOrEmail() );
@@ -127,5 +134,8 @@ public class AuthenticationFacade {
         SecurityContextHolder
                 .getContext()
                 .setAuthentication( authenticationObject );
+
+        var sessionId = sessionService.getCurrentSessionId();
+        return LoginMapper.mapToAuthenticatedUserDto( authenticationObject, sessionId );
     }
 }
