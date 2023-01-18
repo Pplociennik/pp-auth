@@ -4,14 +4,13 @@ import com.github.pplociennik.auth.business.mailing.EmailFacade;
 import com.github.pplociennik.auth.e2e.config.EmailFacadeTestContextConfiguration;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
+import jakarta.mail.internet.MimeMessage;
 import org.junit.jupiter.api.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import javax.mail.internet.MimeMessage;
 
 import static com.github.pplociennik.auth.e2e.it.data.EmailFacadeTestDataSupplier.getDummyEmailConfirmationSendingDto;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,15 +23,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith( SpringRunner.class )
 @SpringBootTest( classes = EmailFacadeTestContextConfiguration.class )
 @TestPropertySource( "classpath:application-test.properties" )
-class EmailFacadeTest {
-
-    private GreenMail smtpServer;
-
-    @Autowired
-    private EmailFacade emailFacade;
+class EmailFacadeTestIT {
 
     private static final String SENDER_ADDRESS = "sender@address.com";
     private static final String RECIPIENT_ADDRESS = "bb@bb.com";
+    private GreenMail smtpServer;
+    @Autowired
+    private EmailFacade emailFacade;
 
     @BeforeEach
     void setUp() {

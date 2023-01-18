@@ -26,10 +26,9 @@ package com.github.pplociennik.auth.db.entity.authorization;
 
 import com.github.pplociennik.auth.db.entity.authentication.Account;
 import com.github.pplociennik.commons.persistence.BaseIdentifiableDataEntity;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
-import javax.persistence.*;
 
 /**
  * An Entity class being the representation of user's authority.

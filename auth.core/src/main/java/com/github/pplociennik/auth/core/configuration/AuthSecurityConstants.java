@@ -34,13 +34,13 @@ import static java.lang.String.format;
 class AuthSecurityConstants {
 
     public static final String ROOT_URI = "/";
-    public static final String AUTH_ADMIN_URI = "admin";
-    public static final String AUTH_USER_URI = "user";
+    public static final String AUTH_ADMIN_URI = ROOT_URI + "admin/**";
+    public static final String AUTH_USER_URI = ROOT_URI + "user/**";
     private static final String AUTH_URI_PREFIX = "/auth/";
-    public static final String AUTH_LOGIN_URI = AUTH_URI_PREFIX + "login";
-    public static final String AUTH_REGISTRATION_URI = AUTH_URI_PREFIX + "register";
-    public static final String AUTH_ACCOUNT_CONFIRMATION_URI = AUTH_URI_PREFIX + "confirmAccount";
-    public static final String AUTH_LOGOUT_URI = AUTH_URI_PREFIX + "logout";
+    public static final String AUTH_LOGIN_URI = AUTH_URI_PREFIX + "login/**";
+    public static final String AUTH_REGISTRATION_URI = AUTH_URI_PREFIX + "register/**";
+    public static final String AUTH_ACCOUNT_CONFIRMATION_URI = AUTH_URI_PREFIX + "confirmAccount/**";
+    public static final String AUTH_LOGOUT_URI = AUTH_URI_PREFIX + "logout/**";
 
     /**
      * The class cannot be instantiable.

@@ -26,10 +26,10 @@ package com.github.pplociennik.auth.db.entity.authentication;
 
 import com.github.pplociennik.auth.db.entity.authorization.Authority;
 import com.github.pplociennik.commons.persistence.ModifiableDataEntity;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
 import java.time.ZonedDateTime;
 import java.util.Set;
 

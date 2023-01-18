@@ -39,7 +39,7 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
 
-        <version.greenmail>1.6.9</version.greenmail>
+        <version.greenmail>2.0.0-alpha-3</version.greenmail>
     </properties>
 
     <dependencies>

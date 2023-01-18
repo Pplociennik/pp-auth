@@ -6,9 +6,11 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.FluentQuery;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * In memory implementation for the {@link AccountDao}.
@@ -211,6 +213,11 @@ public class InMemoryAccountDao implements AccountDao {
     }
 
     @Override
+    public Account getReferenceById( Long aLong ) {
+        return null;
+    }
+
+    @Override
     public < S extends Account > Optional< S > findOne( Example< S > example ) {
         throw new AssertionError( "METHOD NOT PREPARED FOR TESTS!" );
     }
@@ -238,5 +245,11 @@ public class InMemoryAccountDao implements AccountDao {
     @Override
     public < S extends Account > boolean exists( Example< S > example ) {
         throw new AssertionError( "METHOD NOT PREPARED FOR TESTS!" );
+    }
+
+    @Override
+    public < S extends Account, R > R findBy(
+            Example< S > example, Function< FluentQuery.FetchableFluentQuery< S >, R > queryFunction ) {
+        return null;
     }
 }
