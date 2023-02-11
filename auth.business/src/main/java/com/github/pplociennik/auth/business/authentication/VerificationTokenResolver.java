@@ -4,8 +4,6 @@ import auth.AuthVerificationTokenType;
 import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
 import com.github.pplociennik.auth.business.authentication.domain.model.VerificationTokenDO;
 import com.github.pplociennik.auth.business.authentication.ports.VerificationTokenRepository;
-import com.github.pplociennik.auth.db.entity.authentication.VerificationToken;
-import com.github.pplociennik.commons.utility.identifier.UniqueIdentifierGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 
@@ -13,8 +11,9 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.util.UUID;
 
+import static com.github.pplociennik.auth.business.shared.system.ObjectsSpecifierDefinition.verificationTokenTypeSpecifier;
+import static com.github.pplociennik.commons.utility.identifier.UniqueIdentifierGenerator.generateIdentifier;
 import static java.util.Objects.requireNonNull;
-import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 /**
  * A service for verification tokens' generation.
@@ -46,11 +45,9 @@ class VerificationTokenResolver {
         requireNonNull( aVerificationTokenType );
 
         var token = generateUniqueToken();
-        var identifier = UniqueIdentifierGenerator.generateIdentifier( VerificationToken.class, EMPTY );
 
         var verificationToken = VerificationTokenDO
                 .builder()
-                .uniqueObjectIdentifier( identifier )
                 .token( token )
                 .owner( aAccountDO )
                 .type( aVerificationTokenType )

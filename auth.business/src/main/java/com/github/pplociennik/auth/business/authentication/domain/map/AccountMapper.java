@@ -37,6 +37,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import static com.github.pplociennik.auth.business.shared.system.ObjectsSpecifierDefinition.authorityTypeSpecifier;
+import static com.github.pplociennik.commons.utility.identifier.UniqueIdentifierGenerator.generateIdentifier;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.*;
 
@@ -161,7 +163,11 @@ public class AccountMapper {
 
     private static void updateAuthoritiesSetAccount(
             Set< Authority > aAuthorities, Account aAccount ) {
-        aAuthorities.forEach( aAuthority -> aAuthority.setAuthoritiesOwner( aAccount ) );
+        aAuthorities.forEach( aAuthority -> {
+            aAuthority.setAuthoritiesOwner( aAccount );
+            var identifier = generateIdentifier( aAuthority, authorityTypeSpecifier() );
+            aAuthority.setUniqueObjectIdentifier( identifier );
+        } );
     }
 
     private static Set< Authority > createAuthorities(

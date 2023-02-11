@@ -43,6 +43,14 @@ public interface AccountRepository {
     AccountDO persist( @NonNull AccountDO aAccount );
 
     /**
+     * Persists an account object to the database and creates a base authorities for it.
+     *
+     * @param aAccount
+     *         a user account.
+     */
+    AccountDO persistWithBaseUserAuthorities( @NonNull AccountDO aAccount );
+
+    /**
      * Updates an account object in the database.
      *
      * @param aAccount

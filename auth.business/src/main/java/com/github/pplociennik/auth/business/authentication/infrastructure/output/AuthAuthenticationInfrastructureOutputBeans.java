@@ -28,6 +28,7 @@ import com.github.pplociennik.auth.business.authentication.ports.AccountReposito
 import com.github.pplociennik.auth.business.authentication.ports.AuthenticationValidationRepository;
 import com.github.pplociennik.auth.business.authentication.ports.VerificationTokenRepository;
 import com.github.pplociennik.auth.db.repository.authentication.AccountDao;
+import com.github.pplociennik.auth.db.repository.authentication.AuthorityDao;
 import com.github.pplociennik.auth.db.repository.authentication.VerificationTokenDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -46,17 +47,20 @@ class AuthAuthenticationInfrastructureOutputBeans {
 
     private final AccountDao accountDao;
     private final VerificationTokenDao verificationTokenDao;
+    private final AuthorityDao authorityDao;
 
     @Autowired
     AuthAuthenticationInfrastructureOutputBeans(
-            @NonNull AccountDao aAccountDao, @NonNull VerificationTokenDao aVerificationTokenDao ) {
+            @NonNull AccountDao aAccountDao, @NonNull VerificationTokenDao aVerificationTokenDao,
+            AuthorityDao aAuthorityDao ) {
         accountDao = requireNonNull( aAccountDao );
         verificationTokenDao = requireNonNull( aVerificationTokenDao );
+        authorityDao = aAuthorityDao;
     }
 
     @Bean
     AccountRepository accountRepository() {
-        return new AccountRepositoryImpl( accountDao );
+        return new AccountRepositoryImpl( accountDao, authorityDao );
     }
 
     @Bean
