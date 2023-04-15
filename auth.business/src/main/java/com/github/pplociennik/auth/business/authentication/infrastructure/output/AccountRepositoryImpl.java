@@ -29,16 +29,24 @@ import com.github.pplociennik.auth.business.authentication.domain.model.AccountD
 import com.github.pplociennik.auth.business.authentication.ports.AccountRepository;
 import com.github.pplociennik.auth.common.exc.AccountConfirmationException;
 import com.github.pplociennik.auth.db.entity.authentication.Account;
+import com.github.pplociennik.auth.db.entity.authorization.Authority;
 import com.github.pplociennik.auth.db.repository.authentication.AccountDao;
+import com.github.pplociennik.auth.db.repository.authentication.AuthorityDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 
+import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static com.github.pplociennik.auth.business.authentication.domain.map.AccountMapper.mapToDomain;
 import static com.github.pplociennik.auth.business.authentication.domain.map.AccountMapper.mapToEntity;
+import static com.github.pplociennik.auth.business.shared.authorization.RolesDefinition.AUTH_USER_ROLE;
+import static com.github.pplociennik.auth.business.shared.system.ObjectsSpecifierDefinition.accountTypeSpecifier;
+import static com.github.pplociennik.auth.business.shared.system.ObjectsSpecifierDefinition.authorityTypeSpecifier;
 import static com.github.pplociennik.auth.common.lang.AuthResExcMsgTranslationKey.ACCOUNT_CONFIRMATION_USER_NOT_EXISTS;
 import static com.github.pplociennik.commons.utility.CustomCollectors.toSingleton;
+import static com.github.pplociennik.commons.utility.identifier.UniqueIdentifierGenerator.generateIdentifier;
 import static java.util.Objects.requireNonNull;
 import static java.util.regex.Pattern.compile;
 
@@ -52,21 +60,38 @@ class AccountRepositoryImpl implements AccountRepository {
     private static final Pattern EMAIL_PATTERN = compile( "[a-zA-Z0-9!#$%&'*+-\\/=?^_`{|}~]+@[a-z0-9-]{2,}\\.[a-z]{2,}",
                                                           Pattern.CASE_INSENSITIVE );
 
+    private static final Set< String > BASE_USER_AUTHORITIES = Set.of( AUTH_USER_ROLE.getName() );
+
     private final AccountDao accountDao;
+    private final AuthorityDao authorityDao;
 
     @Autowired
-    public AccountRepositoryImpl( @NonNull AccountDao aAccountDao ) {
+    public AccountRepositoryImpl( @NonNull AccountDao aAccountDao, AuthorityDao aAuthorityDao ) {
         accountDao = aAccountDao;
+        authorityDao = aAuthorityDao;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public AccountDO persist( @NonNull AccountDO aAccountDO ) {
-        requireNonNull( aAccountDO );
+    public AccountDO persist( @NonNull AccountDO aAccount ) {
+        requireNonNull( aAccount );
 
-        var account = mapToEntity( aAccountDO );
+        var account = mapToEntity( aAccount );
+        var identifier = generateIdentifier( account, accountTypeSpecifier() );
+        account.setUniqueObjectIdentifier( identifier );
+        return mapToDomain( accountDao.saveAndFlush( account ) );
+    }
+
+    @Override
+    public AccountDO persistWithBaseUserAuthorities( AccountDO aAccount ) {
+        requireNonNull( aAccount );
+
+        var account = mapToEntity( aAccount );
+        var identifier = generateIdentifier( account, accountTypeSpecifier() );
+        account.setUniqueObjectIdentifier( identifier );
+        createBaseAuthoritiesForAccount( account );
         return mapToDomain( accountDao.saveAndFlush( account ) );
     }
 
@@ -151,6 +176,23 @@ class AccountRepositoryImpl implements AccountRepository {
 
         var enabledAccount = accountDao.save( toUpdate );
         return mapToDomain( enabledAccount );
+    }
+
+    private void createBaseAuthoritiesForAccount( Account aAccount ) {
+        var authorities = BASE_USER_AUTHORITIES
+                .stream()
+                .map( authorityName -> {
+                    var authority = new Authority();
+                    authority.setName( authorityName );
+                    authority.setAuthoritiesOwner( aAccount );
+
+                    var identifier = generateIdentifier( authority, authorityTypeSpecifier() );
+                    authority.setUniqueObjectIdentifier( identifier );
+                    return authority;
+                } )
+                .collect( Collectors.toSet() );
+        authorities.forEach( authorityDao::saveAndFlush );
+        aAccount.setAuthorities( authorities );
     }
 
     private AccountDO updateAccount( Account aToBeUpdated, AccountDO aAccount ) {

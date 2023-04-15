@@ -35,6 +35,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import static com.github.pplociennik.auth.business.shared.authorization.RolesDefinition.AUTH_ADMIN_ROLE;
 import static com.github.pplociennik.auth.business.shared.authorization.RolesDefinition.AUTH_USER_ROLE;
 import static com.github.pplociennik.auth.core.configuration.AuthSecurityConstants.*;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 
 /**
@@ -47,7 +48,7 @@ import static com.github.pplociennik.auth.core.configuration.AuthSecurityConstan
 @Import( { SpringModulesConfiguration.class, AclMethodSecurityConfiguration.class } )
 class SecurityConfiguration {
 
-    private static final String[] AUTH_WHITELIST = {};
+    private static final String[] AUTH_WHITELIST = { EMPTY };
 
     @Bean
     @Order( 1 )

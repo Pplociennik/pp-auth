@@ -52,4 +52,13 @@ public class AuthorityMapper {
     public static AuthorityDetails mapToAuthorityDetails( AuthorityDO aAuthorityDO ) {
         return new AuthorityDetails( aAuthorityDO.getAuthorityName() );
     }
+
+    public static Authority mapToEntity( AuthorityDO aAuthorityDO ) {
+        var authority = new Authority();
+        authority.setUniqueObjectIdentifier( aAuthorityDO.getUniqueObjectIdentifier() );
+        authority.setName( aAuthorityDO.getAuthorityName() );
+        authority.setAuthoritiesOwner( AccountMapper.mapToEntity( aAuthorityDO.getOwner() ) );
+
+        return authority;
+    }
 }

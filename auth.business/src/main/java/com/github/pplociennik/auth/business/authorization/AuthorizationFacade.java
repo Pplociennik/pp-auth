@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.security.acls.model.Permission;
 
+import static com.github.pplociennik.commons.utility.CustomObjects.validateNonNull;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -58,7 +59,8 @@ public class AuthorizationFacade {
      *         a permission which will be granted.
      */
     void addPermission(
-            @NonNull String aUsername, @NonNull Class< ? > aType, Long aId, @NonNull Permission aPermission ) {
+            @NonNull String aUsername, @NonNull Class< ? > aType, @NonNull Long aId, @NonNull Permission aPermission ) {
+        validateNonNull( aUsername, aType, aId, aPermission );
         permissionsService.addPermission( aUsername, aType, aId, aPermission );
     }
 
@@ -73,6 +75,7 @@ public class AuthorizationFacade {
      *         a permission which will be granted.
      */
     void addPermission( @NonNull String aUsername, @NonNull Object aObject, @NonNull Permission aPermission ) {
+        validateNonNull( aUsername, aObject, aPermission );
         permissionsService.addPermission( aUsername, aObject, aPermission );
     }
 

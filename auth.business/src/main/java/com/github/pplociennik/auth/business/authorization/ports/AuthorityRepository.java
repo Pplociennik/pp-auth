@@ -29,4 +29,13 @@ public interface AuthorityRepository {
      * @return a set of authorities.
      */
     Set< AuthorityDO > findByUsername( @NonNull String aUsername );
+
+    /**
+     * Persists a new authority to the database.
+     *
+     * @param aAuthority
+     *         the authority to be persisted.
+     * @return a domain object representing the persisted authority.
+     */
+    AuthorityDO persist( @NonNull AuthorityDO aAuthority );
 }

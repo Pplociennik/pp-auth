@@ -29,30 +29,24 @@ import com.github.pplociennik.auth.business.authentication.domain.model.Registra
 import com.github.pplociennik.auth.business.authentication.domain.model.VerificationTokenDO;
 import com.github.pplociennik.auth.business.authentication.ports.AccountRepository;
 import com.github.pplociennik.auth.business.authentication.ports.VerificationTokenRepository;
-import com.github.pplociennik.auth.business.authorization.domain.model.AuthorityDO;
 import com.github.pplociennik.auth.business.shared.system.EnvironmentPropertiesProvider;
 import com.github.pplociennik.auth.business.shared.system.TimeService;
 import com.github.pplociennik.auth.common.exc.AccountConfirmationException;
 import com.github.pplociennik.auth.db.entity.authentication.Account;
-import com.github.pplociennik.auth.db.entity.authorization.Authority;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Predicate;
 
 import static auth.AuthVerificationTokenType.EMAIL_CONFIRMATION_TOKEN;
-import static com.github.pplociennik.auth.business.shared.authorization.RolesDefinition.AUTH_USER_ROLE;
 import static com.github.pplociennik.auth.business.shared.system.SystemProperty.GLOBAL_CLIENT_URL;
 import static com.github.pplociennik.auth.common.lang.AuthResExcMsgTranslationKey.ACCOUNT_CONFIRMATION_TOKEN_EXPIRED;
 import static com.github.pplociennik.auth.common.lang.AuthResExcMsgTranslationKey.ACCOUNT_CONFIRMATION_USER_NOT_EXISTS;
 import static com.github.pplociennik.commons.utility.CustomObjects.requireNonEmpty;
-import static com.github.pplociennik.commons.utility.identifier.UniqueIdentifierGenerator.generateIdentifier;
 import static java.time.Instant.now;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toUnmodifiableSet;
 
 /**
  * A service sharing methods for basic authentication process.
@@ -61,7 +55,6 @@ import static java.util.stream.Collectors.toUnmodifiableSet;
  */
 class AuthService {
 
-    private static final Set< String > BASE_USER_AUTHORITIES = Set.of( AUTH_USER_ROLE.getName() );
     private final PasswordEncoder encoder;
     private final AccountRepository accountRepository;
     private final VerificationTokenResolver tokenResolver;
@@ -96,7 +89,7 @@ class AuthService {
         var newAccount = createNewAccount( aRegistrationDO, hashedPassword );
         addNewAccountBasePrivilidges( newAccount );
 
-        return accountRepository.persist( newAccount );
+        return accountRepository.persistWithBaseUserAuthorities( newAccount );
     }
 
     /**
@@ -145,17 +138,15 @@ class AuthService {
         requireNonNull( aRegistrationDO );
         requireNonNull( aHashedPassword );
 
-        var identifier = generateIdentifier( Account.class, aRegistrationDO.getUsername() );
-
-        return AccountDO
+        var newAccount = AccountDO
                 .builder()
-                .uniqueObjectIdentifier( identifier )
                 .username( aRegistrationDO.getUsername() )
                 .password( aHashedPassword )
                 .emailAddress( aRegistrationDO.getEmail() )
                 .creationDate( timeService.getCurrentSystemDateTime() )
-                .authorities( createBaseUserAuthorities() )
                 .build();
+
+        return newAccount;
 
     }
 
@@ -192,22 +183,5 @@ class AuthService {
         aNewAccount.setCredentialsNonExpired( true );
 
         return aNewAccount;
-    }
-
-    private Set< AuthorityDO > createBaseUserAuthorities() {
-        return BASE_USER_AUTHORITIES
-                .stream()
-                .map( this::createNewOrphanAuthority )
-                .collect( toUnmodifiableSet() );
-    }
-
-    private AuthorityDO createNewOrphanAuthority( String aAuthorityName ) {
-        var identifier = generateIdentifier( Authority.class, aAuthorityName );
-
-        var authorityDO = new AuthorityDO();
-        authorityDO.setAuthorityName( aAuthorityName );
-        authorityDO.setUniqueObjectIdentifier( identifier );
-
-        return authorityDO;
     }
 }

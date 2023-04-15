@@ -4,11 +4,15 @@ import com.github.pplociennik.auth.business.authorization.domain.map.AuthorityMa
 import com.github.pplociennik.auth.business.authorization.domain.model.AuthorityDO;
 import com.github.pplociennik.auth.business.authorization.ports.AuthorityRepository;
 import com.github.pplociennik.auth.db.repository.authentication.AuthorityDao;
+import com.github.pplociennik.commons.utility.identifier.UniqueIdentifierGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 
 import java.util.Set;
 
+import static com.github.pplociennik.auth.business.authorization.domain.map.AuthorityMapper.mapToDomain;
+import static com.github.pplociennik.auth.business.authorization.domain.map.AuthorityMapper.mapToEntity;
+import static com.github.pplociennik.auth.business.shared.system.ObjectsSpecifierDefinition.authorityTypeSpecifier;
 import static com.github.pplociennik.commons.utility.CustomObjects.requireNonEmpty;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toUnmodifiableSet;
@@ -18,19 +22,19 @@ import static java.util.stream.Collectors.toUnmodifiableSet;
  *
  * @author Created by: Pplociennik at 01.07.2022 15:20
  */
-public class AuthorityRepositoryImpl implements AuthorityRepository {
+class AuthorityRepositoryImpl implements AuthorityRepository {
 
-    private final AuthorityDao springRepository;
+    private final AuthorityDao authorityDao;
 
     @Autowired
-    public AuthorityRepositoryImpl( @NonNull AuthorityDao aSpringRepository ) {
-        springRepository = requireNonNull( aSpringRepository );
+    public AuthorityRepositoryImpl( @NonNull AuthorityDao aAuthorityDao ) {
+        authorityDao = requireNonNull( aAuthorityDao );
     }
 
     @Override
     public Set< AuthorityDO > findByEmail( @NonNull String aEmailAddress ) {
         requireNonEmpty( aEmailAddress );
-        return springRepository
+        return authorityDao
                 .findAllByAuthoritiesOwner_EmailAddress( aEmailAddress )
                 .stream()
                 .map( AuthorityMapper::mapToDomain )
@@ -40,10 +44,22 @@ public class AuthorityRepositoryImpl implements AuthorityRepository {
     @Override
     public Set< AuthorityDO > findByUsername( @NonNull String aUsername ) {
         requireNonNull( aUsername );
-        return springRepository
+        return authorityDao
                 .findAllByAuthoritiesOwner_Username( aUsername )
                 .stream()
                 .map( AuthorityMapper::mapToDomain )
                 .collect( toUnmodifiableSet() );
+    }
+
+    @Override
+    public AuthorityDO persist( @NonNull AuthorityDO aAuthority ) {
+        requireNonNull( aAuthority );
+        var authorityEntity = mapToEntity( aAuthority );
+
+        var identifier = UniqueIdentifierGenerator.generateIdentifier( authorityEntity, authorityTypeSpecifier() );
+        authorityEntity.setUniqueObjectIdentifier( identifier );
+        var persistedObject = authorityDao.saveAndFlush( authorityEntity );
+
+        return mapToDomain( persistedObject );
     }
 }
