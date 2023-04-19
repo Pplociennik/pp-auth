@@ -34,6 +34,7 @@ import com.github.pplociennik.auth.db.entity.authentication.Account;
 import com.github.pplociennik.auth.db.entity.authorization.Authority;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -172,6 +173,11 @@ public class AccountMapper {
 
     private static Set< Authority > createAuthorities(
             Set< AuthorityDO > aAuthorities ) {
+
+        if ( aAuthorities == null ) {
+            return new HashSet<>();
+        }
+
         return aAuthorities
                 .stream()
                 .map( authority -> {
