@@ -32,6 +32,7 @@ import com.github.pplociennik.auth.db.entity.authentication.Account;
 import com.github.pplociennik.auth.db.entity.authorization.Authority;
 import com.github.pplociennik.auth.db.repository.authentication.AccountDao;
 import com.github.pplociennik.auth.db.repository.authentication.AuthorityDao;
+import com.github.pplociennik.commons.utility.CustomCollectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 
@@ -91,7 +92,8 @@ class AccountRepositoryImpl implements AccountRepository {
         var account = mapToEntity( aAccount );
         var identifier = generateIdentifier( account, accountTypeSpecifier() );
         account.setUniqueObjectIdentifier( identifier );
-        createBaseAuthoritiesForAccount( account );
+        var authorities = createBaseAuthoritiesForAccount( account );
+        account.setAuthorities( authorities );
         return mapToDomain( accountDao.saveAndFlush( account ) );
     }
 
@@ -141,6 +143,16 @@ class AccountRepositoryImpl implements AccountRepository {
                : findAccountByUsername( aUsernameOrEmail );
     }
 
+    @Override
+    public AccountDO findAccountByUniqueIdentifier( @NonNull String aUniqueIdentifier ) {
+        requireNonNull( aUniqueIdentifier );
+        var account = accountDao.findAccountByUniqueObjectIdentifier( aUniqueIdentifier );
+        return account
+                .map( AccountMapper::mapToDomain )
+                .stream()
+                .collect( toSingleton() );
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -178,8 +190,8 @@ class AccountRepositoryImpl implements AccountRepository {
         return mapToDomain( enabledAccount );
     }
 
-    private void createBaseAuthoritiesForAccount( Account aAccount ) {
-        var authorities = BASE_USER_AUTHORITIES
+    private Set<Authority> createBaseAuthoritiesForAccount(Account aAccount ) {
+        return BASE_USER_AUTHORITIES
                 .stream()
                 .map( authorityName -> {
                     var authority = new Authority();
@@ -191,8 +203,6 @@ class AccountRepositoryImpl implements AccountRepository {
                     return authority;
                 } )
                 .collect( Collectors.toSet() );
-        authorities.forEach( authorityDao::saveAndFlush );
-        aAccount.setAuthorities( authorities );
     }
 
     private AccountDO updateAccount( Account aToBeUpdated, AccountDO aAccount ) {

@@ -95,16 +95,17 @@ class AuthService {
     /**
      * Returns a link containing token for registered account confirmation.
      *
-     * @param aAccountDO
+     * @param aUniqueAccountIdentifier
      *         an account for which the token is being generated.
      * @return a confirmation link needed to be sent via email message.
      */
-    String generateConfirmationLink( @NonNull AccountDO aAccountDO ) {
-        requireNonNull( aAccountDO );
+    String generateConfirmationLink( @NonNull String aUniqueAccountIdentifier ) {
+        requireNonNull( aUniqueAccountIdentifier );
 
         final var parameter = "aToken";
 
-        var verificationToken = tokenResolver.resolveUniqueToken( aAccountDO, EMAIL_CONFIRMATION_TOKEN );
+        var accountDO = accountRepository.findAccountByUniqueIdentifier( aUniqueAccountIdentifier );
+        var verificationToken = tokenResolver.resolveUniqueToken( accountDO, EMAIL_CONFIRMATION_TOKEN );
         var url = propertiesProvider.getPropertyValue( GLOBAL_CLIENT_URL );
 
         return url + "/?" + parameter + "=" + verificationToken.getToken();

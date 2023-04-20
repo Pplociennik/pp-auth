@@ -1,10 +1,10 @@
 package auth.dto;
 
+import com.github.pplociennik.commons.dto.BaseAbstractExtendableDto;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
-import java.io.Serializable;
 import java.util.Set;
 
 /**
@@ -14,8 +14,8 @@ import java.util.Set;
  */
 @Getter
 @Builder
-@EqualsAndHashCode
-public class AccountDto implements Serializable {
+@EqualsAndHashCode( callSuper = false )
+public class AccountDto extends BaseAbstractExtendableDto {
 
     /**
      * An email address.

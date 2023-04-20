@@ -20,6 +20,15 @@ import java.time.ZonedDateTime;
 public class VerificationToken extends BaseIdentifiableDataEntity {
 
     /**
+     * Number object id.
+     */
+    @Id
+    @GeneratedValue( generator = "tokensSeq" )
+    @SequenceGenerator( name = "tokensSeq", sequenceName = "AUTH_TOKENS_SEQ", allocationSize = 1 )
+    @Column( name = "ID", nullable = false, unique = true, updatable = false )
+    protected long id;
+
+    /**
      * A type of the token.
      */
     @Column( name = "TOKEN_TYPE", nullable = false )
@@ -28,8 +37,8 @@ public class VerificationToken extends BaseIdentifiableDataEntity {
     /**
      * An owner of the token.
      */
-    @PrimaryKeyJoinColumn( name = "OWNER_ID" )
-    @OneToOne( optional = false )
+    @ManyToOne
+    @JoinColumn( referencedColumnName = "ID" )
     private Account owner;
 
     /**

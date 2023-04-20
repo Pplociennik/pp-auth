@@ -9,6 +9,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.FluentQuery;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -78,6 +79,14 @@ public class InMemoryAccountDao implements AccountDao {
     }
 
     @Override
+    public Optional< Account > findAccountByUniqueObjectIdentifier( String aUniqueObjectIdentifier ) {
+        return database
+                .stream()
+                .filter( account -> Objects.equals( account.getUniqueObjectIdentifier(), aUniqueObjectIdentifier ) )
+                .findAny();
+    }
+
+    @Override
     public boolean existsAccountByUsername( String aUsername ) {
         return database
                 .stream()
@@ -94,11 +103,6 @@ public class InMemoryAccountDao implements AccountDao {
     }
 
     @Override
-    public List< Account > findAll() {
-        throw new AssertionError( "METHOD NOT PREPARED FOR TESTS!" );
-    }
-
-    @Override
     public List< Account > findAll( Sort sort ) {
         throw new AssertionError( "METHOD NOT PREPARED FOR TESTS!" );
     }
@@ -109,7 +113,17 @@ public class InMemoryAccountDao implements AccountDao {
     }
 
     @Override
-    public List< Account > findAllById( Iterable< Long > ids ) {
+    public < S extends Account > S save( S entity ) {
+        throw new AssertionError( "METHOD NOT PREPARED FOR TESTS!" );
+    }
+
+    @Override
+    public Optional< Account > findById( Long aLong ) {
+        throw new AssertionError( "METHOD NOT PREPARED FOR TESTS!" );
+    }
+
+    @Override
+    public boolean existsById( Long aLong ) {
         throw new AssertionError( "METHOD NOT PREPARED FOR TESTS!" );
     }
 
@@ -149,22 +163,17 @@ public class InMemoryAccountDao implements AccountDao {
     }
 
     @Override
-    public < S extends Account > S save( S entity ) {
-        throw new AssertionError( "METHOD NOT PREPARED FOR TESTS!" );
-    }
-
-    @Override
     public < S extends Account > List< S > saveAll( Iterable< S > entities ) {
         throw new AssertionError( "METHOD NOT PREPARED FOR TESTS!" );
     }
 
     @Override
-    public Optional< Account > findById( Long aLong ) {
+    public List< Account > findAll() {
         throw new AssertionError( "METHOD NOT PREPARED FOR TESTS!" );
     }
 
     @Override
-    public boolean existsById( Long aLong ) {
+    public List< Account > findAllById( Iterable< Long > ids ) {
         throw new AssertionError( "METHOD NOT PREPARED FOR TESTS!" );
     }
 
@@ -218,17 +227,17 @@ public class InMemoryAccountDao implements AccountDao {
     }
 
     @Override
-    public < S extends Account > Optional< S > findOne( Example< S > example ) {
-        throw new AssertionError( "METHOD NOT PREPARED FOR TESTS!" );
-    }
-
-    @Override
     public < S extends Account > List< S > findAll( Example< S > example ) {
         throw new AssertionError( "METHOD NOT PREPARED FOR TESTS!" );
     }
 
     @Override
     public < S extends Account > List< S > findAll( Example< S > example, Sort sort ) {
+        throw new AssertionError( "METHOD NOT PREPARED FOR TESTS!" );
+    }
+
+    @Override
+    public < S extends Account > Optional< S > findOne( Example< S > example ) {
         throw new AssertionError( "METHOD NOT PREPARED FOR TESTS!" );
     }
 

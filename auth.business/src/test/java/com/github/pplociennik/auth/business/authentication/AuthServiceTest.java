@@ -74,8 +74,9 @@ class AuthServiceTest {
     private InMemoryAccountRepository accountRepository = new InMemoryAccountRepository( TEST_ACCOUNT_DATABASE );
     private InMemoryVerificationTokenRepository verificationTokenRepository = new InMemoryVerificationTokenRepository(
             TEST_TOKEN_DATABASE );
-    private VerificationTokenResolver tokenResolver = new VerificationTokenResolver( verificationTokenRepository );
     private InMemoryTimeService timeService = new InMemoryTimeService();
+    private VerificationTokenResolver tokenResolver = new VerificationTokenResolver( verificationTokenRepository,
+                                                                                     timeService );
     private AuthService sut = new AuthService( encoder, accountRepository, tokenResolver, verificationTokenRepository,
                                                propertiesProvider, timeService );
 

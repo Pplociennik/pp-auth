@@ -87,6 +87,14 @@ public interface AccountRepository {
     AccountDO findAccountByUsernameOrEmail( @NonNull String aUsernameOrEmail );
 
     /**
+     * Returns an account with the specified unique identifier if it exists in the database.
+     *
+     * @param aUniqueIdentifier an unique identifier.
+     * @return the user account.
+     */
+    AccountDO findAccountByUniqueIdentifier( @NonNull String aUniqueIdentifier );
+
+    /**
      * Returns true if an account with the specified username exists in the database.
      *
      * @param aUsername

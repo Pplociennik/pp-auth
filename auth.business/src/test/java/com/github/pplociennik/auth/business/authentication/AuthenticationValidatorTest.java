@@ -56,6 +56,7 @@ class AuthenticationValidatorTest {
     private static final String TEST_VALID_PASSWORD = "TestPass1!";
     private static final String TEST_NOT_EQUAL_PASSWORD = "TestPassDifferent1!";
     private static final String TEST_VALID_EMAIL = "testEmail@gmail.com";
+    private static final String TEST_UNIQUE_ACCOUNT_OBJECT_ID = "Account#000000#000000#ValidUserName";
     private static final String TEST_VALID_EMAIL_SPEC_CHARS = "test#ema!il$^%@testdomain.com";
     private static final String TEST_VALID_EMAIL_NUMBERS = "testemail9548@testdomain.com";
     private static final String TEST_VALID_EMAIL_PERMITTED_SPEC_CHAR_DOMAIN = "testemail@test-domain.com";
@@ -318,28 +319,30 @@ class AuthenticationValidatorTest {
             var accountDO = AccountDO
                     .builder()
                     .emailAddress( TEST_VALID_EMAIL )
+                    .uniqueObjectIdentifier( TEST_UNIQUE_ACCOUNT_OBJECT_ID )
                     .build();
 
             // WHEN
             // THEN
             var message = getLocalizedMessage( AUTHENTICATION_USER_DOES_NOT_EXIST, ENGLISH );
-            assertSuppressedValidationMessagesContain( () -> sut.validateConfirmationLinkGeneration( accountDO ),
-                                                       message );
+            assertSuppressedValidationMessagesContain(
+                    () -> sut.validateConfirmationLinkGeneration( accountDO.getUniqueObjectIdentifier() ), message );
         }
 
         @Test
         void shouldSucceed_whenAccountExists() {
 
             // GIVEN
-            validationRepository.setEmailExists( true );
+            validationRepository.setAccountExistsByUniqueId( true );
             var accountDO = AccountDO
                     .builder()
                     .emailAddress( TEST_VALID_EMAIL )
+                    .uniqueObjectIdentifier( TEST_UNIQUE_ACCOUNT_OBJECT_ID )
                     .build();
 
             // WHEN
             // THEN
-            sut.validateConfirmationLinkGeneration( accountDO );
+            sut.validateConfirmationLinkGeneration( accountDO.getUniqueObjectIdentifier() );
         }
 
         @Nested

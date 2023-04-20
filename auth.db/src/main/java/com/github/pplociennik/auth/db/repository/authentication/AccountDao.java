@@ -86,6 +86,14 @@ public interface AccountDao extends JpaRepository< Account, Long >, CrudReposito
     Optional< Account > findAccountById( @NonNull long aId );
 
     /**
+     * Returns a {@link Account} with the specified unique object identifier.
+     *
+     * @param aUniqueObjectIdentifier an unique object identifier.
+     * @return an optional {@link Account} object if it exists in the database;
+     */
+    Optional< Account > findAccountByUniqueObjectIdentifier( @NonNull String aUniqueObjectIdentifier );
+
+    /**
      * Checks if there is already a username in the database with the specified username.
      *
      * @param aUsername

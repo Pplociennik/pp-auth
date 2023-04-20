@@ -25,12 +25,11 @@
 package com.github.pplociennik.auth.business.authentication;
 
 import auth.dto.AccountDto;
-import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
 import com.github.pplociennik.auth.business.authentication.domain.model.LoginDO;
 import com.github.pplociennik.auth.business.authentication.domain.model.RegistrationDO;
 import com.github.pplociennik.auth.business.authentication.ports.AccountRepository;
+import com.github.pplociennik.auth.business.shared.events.SystemEventsPublisher;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -38,6 +37,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import static com.github.pplociennik.auth.business.authentication.AuthenticationPublishableEventsSupplier.ON_ACCOUNT_CONFIRMATION_FINISHED;
 import static com.github.pplociennik.auth.business.authentication.AuthenticationPublishableEventsSupplier.ON_REGISTRATION_FINISHED;
+import static com.github.pplociennik.auth.business.authentication.domain.map.AccountMapper.mapToConfirmationLinkGenerationDto;
 import static com.github.pplociennik.auth.business.authentication.domain.map.AccountMapper.mapToDto;
 import static com.github.pplociennik.commons.utility.CustomObjects.requireNonEmpty;
 import static java.util.Objects.requireNonNull;
@@ -51,18 +51,18 @@ public class AuthenticationFacade {
 
     private final AuthService authService;
     private final AuthenticationValidator validationService;
-    private final ApplicationEventPublisher eventPublisher;
+    private final SystemEventsPublisher systemEventsPublisher;
     private final AuthenticationManager authenticationManager;
     private final AccountRepository accountRepository;
 
     @Autowired
     public AuthenticationFacade(
             @NonNull AuthService aAuthService, @NonNull AuthenticationValidator aValidationService,
-            @NonNull ApplicationEventPublisher aEventPublisher, AuthenticationManager aAuthenticationManager,
+            SystemEventsPublisher aSystemEventsPublisher, AuthenticationManager aAuthenticationManager,
             AccountRepository aAccountRepository ) {
         authService = aAuthService;
         validationService = aValidationService;
-        eventPublisher = aEventPublisher;
+        systemEventsPublisher = aSystemEventsPublisher;
         authenticationManager = aAuthenticationManager;
         accountRepository = aAccountRepository;
     }
@@ -77,23 +77,23 @@ public class AuthenticationFacade {
     public AccountDto registerNewAccount( @NonNull RegistrationDO aRegistrationDO ) {
         requireNonNull( aRegistrationDO );
         validationService.validateRegistration( aRegistrationDO );
-        var registeredAccount = mapToDto( authService.registerNewAccount( aRegistrationDO ) );
-        var event = ON_REGISTRATION_FINISHED.getEvent( registeredAccount );
-        eventPublisher.publishEvent( event );
-        return registeredAccount;
+        var registeredAccount = authService.registerNewAccount( aRegistrationDO );
+        var confirmationLinkData = mapToConfirmationLinkGenerationDto( registeredAccount );
+        systemEventsPublisher.publishEvent( ON_REGISTRATION_FINISHED, confirmationLinkData );
+        return mapToDto( registeredAccount );
     }
 
     /**
      * Returns a confirmation link for the specified account.
      *
-     * @param aAccountDO
+     * @param aUniqueAccountIdentifier
      *         the account for which the confirmation link is going to be generated.
      * @return the confirmation link as a {@link String}.
      */
-    public String createNewAccountConfirmationLink( @NonNull AccountDO aAccountDO ) {
-        requireNonNull( aAccountDO );
-        validationService.validateConfirmationLinkGeneration( aAccountDO );
-        return authService.generateConfirmationLink( aAccountDO );
+    public String createNewAccountConfirmationLink( @NonNull String aUniqueAccountIdentifier ) {
+        requireNonNull( aUniqueAccountIdentifier );
+        validationService.validateConfirmationLinkGeneration( aUniqueAccountIdentifier );
+        return authService.generateConfirmationLink( aUniqueAccountIdentifier );
     }
 
     /**
@@ -108,8 +108,7 @@ public class AuthenticationFacade {
         requireNonEmpty( aToken );
         validationService.validateRegistrationConfirmation( aToken );
         var enabledAccount = mapToDto( authService.confirmRegistration( aToken ) );
-        var event = ON_ACCOUNT_CONFIRMATION_FINISHED.getEvent( enabledAccount );
-        eventPublisher.publishEvent( event );
+        systemEventsPublisher.publishEvent( ON_ACCOUNT_CONFIRMATION_FINISHED, enabledAccount );
     }
 
     /**

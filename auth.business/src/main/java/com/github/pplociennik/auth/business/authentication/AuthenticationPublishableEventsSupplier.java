@@ -1,9 +1,11 @@
 package com.github.pplociennik.auth.business.authentication;
 
 import auth.dto.AccountDto;
+import auth.dto.ConfirmationLinkGenerationDto;
 import com.github.pplociennik.auth.business.shared.events.OnAccountConfirmationCompleteEvent;
 import com.github.pplociennik.auth.business.shared.events.OnRegistrationCompleteEvent;
 import com.github.pplociennik.commons.events.PublishableEvent;
+import com.github.pplociennik.commons.events.PublishableEventsSupplier;
 import com.github.pplociennik.commons.utility.LanguageUtil;
 import org.springframework.lang.NonNull;
 
@@ -18,51 +20,54 @@ import static java.util.Objects.requireNonNull;
  *
  * @author Created by: Pplociennik at 30.12.2022 02:52
  */
-enum AuthenticationPublishableEventsSupplier {
+enum AuthenticationPublishableEventsSupplier implements PublishableEventsSupplier {
 
-    ON_REGISTRATION_FINISHED( AccountDto.class ) {
+    ON_REGISTRATION_FINISHED( ConfirmationLinkGenerationDto.class ) {
         @Override
-        PublishableEvent getEvent( @NonNull Object aSource ) {
+        public PublishableEvent getEvent( @NonNull Object aSource ) {
             requireNonNull( aSource );
-            validateType( aSource, getSourceType() );
+            validateType( aSource, getRequiredSourceType() );
             return new OnRegistrationCompleteEvent( aSource, LanguageUtil.getLocale() );
         }
 
         @Override
-        PublishableEvent getEvent( @NonNull Object aSource, @NonNull Locale aLocale ) {
+        public PublishableEvent getEvent( @NonNull Object aSource, @NonNull Locale aLocale ) {
             validateNonNull( aSource, aLocale );
-            validateType( aSource, getSourceType() );
+            validateType( aSource, getRequiredSourceType() );
             return new OnRegistrationCompleteEvent( aSource, aLocale );
+        }
+
+        @Override
+        public Class< ? > getRequiredSourceType() {
+            return sourceType;
         }
     },
 
     ON_ACCOUNT_CONFIRMATION_FINISHED( AccountDto.class ) {
         @Override
-        PublishableEvent getEvent( @NonNull Object aSource ) {
+        public PublishableEvent getEvent( @NonNull Object aSource ) {
             requireNonNull( aSource );
-            validateType( aSource, getSourceType() );
+            validateType( aSource, getRequiredSourceType() );
             return new OnAccountConfirmationCompleteEvent( aSource, LanguageUtil.getLocale() );
         }
 
         @Override
-        PublishableEvent getEvent( @NonNull Object aSource, @NonNull Locale aLocale ) {
+        public PublishableEvent getEvent( @NonNull Object aSource, @NonNull Locale aLocale ) {
             validateNonNull( aSource, aLocale );
-            validateType( aSource, getSourceType() );
+            validateType( aSource, getRequiredSourceType() );
             return new OnAccountConfirmationCompleteEvent( aSource, aLocale );
+        }
+
+        @Override
+        public Class< ? > getRequiredSourceType() {
+            return sourceType;
         }
     };
 
-    private final Class< ? > sourceType;
+    protected final Class< ? > sourceType;
+
 
     AuthenticationPublishableEventsSupplier( Class< ? > aSourceType ) {
         sourceType = aSourceType;
     }
-
-    Class< ? > getSourceType() {
-        return sourceType;
-    }
-
-    abstract PublishableEvent getEvent( @NonNull Object aSource );
-
-    abstract PublishableEvent getEvent( @NonNull Object aSource, @NonNull Locale aLocale );
 }

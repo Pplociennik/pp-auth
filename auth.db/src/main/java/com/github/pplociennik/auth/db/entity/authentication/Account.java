@@ -46,6 +46,15 @@ import java.util.Set;
 public class Account extends ModifiableDataEntity {
 
     /**
+     * Number object id.
+     */
+    @Id
+    @GeneratedValue( generator = "accountsSeq" )
+    @SequenceGenerator( name = "accountsSeq", sequenceName = "AUTH_ACCOUNTS_SEQ", allocationSize = 1 )
+    @Column( name = "ID", nullable = false, unique = true, updatable = false )
+    protected long id;
+
+    /**
      * An email address.
      */
     @Column( name = "EMAIL", nullable = false, unique = true )

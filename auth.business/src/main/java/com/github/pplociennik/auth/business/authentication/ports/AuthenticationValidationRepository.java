@@ -75,6 +75,15 @@ public interface AuthenticationValidationRepository {
     boolean checkIfTokenExists( @NonNull String aToken );
 
     /**
+     * Returns true if there is an account in the database having the specified unique object identifier.
+     *
+     * @param aUniqueAccountIdentifier
+     *         a unique object identifier.
+     * @return true if the account exists in the database, false otherwise.
+     */
+    boolean checkIfAccountExistsByUniqueId( @NonNull String aUniqueAccountIdentifier );
+
+    /**
      * Returns an account by email address.
      *
      * @param aEmail

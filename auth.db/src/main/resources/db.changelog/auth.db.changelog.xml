@@ -29,9 +29,9 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
 
-    <include file="classpath:/db.changelog/update/create_tables.xml"/>
-    <include file="classpath:/db.changelog/update/create_sequences.xml"/>
-    <include file="classpath:/db.changelog/update/update.xml"/>
-    <include file="classpath:/db.changelog/update/insert_data.xml"/>
+    <include file="/db.changelog/update/create_tables.xml"/>
+    <include file="/db.changelog/update/create_sequences.xml"/>
+    <include file="/db.changelog/update/update.xml"/>
+    <include file="/db.changelog/update/insert_data.xml"/>
 
 </databaseChangeLog>

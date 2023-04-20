@@ -31,11 +31,13 @@ import org.springframework.lang.NonNull;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static com.github.pplociennik.auth.business.shared.authorization.RolesDefinition.AUTH_USER_ROLE;
+import static com.github.pplociennik.commons.utility.CustomCollectors.toSingleton;
 import static java.util.Objects.requireNonNull;
 import static java.util.regex.Pattern.compile;
 
@@ -128,6 +130,14 @@ public class InMemoryAccountRepository implements AccountRepository {
                 .filter( account -> matchesUsernameOrEmail( account, aUsernameOrEmail ) )
                 .findAny()
                 .orElse( null );
+    }
+
+    @Override
+    public AccountDO findAccountByUniqueIdentifier( String aUniqueIdentifier ) {
+        return database
+                .stream()
+                .filter( account -> Objects.equals( account.getUniqueObjectIdentifier(), aUniqueIdentifier ) )
+                .collect( toSingleton() );
     }
 
     @Override
