@@ -83,6 +83,7 @@ class AuthenticationFacadeTest {
 
     @BeforeEach
     void prepare() {
+        prepareTimeService();
         prepareEncoder();
         prepareValidator();
         prepareRepository();
@@ -90,7 +91,6 @@ class AuthenticationFacadeTest {
         preparePropertiesProvider();
         prepareTokenRepository();
         prepareTokenResolver();
-        prepareTimeService();
 
         authService = new AuthService( encoder, accountRepository, tokenResolver, verificationTokenRepository,
                                        propertiesProvider, timeService );
@@ -191,6 +191,8 @@ class AuthenticationFacadeTest {
         void shouldReturnValidConfirmationLink_whenDataValid() {
 
             // GIVEN
+            timeService.setSystemZoneId( TEST_ZONE_ID );
+            timeService.setCurrentSystemDateTime( TEST_CURRENT_TIME );
             final var EXPECTED_CLIENT_URL = "http://localhost:8080";
             var accountDO = AccountDO
                     .builder()

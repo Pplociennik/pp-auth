@@ -5,6 +5,8 @@ import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryTime
 import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryVerificationTokenRepository;
 import org.junit.jupiter.api.Test;
 
+import java.time.ZoneId;
+
 import static auth.AuthVerificationTokenType.EMAIL_CONFIRMATION_TOKEN;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -15,6 +17,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  * @author Created by: Pplociennik at 06.08.2022 01:40
  */
 class VerificationTokenResolverTest {
+
+    private static final ZoneId TEST_ZONE_ID = ZoneId.of( "UTC" );
 
     private InMemoryVerificationTokenRepository verificationTokenRepository = new InMemoryVerificationTokenRepository();
     private InMemoryTimeService timeService = new InMemoryTimeService();
@@ -55,6 +59,7 @@ class VerificationTokenResolverTest {
     void shouldReturnNewlyCreatedToken_whenDataValid() {
 
         // GIVEN
+        timeService.setSystemZoneId( TEST_ZONE_ID );
         var accountDO = AccountDO
                 .builder()
                 .emailAddress( "test@email.com" )
