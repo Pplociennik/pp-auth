@@ -1,9 +1,11 @@
 package com.github.pplociennik.auth.business.shared;
 
+import com.github.pplociennik.auth.business.shared.events.SystemEventsPublisher;
 import com.github.pplociennik.auth.business.shared.system.EnvironmentPropertiesProvider;
 import com.github.pplociennik.auth.business.shared.system.TimeService;
 import com.github.pplociennik.auth.business.shared.system.time.SystemTimeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -17,10 +19,12 @@ import org.springframework.core.env.Environment;
 class AuthSharedBeansConfig {
 
     private final Environment environment;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Autowired
-    AuthSharedBeansConfig( Environment aEnvironment ) {
+    AuthSharedBeansConfig( Environment aEnvironment, ApplicationEventPublisher aApplicationEventPublisher ) {
         environment = aEnvironment;
+        applicationEventPublisher = aApplicationEventPublisher;
     }
 
     @Bean
@@ -31,5 +35,10 @@ class AuthSharedBeansConfig {
     @Bean
     TimeService timeService() {
         return new SystemTimeServiceImpl( environmentPropertiesProvider() );
+    }
+
+    @Bean
+    SystemEventsPublisher systemEventsPublisher() {
+        return new SystemEventsPublisher( applicationEventPublisher );
     }
 }

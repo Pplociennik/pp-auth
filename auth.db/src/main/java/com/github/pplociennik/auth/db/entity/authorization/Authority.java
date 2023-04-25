@@ -42,6 +42,15 @@ import lombok.Setter;
 public class Authority extends BaseIdentifiableDataEntity {
 
     /**
+     * Number object id.
+     */
+    @Id
+    @GeneratedValue( generator = "authoritiesSeq")
+    @SequenceGenerator( name = "authoritiesSeq", sequenceName = "AUTH_AUTHORITIES_SEQ", allocationSize = 1 )
+    @Column( name = "ID", nullable = false, unique = true, updatable = false )
+    protected long id;
+
+    /**
      * A string being a name of the authority. The name is being using during the authorization process.
      */
     @Column( name = "AUTHORITY_NAME", nullable = false )
@@ -50,7 +59,7 @@ public class Authority extends BaseIdentifiableDataEntity {
     /**
      * An {@link Account} which the authority object is related to.
      */
-    @ManyToOne( fetch = FetchType.EAGER, optional = false )
+    @ManyToOne( fetch = FetchType.EAGER, cascade = CascadeType.ALL, optional = false )
     @JoinColumn( name = "OWNER_ID", referencedColumnName = "ID" )
     private Account authoritiesOwner;
 

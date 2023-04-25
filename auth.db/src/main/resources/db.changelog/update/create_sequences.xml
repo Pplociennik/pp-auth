@@ -35,21 +35,21 @@
     <changeSet id="2021.09.17 20:46:00" author="pplociennik" dbms="mssql" context="ctx.auth">
         <preConditions onFail="MARK_RAN">
             <not>
-                <sequenceExists sequenceName="SEQ_AUTH_ACCOUNT"/>
+                <sequenceExists sequenceName="AUTH_ACCOUNTS_SEQ"/>
             </not>
         </preConditions>
-        <comment>Creates a sequence SEQ_AUTH_ACCOUNT.</comment>
-        <createSequence sequenceName="SEQ_AUTH_ACCOUNT" incrementBy="1" startValue="1"/>
+        <comment>Creates a sequence AUTH_ACCOUNTS_SEQ.</comment>
+        <createSequence sequenceName="AUTH_ACCOUNTS_SEQ" incrementBy="1" startValue="1"/>
     </changeSet>
 
     <changeSet id="2021.10.15 18:25:00" author="pplociennik" dbms="h2" context="ctx.auth">
         <preConditions onFail="MARK_RAN">
             <not>
-                <sequenceExists sequenceName="SEQ_AUTH_ACCOUNT"/>
+                <sequenceExists sequenceName="AUTH_ACCOUNTS_SEQ"/>
             </not>
         </preConditions>
-        <comment>Creates a sequence SEQ_AUTH_ACCOUNT.</comment>
-        <createSequence sequenceName="SEQ_AUTH_ACCOUNT" incrementBy="1" startValue="1"/>
+        <comment>Creates a sequence AUTH_ACCOUNTS_SEQ.</comment>
+        <createSequence sequenceName="AUTH_ACCOUNTS_SEQ" incrementBy="1" startValue="1"/>
     </changeSet>
 
     <changeSet id="2022.12.22 21:23:00" author="pplociennik" dbms="mssql" context="ctx.auth">
@@ -74,48 +74,48 @@
 
     <!-- Tokens -->
 
-    <changeSet id="2022.07.01 13:50:00" author="pplociennik" dbms="mssql" context="ctx.auth">
+    <changeSet id="2022.07.01 13:1:00" author="pplociennik" dbms="mssql" context="ctx.auth">
         <preConditions onFail="MARK_RAN">
             <not>
-                <sequenceExists sequenceName="SEQ_AUTH_TOKEN"/>
+                <sequenceExists sequenceName="AUTH_TOKENS_SEQ"/>
             </not>
         </preConditions>
-        <comment>Creates a sequence SEQ_AUTH_TOKEN.</comment>
-        <createSequence sequenceName="SEQ_AUTH_TOKEN" incrementBy="1" startValue="1"/>
+        <comment>Creates a sequence AUTH_TOKENS_SEQ.</comment>
+        <createSequence sequenceName="AUTH_TOKENS_SEQ" incrementBy="1" startValue="1"/>
     </changeSet>
 
     <changeSet id="2022.07.01 13:51:00" author="pplociennik" dbms="h2" context="ctx.auth">
         <preConditions onFail="MARK_RAN">
             <not>
-                <sequenceExists sequenceName="SEQ_AUTH_TOKEN"/>
+                <sequenceExists sequenceName="AUTH_TOKENS_SEQ"/>
             </not>
         </preConditions>
-        <comment>Creates a sequence SEQ_AUTH_TOKEN.</comment>
-        <createSequence sequenceName="SEQ_AUTH_TOKEN" incrementBy="1" startValue="1"/>
+        <comment>Creates a sequence AUTH_TOKENS_SEQ.</comment>
+        <createSequence sequenceName="AUTH_TOKENS_SEQ" incrementBy="1" startValue="1"/>
     </changeSet>
 
     <!-- ########################################################################################################### -->
     <!--                                        ### Authorization ###                                                -->
     <!-- ########################################################################################################### -->
 
-    <changeSet id="2021.09.17 20:50:00" author="pplociennik" dbms="mssql" context="ctx.auth">
+    <changeSet id="2021.09.17 20:1:00" author="pplociennik" dbms="mssql" context="ctx.auth">
         <preConditions onFail="MARK_RAN">
             <not>
-                <sequenceExists sequenceName="SEQ_AUTH_AUTHORITY"/>
+                <sequenceExists sequenceName="AUTH_AUTHORITIES_SEQ"/>
             </not>
         </preConditions>
-        <comment>Creates a sequence SEQ_AUTH_AUTHORITY.</comment>
-        <createSequence sequenceName="SEQ_AUTH_AUTHORITY" incrementBy="1" startValue="1"/>
+        <comment>Creates a sequence AUTH_AUTHORITIES_SEQ.</comment>
+        <createSequence sequenceName="AUTH_AUTHORITIES_SEQ" incrementBy="1" startValue="1"/>
     </changeSet>
 
     <changeSet id="2021.10.15 18:26:00" author="pplociennik" dbms="h2" context="ctx.auth">
         <preConditions onFail="MARK_RAN">
             <not>
-                <sequenceExists sequenceName="SEQ_AUTH_AUTHORITY"/>
+                <sequenceExists sequenceName="AUTH_AUTHORITIES_SEQ"/>
             </not>
         </preConditions>
-        <comment>Creates a sequence SEQ_AUTH_AUTHORITY.</comment>
-        <createSequence sequenceName="SEQ_AUTH_AUTHORITY" incrementBy="1" startValue="1"/>
+        <comment>Creates a sequence AUTH_AUTHORITIES_SEQ.</comment>
+        <createSequence sequenceName="AUTH_AUTHORITIES_SEQ" incrementBy="1" startValue="1"/>
     </changeSet>
 
     <!-- ACL -->

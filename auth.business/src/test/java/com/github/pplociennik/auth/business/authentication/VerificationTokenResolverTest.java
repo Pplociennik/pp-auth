@@ -1,6 +1,7 @@
 package com.github.pplociennik.auth.business.authentication;
 
 import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
+import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryTimeService;
 import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryVerificationTokenRepository;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +17,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class VerificationTokenResolverTest {
 
     private InMemoryVerificationTokenRepository verificationTokenRepository = new InMemoryVerificationTokenRepository();
-    private VerificationTokenResolver sut = new VerificationTokenResolver( verificationTokenRepository );
+    private InMemoryTimeService timeService = new InMemoryTimeService();
+    private VerificationTokenResolver sut = new VerificationTokenResolver( verificationTokenRepository, timeService );
 
     @Test
     void shouldThrowNullPointerException_whenAccountParameterIsNull() {

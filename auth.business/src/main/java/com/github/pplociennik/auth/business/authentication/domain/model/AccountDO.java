@@ -44,6 +44,11 @@ import java.util.Set;
 public class AccountDO {
 
     /**
+     * A object's database identifier.
+     */
+    private long id;
+
+    /**
      * An unique object identifier.
      */
     private String uniqueObjectIdentifier;

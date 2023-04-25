@@ -30,6 +30,7 @@ import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryAcco
 import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryAuthenticationValidationRepository;
 import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryTimeService;
 import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryVerificationTokenRepository;
+import com.github.pplociennik.auth.business.shared.events.SystemEventsPublisher;
 import com.github.pplociennik.auth.business.shared.system.EnvironmentPropertiesProvider;
 import com.github.pplociennik.commons.utility.LanguageUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -38,7 +39,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
 import org.mockito.Mock;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -65,13 +65,14 @@ class AuthenticationFacadeTest {
 
     private static final ZoneId TEST_ZONE_ID = ZoneId.of( "UTC" );
     private static final ZonedDateTime TEST_CURRENT_TIME = ZonedDateTime.now( TEST_ZONE_ID );
+    private static final String TEST_ACCOUNT_UNIQUE_IDENTIFIER = "Account#000000#000000#TestUser";
 
     private AuthService authService;
     private AuthenticationValidator validator;
     private PasswordEncoder encoder;
     private InMemoryAccountRepository accountRepository;
     private InMemoryAuthenticationValidationRepository validationRepository;
-    private ApplicationEventPublisher eventPublisher;
+    private SystemEventsPublisher eventPublisher;
     private VerificationTokenResolver tokenResolver;
     private InMemoryVerificationTokenRepository verificationTokenRepository;
     private EnvironmentPropertiesProvider propertiesProvider;
@@ -194,12 +195,14 @@ class AuthenticationFacadeTest {
             var accountDO = AccountDO
                     .builder()
                     .emailAddress( "test@email.com" )
+                    .uniqueObjectIdentifier( TEST_ACCOUNT_UNIQUE_IDENTIFIER )
                     .build();
-            validationRepository.setEmailExists( true );
+            accountRepository.setDatabase( List.of( accountDO ) );
+            validationRepository.setAccountExistsByUniqueId( true );
             when( propertiesProvider.getPropertyValue( GLOBAL_CLIENT_URL ) ).thenReturn( EXPECTED_CLIENT_URL );
 
             // WHEN
-            var result = sut.createNewAccountConfirmationLink( accountDO );
+            var result = sut.createNewAccountConfirmationLink( accountDO.getUniqueObjectIdentifier() );
 
             // THEN
             final var EXPECTED_URL_PART = "http://localhost:8080/?aToken=";
@@ -266,11 +269,11 @@ class AuthenticationFacadeTest {
     }
 
     private void prepareTokenResolver() {
-        tokenResolver = new VerificationTokenResolver( verificationTokenRepository );
+        tokenResolver = new VerificationTokenResolver( verificationTokenRepository, timeService );
     }
 
     private void prepareEventPublisher() {
-        eventPublisher = mock( ApplicationEventPublisher.class );
+        eventPublisher = mock( SystemEventsPublisher.class );
     }
 
     private void prepareRepository() {

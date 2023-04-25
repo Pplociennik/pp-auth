@@ -1,14 +1,15 @@
 package com.github.pplociennik.auth.business.listeners;
 
-import auth.dto.AccountDto;
+import auth.dto.ConfirmationLinkGenerationDto;
 import com.github.pplociennik.auth.business.authentication.AuthenticationFacade;
-import com.github.pplociennik.auth.business.authentication.domain.map.AccountMapper;
 import com.github.pplociennik.auth.business.mailing.EmailFacade;
 import com.github.pplociennik.auth.business.shared.events.OnRegistrationCompleteEvent;
 import com.github.pplociennik.auth.common.mailing.dto.EmailConfirmationDataDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.lang.NonNull;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.github.pplociennik.auth.business.listeners.ListenerParametersUtil.getSourceOfTheProperType;
 import static java.util.Objects.requireNonNull;
@@ -31,6 +32,7 @@ class OnRegistrationCompleteListener implements ApplicationListener< OnRegistrat
     }
 
     @Override
+    @Transactional( propagation = Propagation.REQUIRED )
     public void onApplicationEvent( OnRegistrationCompleteEvent event ) {
 
         requireNonNull( event );
@@ -38,11 +40,11 @@ class OnRegistrationCompleteListener implements ApplicationListener< OnRegistrat
         var locale = event.getLocale();
         var source = event.getSource();
 
-        var accountDto = getSourceOfTheProperType( source, AccountDto.class );
+        var confirmationLinkData = getSourceOfTheProperType( source, ConfirmationLinkGenerationDto.class );
 
-        var recipientAddress = accountDto.getEmailAddress();
-        var confirmationLink = authenticationFacade.createNewAccountConfirmationLink(
-                AccountMapper.mapToDomain( accountDto ) );
+        var recipientAddress = confirmationLinkData.getEmailAddress();
+        var uniqueAccountId = confirmationLinkData.getUniqueObjectIdentifier();
+        var confirmationLink = authenticationFacade.createNewAccountConfirmationLink( uniqueAccountId );
 
         var emailData = new EmailConfirmationDataDto( recipientAddress, confirmationLink, locale );
         emailFacade.sendEmailConfirmationRequest( emailData );

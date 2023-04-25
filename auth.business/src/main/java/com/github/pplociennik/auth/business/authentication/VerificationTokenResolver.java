@@ -4,15 +4,13 @@ import auth.AuthVerificationTokenType;
 import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
 import com.github.pplociennik.auth.business.authentication.domain.model.VerificationTokenDO;
 import com.github.pplociennik.auth.business.authentication.ports.VerificationTokenRepository;
+import com.github.pplociennik.auth.business.shared.system.TimeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 
 import java.time.Instant;
-import java.time.ZoneId;
 import java.util.UUID;
 
-import static com.github.pplociennik.auth.business.shared.system.ObjectsSpecifierDefinition.verificationTokenTypeSpecifier;
-import static com.github.pplociennik.commons.utility.identifier.UniqueIdentifierGenerator.generateIdentifier;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -23,10 +21,12 @@ import static java.util.Objects.requireNonNull;
 class VerificationTokenResolver {
 
     private final VerificationTokenRepository tokenRepository;
+    private final TimeService timeService;
 
     @Autowired
-    VerificationTokenResolver( @NonNull VerificationTokenRepository aTokenRepository ) {
+    VerificationTokenResolver( @NonNull VerificationTokenRepository aTokenRepository, TimeService aTimeService ) {
         tokenRepository = aTokenRepository;
+        timeService = aTimeService;
     }
 
     /**
@@ -52,7 +52,7 @@ class VerificationTokenResolver {
                 .owner( aAccountDO )
                 .type( aVerificationTokenType )
                 .expirationDate( getExpirationDateForImmediateToken( aVerificationTokenType ) )
-                .zoneId( ZoneId.of( "UTC" ) )
+                .zoneId( timeService.getSystemZoneId() )
                 .isActive( true )
                 .build();
 
@@ -67,7 +67,7 @@ class VerificationTokenResolver {
             @NonNull Instant aStartDate, AuthVerificationTokenType aVerificationTokenType ) {
         requireNonNull( aStartDate );
 
-        var zoneId = ZoneId.systemDefault();
+        var zoneId = timeService.getSystemZoneId();
         var startDateTime = aStartDate.atZone( zoneId );
 
         var amountToAdd = aVerificationTokenType.getAmount();

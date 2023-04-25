@@ -25,6 +25,7 @@
 package com.github.pplociennik.auth.business.authentication.domain.map;
 
 import auth.dto.AccountDto;
+import auth.dto.ConfirmationLinkGenerationDto;
 import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
 import com.github.pplociennik.auth.business.authentication.domain.model.AccountSecurityCoreDO;
 import com.github.pplociennik.auth.business.authorization.domain.map.AuthorityMapper;
@@ -95,6 +96,7 @@ public class AccountMapper {
 
         var accountDO = AccountDO
                 .builder()
+                .id( aAccount.getId() )
                 .uniqueObjectIdentifier( aAccount.getUniqueObjectIdentifier() )
                 .accountNonExpired( aAccount.isAccountNonExpired() )
                 .accountNonLocked( aAccount.isAccountNonLocked() )
@@ -112,6 +114,13 @@ public class AccountMapper {
         authorities.forEach( aAuthorityDO -> aAuthorityDO.setOwner( accountDO ) );
 
         return accountDO;
+    }
+
+    public static ConfirmationLinkGenerationDto mapToConfirmationLinkGenerationDto( AccountDO aAccountDO ) {
+        var emailAddress = aAccountDO.getEmailAddress();
+        var uniqueIdentifier = aAccountDO.getUniqueObjectIdentifier();
+
+        return new ConfirmationLinkGenerationDto( emailAddress, uniqueIdentifier );
     }
 
     private static Set< AuthorityDO > mapAuthoritiesToDomain(

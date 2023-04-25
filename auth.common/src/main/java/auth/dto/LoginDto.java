@@ -24,9 +24,12 @@
 
 package auth.dto;
 
-import lombok.*;
+import com.github.pplociennik.commons.dto.BaseAbstractExtendableDto;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -38,10 +41,15 @@ import java.util.Objects;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginDto implements Serializable {
+public class LoginDto extends BaseAbstractExtendableDto {
 
     private String usernameOrEmail;
     private String password;
+
+    @Override
+    public int hashCode() {
+        return Objects.hash( usernameOrEmail );
+    }
 
     @Override
     public boolean equals( Object aO ) {
@@ -53,11 +61,6 @@ public class LoginDto implements Serializable {
         }
         LoginDto loginDto = ( LoginDto ) aO;
         return Objects.equals( usernameOrEmail, loginDto.usernameOrEmail );
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash( usernameOrEmail );
     }
 
     @Override

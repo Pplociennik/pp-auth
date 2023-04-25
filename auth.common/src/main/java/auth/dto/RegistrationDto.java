@@ -24,11 +24,10 @@
 
 package auth.dto;
 
+import com.github.pplociennik.commons.dto.BaseAbstractExtendableDto;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-
-import java.io.Serializable;
 
 /**
  * A Data Transfer Object representing data being used during the registration process.
@@ -37,8 +36,8 @@ import java.io.Serializable;
  */
 @Getter
 @Builder
-@EqualsAndHashCode
-public class RegistrationDto implements Serializable {
+@EqualsAndHashCode( callSuper = false )
+public class RegistrationDto extends BaseAbstractExtendableDto {
 
     private String email;
 
