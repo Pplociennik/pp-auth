@@ -56,6 +56,14 @@ class AuthController {
         authenticationFacade = aAuthenticationFacade;
     }
 
+    /**
+     * Registers a new account in the system.
+     *
+     * @param aRegistrationDto
+     *         data necessary for new account's creation.
+     *
+     * @return {@link HttpStatus}
+     */
     @PostMapping(path = AUTH_CONTROLLER_FULL_REGISTRATION_MAPPING_VALUE, consumes = APPLICATION_JSON_VALUE)
     HttpStatus registerNewUserAccount( @RequestBody RegistrationDto aRegistrationDto ) {
         var registrationDO = mapToDO( aRegistrationDto );
@@ -63,6 +71,14 @@ class AuthController {
         return HttpStatus.ACCEPTED;
     }
 
+    /**
+     * Authenticates user in the system by login/email address and password.
+     *
+     * @param aLoginDto
+     *         data necessary for user's authentication.
+     *
+     * @return authentication data of the authenticated user
+     */
     @PostMapping(
             path = AUTH_CONTROLLER_LOGIN_MAPPING_VALUE, consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE
@@ -73,6 +89,14 @@ class AuthController {
         return new ResponseEntity<>( authenticatedUser, HttpStatus.ACCEPTED );
     }
 
+    /**
+     * Confirms registration and enables the registered account in the system
+     *
+     * @param aToken
+     *         a token being used for account confirmation. Being send automatically via an email message.
+     *
+     * @return {@link HttpStatus}
+     */
     @PostMapping(path = AUTH_CONTROLLER_ACCOUNT_CONFIRMATION_MAPPING_VALUE)
     HttpStatus confirmRegistration( @RequestParam String aToken ) {
         authenticationFacade.confirmRegistration( aToken );
