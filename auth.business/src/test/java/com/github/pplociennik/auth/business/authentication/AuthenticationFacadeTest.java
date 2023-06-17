@@ -32,6 +32,7 @@ import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryTime
 import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryVerificationTokenRepository;
 import com.github.pplociennik.auth.business.shared.events.SystemEventsPublisher;
 import com.github.pplociennik.auth.business.shared.system.EnvironmentPropertiesProvider;
+import com.github.pplociennik.auth.business.shared.system.SessionService;
 import com.github.pplociennik.commons.utility.LanguageUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -77,7 +78,9 @@ class AuthenticationFacadeTest {
     private InMemoryVerificationTokenRepository verificationTokenRepository;
     private EnvironmentPropertiesProvider propertiesProvider;
     private InMemoryTimeService timeService;
-    @Mock( answer = Answers.RETURNS_SMART_NULLS )
+    @Mock(answer = Answers.RETURNS_SMART_NULLS)
+    private SessionService sessionService;
+    @Mock(answer = Answers.RETURNS_SMART_NULLS)
     private AuthenticationManager authenticationManager;
     private AuthenticationFacade sut;
 
@@ -93,12 +96,56 @@ class AuthenticationFacadeTest {
         prepareTokenResolver();
 
         authService = new AuthService( encoder, accountRepository, tokenResolver, verificationTokenRepository,
-                                       propertiesProvider, timeService );
+                propertiesProvider, timeService );
         validator = new AuthenticationValidator( validationRepository );
 
         sut = new AuthenticationFacade( authService, validator, eventPublisher, authenticationManager,
-                                        accountRepository );
+                accountRepository, sessionService );
         LanguageUtil.setLocale( Locale.ENGLISH );
+    }
+
+    private void prepareTimeService() {
+        timeService = new InMemoryTimeService();
+    }
+
+    // ##############################################
+    // ################ Registration ################
+    // ##############################################
+
+    private void preparePropertiesProvider() {
+        propertiesProvider = mock( EnvironmentPropertiesProvider.class );
+    }
+
+    // ##############################################
+    // ######## Confirmation Link Generation ########
+    // ##############################################
+
+    private void prepareTokenRepository() {
+        verificationTokenRepository = new InMemoryVerificationTokenRepository();
+    }
+
+    // ##############################################
+    // ############ Account Confirmation ############
+    // ##############################################
+
+    private void prepareTokenResolver() {
+        tokenResolver = new VerificationTokenResolver( verificationTokenRepository, timeService );
+    }
+
+    private void prepareEventPublisher() {
+        eventPublisher = mock( SystemEventsPublisher.class );
+    }
+
+    private void prepareRepository() {
+        accountRepository = new InMemoryAccountRepository();
+    }
+
+    private void prepareValidator() {
+        validationRepository = new InMemoryAuthenticationValidationRepository();
+    }
+
+    private void prepareEncoder() {
+        encoder = mock( PasswordEncoder.class );
     }
 
     @Nested
@@ -180,10 +227,6 @@ class AuthenticationFacadeTest {
 
     }
 
-    // ##############################################
-    // ################ Registration ################
-    // ##############################################
-
     @Nested
     class ConfirmationLinkGeneration {
 
@@ -225,10 +268,6 @@ class AuthenticationFacadeTest {
         }
     }
 
-    // ##############################################
-    // ######## Confirmation Link Generation ########
-    // ##############################################
-
     @Nested
     class AccountConfirmation {
 
@@ -252,42 +291,6 @@ class AuthenticationFacadeTest {
                         NullPointerException.class );
             }
         }
-    }
-
-    // ##############################################
-    // ############ Account Confirmation ############
-    // ##############################################
-
-    private void prepareTimeService() {
-        timeService = new InMemoryTimeService();
-    }
-
-    private void preparePropertiesProvider() {
-        propertiesProvider = mock( EnvironmentPropertiesProvider.class );
-    }
-
-    private void prepareTokenRepository() {
-        verificationTokenRepository = new InMemoryVerificationTokenRepository();
-    }
-
-    private void prepareTokenResolver() {
-        tokenResolver = new VerificationTokenResolver( verificationTokenRepository, timeService );
-    }
-
-    private void prepareEventPublisher() {
-        eventPublisher = mock( SystemEventsPublisher.class );
-    }
-
-    private void prepareRepository() {
-        accountRepository = new InMemoryAccountRepository();
-    }
-
-    private void prepareValidator() {
-        validationRepository = new InMemoryAuthenticationValidationRepository();
-    }
-
-    private void prepareEncoder() {
-        encoder = mock( PasswordEncoder.class );
     }
 
 

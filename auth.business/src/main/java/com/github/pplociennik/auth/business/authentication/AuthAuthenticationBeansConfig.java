@@ -29,6 +29,7 @@ import com.github.pplociennik.auth.business.authentication.ports.AuthenticationV
 import com.github.pplociennik.auth.business.authentication.ports.VerificationTokenRepository;
 import com.github.pplociennik.auth.business.shared.events.SystemEventsPublisher;
 import com.github.pplociennik.auth.business.shared.system.EnvironmentPropertiesProvider;
+import com.github.pplociennik.auth.business.shared.system.SessionService;
 import com.github.pplociennik.auth.business.shared.system.TimeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -52,6 +53,7 @@ class AuthAuthenticationBeansConfig {
     private final TimeService timeService;
     private final EnvironmentPropertiesProvider propertiesProvider;
     private final SystemEventsPublisher systemEventsPublisher;
+    private final SessionService sessionService;
 
     @Autowired
     AuthAuthenticationBeansConfig(
@@ -59,7 +61,7 @@ class AuthAuthenticationBeansConfig {
             AuthenticationValidationRepository aAuthenticationValidationRepository, PasswordEncoder aEncoder,
             VerificationTokenRepository aVerificationTokenRepository, AuthenticationManager aAuthenticationManager,
             TimeService aTimeService, EnvironmentPropertiesProvider aPropertiesProvider,
-            SystemEventsPublisher aSystemEventsPublisher ) {
+            SystemEventsPublisher aSystemEventsPublisher, SessionService aSessionService ) {
         accountRepository = aAccountRepository;
         authenticationValidationRepository = aAuthenticationValidationRepository;
         encoder = aEncoder;
@@ -68,12 +70,13 @@ class AuthAuthenticationBeansConfig {
         timeService = aTimeService;
         propertiesProvider = aPropertiesProvider;
         systemEventsPublisher = aSystemEventsPublisher;
+        sessionService = aSessionService;
     }
 
     @Bean
     AuthenticationFacade authenticationFacade() {
         return new AuthenticationFacade( authService(), authenticationValidator(), systemEventsPublisher,
-                                         authenticationManager, accountRepository );
+                authenticationManager, accountRepository, sessionService );
     }
 
     @Bean
@@ -84,7 +87,7 @@ class AuthAuthenticationBeansConfig {
     @Bean
     AuthService authService() {
         return new AuthService( encoder, accountRepository, verificationTokenResolver(), verificationTokenRepository,
-                                propertiesProvider, timeService );
+                propertiesProvider, timeService );
     }
 
     @Bean

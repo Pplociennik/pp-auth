@@ -49,10 +49,16 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 class SecurityConfiguration {
 
     private static final String[] AUTH_WHITELIST = { EMPTY };
+    private static final int MAXIMUM_SESSIONS_NR = 3;
 
     @Bean
     @Order( 1 )
     SecurityFilterChain authFilterChain( HttpSecurity aHttp ) throws Exception {
+
+        aHttp
+                .sessionManagement()
+                .maximumSessions( MAXIMUM_SESSIONS_NR );
+
         return aHttp
                 .securityMatcher( ROOT_URI, AUTH_LOGIN_URI, AUTH_LOGOUT_URI, AUTH_REGISTRATION_URI,
                                   AUTH_ACCOUNT_CONFIRMATION_URI )

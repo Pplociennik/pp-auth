@@ -55,7 +55,7 @@ class VerificationTokenRepositoryImpl implements VerificationTokenRepository {
         verificationTokenEntity.setUniqueObjectIdentifier( identifier );
 
 
-        return mapToDomain( verificationTokenDao.save( verificationTokenEntity ) );
+        return mapToDomain( verificationTokenDao.saveAndFlush( verificationTokenEntity ) );
     }
 
     @Override
