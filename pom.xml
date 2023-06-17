@@ -44,7 +44,6 @@
         <module>auth.business</module>
         <module>auth.api</module>
         <module>auth.core</module>
-        <module>auth.mailing</module>
     </modules>
 
     <properties>
