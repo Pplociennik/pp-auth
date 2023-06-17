@@ -39,6 +39,11 @@ public enum AuthResExcMsgTranslationKey implements TranslationKey {
     AUTHENTICATION_USERNAME_NOT_MATCHING_PATTERN,
 
     /**
+     * Authentication process: Username and password cannot be identical!
+     */
+    AUTHENTICATION_USERNAME_CANNOT_BE_IDENTICAL_TO_PASSWORD,
+
+    /**
      * Authentication process: Password does not match pattern.
      */
     AUTHENTICATION_PASSWORD_NOT_MATCHING_PATTERN,
