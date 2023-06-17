@@ -1,8 +1,8 @@
 package com.github.pplociennik.auth.business.shared;
 
 import com.github.pplociennik.auth.business.shared.events.SystemEventsPublisher;
-import com.github.pplociennik.auth.business.shared.system.EnvironmentPropertiesProvider;
 import com.github.pplociennik.auth.business.shared.system.SessionService;
+import com.github.pplociennik.auth.business.shared.system.SystemPropertiesProvider;
 import com.github.pplociennik.auth.business.shared.system.TimeService;
 import com.github.pplociennik.auth.business.shared.system.session.SessionServiceImpl;
 import com.github.pplociennik.auth.business.shared.system.time.SystemTimeServiceImpl;
@@ -30,8 +30,8 @@ class AuthSharedBeansConfig {
     }
 
     @Bean
-    EnvironmentPropertiesProvider environmentPropertiesProvider() {
-        return new EnvironmentPropertiesProvider( environment );
+    SystemPropertiesProvider environmentPropertiesProvider() {
+        return new SystemPropertiesProvider( environment );
     }
 
     @Bean

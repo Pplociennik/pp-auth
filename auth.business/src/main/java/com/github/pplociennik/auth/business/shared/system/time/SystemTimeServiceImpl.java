@@ -1,12 +1,12 @@
 package com.github.pplociennik.auth.business.shared.system.time;
 
-import com.github.pplociennik.auth.business.shared.system.EnvironmentPropertiesProvider;
+import com.github.pplociennik.auth.business.shared.system.SystemPropertiesProvider;
 import com.github.pplociennik.auth.business.shared.system.TimeService;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
-import static com.github.pplociennik.auth.business.shared.system.SystemProperty.SYSTEM_JPA_TIME_ZONE;
+import static com.github.pplociennik.auth.business.shared.system.SystemProperties.SYSTEM_JPA_TIME_ZONE;
 
 /**
  * A service providing system time management. Provides functionalities for time/time zones' management and conversion.
@@ -18,9 +18,9 @@ import static com.github.pplociennik.auth.business.shared.system.SystemProperty.
 public class SystemTimeServiceImpl implements TimeService {
 
     private static final String DEFAULT_SYSTEM_TIME_ZONE = "UTC";
-    private final EnvironmentPropertiesProvider propertiesProvider;
+    private final SystemPropertiesProvider propertiesProvider;
 
-    public SystemTimeServiceImpl( EnvironmentPropertiesProvider aPropertiesProvider ) {
+    public SystemTimeServiceImpl( SystemPropertiesProvider aPropertiesProvider ) {
         propertiesProvider = aPropertiesProvider;
     }
 
@@ -35,8 +35,8 @@ public class SystemTimeServiceImpl implements TimeService {
         var systemTimeZone = getSystemTimeZone();
 
         return systemTimeZone.isBlank()
-               ? ZoneId.of( DEFAULT_SYSTEM_TIME_ZONE )
-               : ZoneId.of( systemTimeZone );
+                ? ZoneId.of( DEFAULT_SYSTEM_TIME_ZONE )
+                : ZoneId.of( systemTimeZone );
     }
 
     /**

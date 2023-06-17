@@ -1,93 +1,79 @@
 package com.github.pplociennik.auth.business.mailing;
 
 import com.github.pplociennik.auth.business.mailing.domain.model.AddressableDataDO;
-import com.github.pplociennik.auth.business.mailing.domain.model.EmailConfirmationDataDO;
-import com.github.pplociennik.auth.business.mailing.domain.model.WelcomeEmailDataDO;
-import com.github.pplociennik.auth.business.shared.system.EnvironmentPropertiesProvider;
+import com.github.pplociennik.auth.business.shared.system.SystemPropertiesProvider;
+import com.github.pplociennik.auth.common.lang.AuthResEmailMsgTranslationKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
+import org.springframework.scheduling.annotation.Async;
 import org.thymeleaf.TemplateEngine;
 
-import static com.github.pplociennik.auth.business.mailing.EmailContentDataCreationStrategy.EMAIL_CONFIRMATION_MESSAGE;
-import static com.github.pplociennik.auth.business.mailing.EmailContentDataCreationStrategy.WELCOME_EMAIL_MESSAGE;
-import static com.github.pplociennik.auth.business.shared.system.SystemProperty.GLOBAL_EMAILS_SENDING;
-import static com.github.pplociennik.auth.business.shared.system.SystemProperty.MAILING_SENDER_ADDRESS;
-import static com.github.pplociennik.auth.common.lang.AuthResEmailMsgTranslationKey.EMAIL_ACCOUNT_CONFIRMATION_SUBJECT;
-import static com.github.pplociennik.auth.common.lang.AuthResEmailMsgTranslationKey.WELCOME_EMAIL_SUBJECT;
+import static com.github.pplociennik.auth.business.shared.system.SystemProperties.GLOBAL_EMAILS_SENDING;
+import static com.github.pplociennik.auth.business.shared.system.SystemProperties.MAILING_SENDER_ADDRESS;
 import static com.github.pplociennik.commons.utility.CustomObjects.requireNonEmpty;
 import static com.github.pplociennik.commons.utility.LanguageUtil.getLocalizedMessage;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A service sharing methods for project specific mailing functionalities.
+ * A service sharing methods for mailing functionalities.
  *
  * @author Created by: Pplociennik at 30.06.2022 20:19
  */
 class EmailService {
 
-    private final EnvironmentPropertiesProvider propertiesProvider;
-    private final TemplateEngine templateEngine;
     private final JavaMailSender mailSender;
+    private final SystemPropertiesProvider propertiesProvider;
+    private final TemplateEngine templateEngine;
+
 
     @Autowired
-    EmailService(
-            @NonNull EnvironmentPropertiesProvider aPropertiesProvider, @NonNull TemplateEngine aTemplateEngine,
-            @NonNull JavaMailSender aMailSender ) {
-        propertiesProvider = requireNonNull( aPropertiesProvider );
-        templateEngine = requireNonNull( aTemplateEngine );
+    EmailService( @NonNull JavaMailSender aMailSender, @NonNull SystemPropertiesProvider aPropertiesProvider, TemplateEngine aTemplateEngine ) {
         mailSender = requireNonNull( aMailSender );
+        propertiesProvider = requireNonNull( aPropertiesProvider );
+        templateEngine = aTemplateEngine;
     }
 
     /**
-     * Prepares and sends an email message being an account confirmation request.
+     * Prepares a message's content based on the specified strategy and data provided.
      *
-     * @param aDataDO
-     *         a domain object containing the information necessary for preparing and sending message.
+     * @param aContentCreationStrategy
+     *         a strategy of preparing message's content.
+     * @param aSendingDataDO
+     *         data based on which the message is being created.
+     *
+     * @return the object containing the message's content data such as template, context and locale.
      */
-    void prepareAndSendEmailConfirmationRequest( @NonNull EmailConfirmationDataDO aDataDO ) {
-        requireNonNull( aDataDO );
+    public EmailContentData getContentData(
+            @NonNull EmailContentDataCreationStrategy aContentCreationStrategy,
+            @NonNull AddressableDataDO aSendingDataDO ) {
+        requireNonNull( aContentCreationStrategy );
+        requireNonNull( aSendingDataDO );
 
-        var senderAddress = propertiesProvider.getPropertyValue( MAILING_SENDER_ADDRESS );
-        var recipientAddress = aDataDO.getRecipientAddress();
-
-        var contentData = getContentData( EMAIL_CONFIRMATION_MESSAGE, aDataDO );
-        var locale = contentData.getLocale();
-        var content = templateEngine.process( contentData.getTemplateFile(), contentData.getContext() );
-
-        var message = prepareMessage( senderAddress, recipientAddress, content,
-                                      getLocalizedMessage( EMAIL_ACCOUNT_CONFIRMATION_SUBJECT, locale ), true );
-
-        send( message );
+        return aContentCreationStrategy.prepare( aSendingDataDO );
     }
 
     /**
-     * Prepares and sends an email message being a welcome email sent after account confirmation.
+     * Prepares and returns a message to be sent.
      *
-     * @param aDataDO
-     *         a domain object containing the information necessary for preparing and sending message.
+     * @param aSenderAddress
+     *         an email address of the message's sender.
+     * @param aRecipientAddress
+     *         an email address of the message's receiver.
+     * @param aContent
+     *         the message's content.
+     * @param aSubject
+     *         the message's subject.
+     * @param aIsHtml
+     *         a flag determining if the message's content is in the HTML format.
+     *
+     * @return prepared message ready to be sent.
      */
-    void prepareAndSendWelcomeEmail( @NonNull WelcomeEmailDataDO aDataDO ) {
-        requireNonNull( aDataDO );
-
-        var senderAddress = propertiesProvider.getPropertyValue( MAILING_SENDER_ADDRESS );
-        var recipientAddress = aDataDO.getRecipientAddress();
-
-        var contentData = getContentData( WELCOME_EMAIL_MESSAGE, aDataDO );
-        var locale = contentData.getLocale();
-        var content = templateEngine.process( contentData.getTemplateFile(), contentData.getContext() );
-
-        var message = prepareMessage( senderAddress, recipientAddress, content,
-                                      getLocalizedMessage( WELCOME_EMAIL_SUBJECT, locale ), true );
-
-        send( message );
-    }
-
-    private MimeMessagePreparator prepareMessage(
+    public MimeMessagePreparator prepareMessage(
             @NonNull String aSenderAddress, @NonNull String aRecipientAddress, @NonNull String aContent,
-            @NonNull String aSubject, boolean aHtml ) {
+            @NonNull String aSubject, boolean aIsHtml ) {
         requireNonEmpty( aSenderAddress );
         requireNonEmpty( aRecipientAddress );
         requireNonEmpty( aContent );
@@ -99,24 +85,50 @@ class EmailService {
             messageHelper.setFrom( aSenderAddress );
             messageHelper.setTo( aRecipientAddress );
             messageHelper.setSubject( aSubject );
-            messageHelper.setText( aContent, aHtml );
+            messageHelper.setText( aContent, aIsHtml );
         };
     }
 
-    private EmailContentData getContentData(
-            @NonNull EmailContentDataCreationStrategy aEmailConfirmationMessage,
-            @NonNull AddressableDataDO aSendingDO ) {
-        requireNonNull( aEmailConfirmationMessage );
-        requireNonNull( aSendingDO );
+    /**
+     * Prepares a message based on the specified attributes and sends it if possible.
+     *
+     * @param aDataDO
+     *         data necessary for the message's creation.
+     * @param aCreationStrategy
+     *         the message's creation strategy.
+     * @param aSubject
+     *         the message's subject.
+     * @param aIsHtml
+     *         a flag determining if the message's content is in the HTML format.
+     */
+    @Async
+    public void send( AddressableDataDO aDataDO, EmailContentDataCreationStrategy aCreationStrategy, AuthResEmailMsgTranslationKey aSubject, boolean aIsHtml ) {
+        requireNonNull( aDataDO );
 
-        return aEmailConfirmationMessage.prepare( aSendingDO );
+        var senderAddress = propertiesProvider.getPropertyValue( MAILING_SENDER_ADDRESS );
+        var recipientAddress = aDataDO.getRecipientAddress();
+
+        var contentData = getContentData( aCreationStrategy, aDataDO );
+        var locale = contentData.getLocale();
+        var content = templateEngine.process( contentData.getTemplateFile(), contentData.getContext() );
+
+        var message = prepareMessage( senderAddress, recipientAddress, content, getLocalizedMessage( aSubject, locale ), aIsHtml );
+
+        send( message );
     }
 
-    private void send( @NonNull MimeMessagePreparator aMessagePreparator ) {
-        requireNonNull( aMessagePreparator );
+    /**
+     * Sends an email message if possible.
+     *
+     * @param aMessage
+     *         the message to be sent.
+     */
+    @Async
+    public void send( @NonNull MimeMessagePreparator aMessage ) {
+        requireNonNull( aMessage );
 
         if ( checkIfCanBeSent() ) {
-            mailSender.send( aMessagePreparator );
+            mailSender.send( aMessage );
         }
     }
 
@@ -124,4 +136,5 @@ class EmailService {
         var property = propertiesProvider.getPropertyValue( GLOBAL_EMAILS_SENDING );
         return Boolean.parseBoolean( property );
     }
+
 }

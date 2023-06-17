@@ -11,7 +11,7 @@ import static com.github.pplociennik.commons.utility.CustomObjects.requireNonEmp
  *
  * @author Created by: Pplociennik at 06.08.2022 22:06
  */
-public final class WelcomeEmailDataDO extends EmailDataDO implements AddressableDataDO {
+public final class WelcomeEmailDataDO extends EmailDataDO {
 
     private final String username;
 

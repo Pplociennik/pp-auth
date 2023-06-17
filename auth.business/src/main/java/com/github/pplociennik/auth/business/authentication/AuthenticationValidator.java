@@ -90,7 +90,7 @@ class AuthenticationValidator {
     }
 
     private boolean checkIfUsernameDifferentThanPassword( RegistrationDO aRegistrationDO ) {
-        return aRegistrationDO.getUsername().equals( aRegistrationDO.getPassword() );
+        return !aRegistrationDO.getUsername().equals( aRegistrationDO.getPassword() );
     }
 
     void validateConfirmationLinkGeneration( @NonNull String aUniqueAccountId ) {

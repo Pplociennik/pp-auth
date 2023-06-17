@@ -29,7 +29,7 @@ import com.github.pplociennik.auth.business.authentication.domain.model.Registra
 import com.github.pplociennik.auth.business.authentication.domain.model.VerificationTokenDO;
 import com.github.pplociennik.auth.business.authentication.ports.AccountRepository;
 import com.github.pplociennik.auth.business.authentication.ports.VerificationTokenRepository;
-import com.github.pplociennik.auth.business.shared.system.EnvironmentPropertiesProvider;
+import com.github.pplociennik.auth.business.shared.system.SystemPropertiesProvider;
 import com.github.pplociennik.auth.business.shared.system.TimeService;
 import com.github.pplociennik.auth.common.exc.AccountConfirmationException;
 import com.github.pplociennik.auth.db.entity.authentication.Account;
@@ -41,7 +41,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 import static auth.AuthVerificationTokenType.EMAIL_CONFIRMATION_TOKEN;
-import static com.github.pplociennik.auth.business.shared.system.SystemProperty.GLOBAL_CLIENT_URL;
+import static com.github.pplociennik.auth.business.shared.system.SystemProperties.GLOBAL_CLIENT_URL;
 import static com.github.pplociennik.auth.common.lang.AuthResExcMsgTranslationKey.ACCOUNT_CONFIRMATION_TOKEN_EXPIRED;
 import static com.github.pplociennik.auth.common.lang.AuthResExcMsgTranslationKey.ACCOUNT_CONFIRMATION_USER_NOT_EXISTS;
 import static com.github.pplociennik.commons.utility.CustomObjects.requireNonEmpty;
@@ -59,14 +59,14 @@ class AuthService {
     private final AccountRepository accountRepository;
     private final VerificationTokenResolver tokenResolver;
     private final VerificationTokenRepository tokenRepository;
-    private final EnvironmentPropertiesProvider propertiesProvider;
+    private final SystemPropertiesProvider propertiesProvider;
     private final TimeService timeService;
 
     @Autowired
     public AuthService(
             @NonNull PasswordEncoder aEncoder, @NonNull AccountRepository aAccountRepository,
             @NonNull VerificationTokenResolver aUrlResolver, @NonNull VerificationTokenRepository aTokenRepository,
-            @NonNull EnvironmentPropertiesProvider aPropertiesProvider, TimeService aTimeService ) {
+            @NonNull SystemPropertiesProvider aPropertiesProvider, TimeService aTimeService ) {
         encoder = aEncoder;
         accountRepository = aAccountRepository;
         tokenResolver = aUrlResolver;
@@ -97,6 +97,7 @@ class AuthService {
      *
      * @param aUniqueAccountIdentifier
      *         an account for which the token is being generated.
+     *
      * @return a confirmation link needed to be sent via email message.
      */
     String generateConfirmationLink( @NonNull String aUniqueAccountIdentifier ) {

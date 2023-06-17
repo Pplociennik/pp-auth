@@ -28,8 +28,8 @@ import com.github.pplociennik.auth.business.authentication.ports.AccountReposito
 import com.github.pplociennik.auth.business.authentication.ports.AuthenticationValidationRepository;
 import com.github.pplociennik.auth.business.authentication.ports.VerificationTokenRepository;
 import com.github.pplociennik.auth.business.shared.events.SystemEventsPublisher;
-import com.github.pplociennik.auth.business.shared.system.EnvironmentPropertiesProvider;
 import com.github.pplociennik.auth.business.shared.system.SessionService;
+import com.github.pplociennik.auth.business.shared.system.SystemPropertiesProvider;
 import com.github.pplociennik.auth.business.shared.system.TimeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -51,7 +51,7 @@ class AuthAuthenticationBeansConfig {
     private final VerificationTokenRepository verificationTokenRepository;
     private final AuthenticationManager authenticationManager;
     private final TimeService timeService;
-    private final EnvironmentPropertiesProvider propertiesProvider;
+    private final SystemPropertiesProvider propertiesProvider;
     private final SystemEventsPublisher systemEventsPublisher;
     private final SessionService sessionService;
 
@@ -60,7 +60,7 @@ class AuthAuthenticationBeansConfig {
             AccountRepository aAccountRepository,
             AuthenticationValidationRepository aAuthenticationValidationRepository, PasswordEncoder aEncoder,
             VerificationTokenRepository aVerificationTokenRepository, AuthenticationManager aAuthenticationManager,
-            TimeService aTimeService, EnvironmentPropertiesProvider aPropertiesProvider,
+            TimeService aTimeService, SystemPropertiesProvider aPropertiesProvider,
             SystemEventsPublisher aSystemEventsPublisher, SessionService aSessionService ) {
         accountRepository = aAccountRepository;
         authenticationValidationRepository = aAuthenticationValidationRepository;

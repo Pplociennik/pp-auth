@@ -1,5 +1,6 @@
 package com.github.pplociennik.auth.business.shared.system;
 
+import com.github.pplociennik.commons.system.SystemProperty;
 import lombok.Getter;
 
 import java.util.Objects;
@@ -13,7 +14,7 @@ import java.util.stream.Stream;
  * @author Created by: Pplociennik at 20.07.2022 23:20
  */
 @Getter
-public enum SystemProperty {
+public enum SystemProperties implements SystemProperty {
 
     // -- Custom global properties.
 
@@ -32,17 +33,17 @@ public enum SystemProperty {
     private final String name;
     private final Set< String > possibleValues;
 
-    SystemProperty( String aName, String... aPossibleValues ) {
-        name = aName;
-        possibleValues = getAsSet( aPossibleValues );
-    }
-
-    // ### Private helper methods ###
-
     private static Set< String > getAsSet( String[] aPossibleValues ) {
         return Stream
                 .of( aPossibleValues )
                 .filter( Objects::nonNull )
                 .collect( Collectors.toSet() );
+    }
+
+    // ### Private helper methods ###
+
+    SystemProperties( String aName, String... aPossibleValues ) {
+        name = aName;
+        possibleValues = getAsSet( aPossibleValues );
     }
 }

@@ -42,8 +42,8 @@ enum EmailContentDataCreationStrategy {
             context.setVariable( "message", getLocalizedMessage( EMAIL_ACCOUNT_CONFIRMATION_MESSAGE, locale ) );
             context.setVariable( "confirmationLink", emailData.getConfirmationLink() );
             context.setVariable( "disclaimer",
-                                 getLocalizedDisclaimer( EMAIL_ACCOUNT_CONFIRMATION_DISCLAIMER, locale, 15L,
-                                                         MINUTES ) );
+                    getLocalizedDisclaimer( EMAIL_ACCOUNT_CONFIRMATION_DISCLAIMER, locale, 15L,
+                            MINUTES ) );
 
             return EmailContentData.of( context, getTemplateFile(), locale );
         }
@@ -61,7 +61,7 @@ enum EmailContentDataCreationStrategy {
             var context = new Context();
 
             context.setVariable( "welcome", getLocalizedMessage( WELCOME_EMAIL_WELCOME, locale,
-                                                                 arrayOf( emailData.getUsername() ) ) );
+                    arrayOf( emailData.getUsername() ) ) );
             context.setVariable( "welcome_text", getLocalizedMessage( WELCOME_EMAIL_WELCOME_TEXT, locale ) );
             context.setVariable( "regards", getLocalizedMessage( WELCOME_EMAIL_REGARDS, locale ) );
 
