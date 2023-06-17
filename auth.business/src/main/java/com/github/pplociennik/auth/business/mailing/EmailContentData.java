@@ -17,7 +17,6 @@ class EmailContentData {
 
     private final Context context;
     private final String templateFile;
-
     private final Locale locale;
 
     private EmailContentData( @NonNull Context aContext, @NonNull String aTemplateFile, @NonNull Locale aLocale ) {
@@ -31,6 +30,7 @@ class EmailContentData {
      *
      * @param aContext
      *         a context of a message.
+     *
      * @return a new {@link EmailContentData} object containing information necessary to create a new email message to
      * be sent.
      */
@@ -45,6 +45,7 @@ class EmailContentData {
      *         a context of a message.
      * @param aTemplateFile
      *         a name of the template file.
+     *
      * @return a new {@link EmailContentData} object containing information necessary to create a new email message to
      * be sent.
      */

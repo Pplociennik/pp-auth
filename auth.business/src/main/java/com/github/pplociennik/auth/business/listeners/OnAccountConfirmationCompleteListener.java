@@ -2,6 +2,7 @@ package com.github.pplociennik.auth.business.listeners;
 
 import auth.dto.AccountDto;
 import com.github.pplociennik.auth.business.mailing.EmailFacade;
+import com.github.pplociennik.auth.business.mailing.domain.map.MailingMapper;
 import com.github.pplociennik.auth.business.shared.events.OnAccountConfirmationCompleteEvent;
 import com.github.pplociennik.auth.common.mailing.dto.WelcomeEmailDataDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +40,7 @@ class OnAccountConfirmationCompleteListener implements ApplicationListener< OnAc
 
         var welcomeEmailDataDto = new WelcomeEmailDataDto( recipientAddress, locale, username );
 
-        emailFacade.sendWelcomeEmail( welcomeEmailDataDto );
+        emailFacade.sendWelcomeEmail( MailingMapper.mapToDO( welcomeEmailDataDto ) );
     }
 
 

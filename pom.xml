@@ -44,6 +44,7 @@
         <module>auth.business</module>
         <module>auth.api</module>
         <module>auth.core</module>
+        <module>auth.mailing</module>
     </modules>
 
     <properties>
@@ -82,10 +83,6 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>false</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
         </dependency>
         <dependency>
             <groupId>net.sf.ehcache</groupId>

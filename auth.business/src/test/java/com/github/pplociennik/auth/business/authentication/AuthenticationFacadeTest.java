@@ -31,8 +31,8 @@ import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryAuth
 import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryTimeService;
 import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryVerificationTokenRepository;
 import com.github.pplociennik.auth.business.shared.events.SystemEventsPublisher;
-import com.github.pplociennik.auth.business.shared.system.EnvironmentPropertiesProvider;
 import com.github.pplociennik.auth.business.shared.system.SessionService;
+import com.github.pplociennik.auth.business.shared.system.SystemPropertiesProvider;
 import com.github.pplociennik.commons.utility.LanguageUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -51,7 +51,7 @@ import java.util.Set;
 
 import static com.github.pplociennik.auth.business.authentication.data.AuthenticationFacadeTestDataProvider.prepareDummyRegistrationDO;
 import static com.github.pplociennik.auth.business.shared.authorization.RolesDefinition.AUTH_USER_ROLE;
-import static com.github.pplociennik.auth.business.shared.system.SystemProperty.GLOBAL_CLIENT_URL;
+import static com.github.pplociennik.auth.business.shared.system.SystemProperties.GLOBAL_CLIENT_URL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
@@ -76,7 +76,7 @@ class AuthenticationFacadeTest {
     private SystemEventsPublisher eventPublisher;
     private VerificationTokenResolver tokenResolver;
     private InMemoryVerificationTokenRepository verificationTokenRepository;
-    private EnvironmentPropertiesProvider propertiesProvider;
+    private SystemPropertiesProvider propertiesProvider;
     private InMemoryTimeService timeService;
     @Mock(answer = Answers.RETURNS_SMART_NULLS)
     private SessionService sessionService;
@@ -113,7 +113,7 @@ class AuthenticationFacadeTest {
     // ##############################################
 
     private void preparePropertiesProvider() {
-        propertiesProvider = mock( EnvironmentPropertiesProvider.class );
+        propertiesProvider = mock( SystemPropertiesProvider.class );
     }
 
     // ##############################################

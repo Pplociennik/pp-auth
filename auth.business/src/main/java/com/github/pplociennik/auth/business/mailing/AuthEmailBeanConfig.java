@@ -1,10 +1,9 @@
 package com.github.pplociennik.auth.business.mailing;
 
-import com.github.pplociennik.auth.business.shared.system.EnvironmentPropertiesProvider;
+import com.github.pplociennik.auth.business.shared.system.SystemPropertiesProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 import org.springframework.lang.NonNull;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.thymeleaf.TemplateEngine;
@@ -19,16 +18,14 @@ import static java.util.Objects.requireNonNull;
 @Configuration
 class AuthEmailBeanConfig {
 
-    private final Environment environment;
     private final TemplateEngine templateEngine;
     private final JavaMailSender mailSender;
-    private final EnvironmentPropertiesProvider propertiesProvider;
+    private final SystemPropertiesProvider propertiesProvider;
 
     @Autowired
     public AuthEmailBeanConfig(
-            @NonNull Environment aEnvironment, @NonNull TemplateEngine aTemplateEngine,
-            @NonNull JavaMailSender aMailSender, EnvironmentPropertiesProvider aPropertiesProvider ) {
-        environment = requireNonNull( aEnvironment );
+            @NonNull TemplateEngine aTemplateEngine,
+            @NonNull JavaMailSender aMailSender, SystemPropertiesProvider aPropertiesProvider ) {
         templateEngine = requireNonNull( aTemplateEngine );
         mailSender = requireNonNull( aMailSender );
         propertiesProvider = requireNonNull( aPropertiesProvider );
@@ -36,7 +33,7 @@ class AuthEmailBeanConfig {
 
     @Bean
     EmailService emailService() {
-        return new EmailService( propertiesProvider, templateEngine, mailSender );
+        return new EmailService( mailSender, propertiesProvider, templateEngine );
     }
 
     @Bean

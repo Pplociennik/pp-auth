@@ -3,6 +3,7 @@ package com.github.pplociennik.auth.business.listeners;
 import auth.dto.ConfirmationLinkGenerationDto;
 import com.github.pplociennik.auth.business.authentication.AuthenticationFacade;
 import com.github.pplociennik.auth.business.mailing.EmailFacade;
+import com.github.pplociennik.auth.business.mailing.domain.map.MailingMapper;
 import com.github.pplociennik.auth.business.shared.events.OnRegistrationCompleteEvent;
 import com.github.pplociennik.auth.common.mailing.dto.EmailConfirmationDataDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,7 @@ class OnRegistrationCompleteListener implements ApplicationListener< OnRegistrat
     }
 
     @Override
-    @Transactional( propagation = Propagation.REQUIRED )
+    @Transactional(propagation = Propagation.REQUIRED)
     public void onApplicationEvent( OnRegistrationCompleteEvent event ) {
 
         requireNonNull( event );
@@ -47,7 +48,7 @@ class OnRegistrationCompleteListener implements ApplicationListener< OnRegistrat
         var confirmationLink = authenticationFacade.createNewAccountConfirmationLink( uniqueAccountId );
 
         var emailData = new EmailConfirmationDataDto( recipientAddress, confirmationLink, locale );
-        emailFacade.sendEmailConfirmationRequest( emailData );
+        emailFacade.sendEmailConfirmationRequest( MailingMapper.mapToDO( emailData ) );
 
     }
 }

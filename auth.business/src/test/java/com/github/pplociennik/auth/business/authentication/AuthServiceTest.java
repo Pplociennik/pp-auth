@@ -30,7 +30,7 @@ import com.github.pplociennik.auth.business.authentication.domain.model.Verifica
 import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryAccountRepository;
 import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryTimeService;
 import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryVerificationTokenRepository;
-import com.github.pplociennik.auth.business.shared.system.EnvironmentPropertiesProvider;
+import com.github.pplociennik.auth.business.shared.system.SystemPropertiesProvider;
 import com.github.pplociennik.auth.common.exc.AccountConfirmationException;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -69,16 +69,16 @@ class AuthServiceTest {
     private List< VerificationTokenDO > TEST_TOKEN_DATABASE = new LinkedList<>();
     private List< AccountDO > TEST_ACCOUNT_DATABASE = new LinkedList<>();
 
-    private EnvironmentPropertiesProvider propertiesProvider = mock( EnvironmentPropertiesProvider.class );
+    private SystemPropertiesProvider propertiesProvider = mock( SystemPropertiesProvider.class );
     private PasswordEncoder encoder = mock( PasswordEncoder.class );
     private InMemoryAccountRepository accountRepository = new InMemoryAccountRepository( TEST_ACCOUNT_DATABASE );
     private InMemoryVerificationTokenRepository verificationTokenRepository = new InMemoryVerificationTokenRepository(
             TEST_TOKEN_DATABASE );
     private InMemoryTimeService timeService = new InMemoryTimeService();
     private VerificationTokenResolver tokenResolver = new VerificationTokenResolver( verificationTokenRepository,
-                                                                                     timeService );
+            timeService );
     private AuthService sut = new AuthService( encoder, accountRepository, tokenResolver, verificationTokenRepository,
-                                               propertiesProvider, timeService );
+            propertiesProvider, timeService );
 
     @Test
     void shouldAddValidBasePrivilidges_whenDataValid() {
@@ -88,7 +88,7 @@ class AuthServiceTest {
         timeService.setCurrentSystemDateTime( TEST_CURRENT_TIME );
         when( encoder.encode( TEST_VALID_PASSWORD ) ).thenReturn( TEST_ENCODED_PASSWORD );
         var registrationDO = new RegistrationDO( TEST_VALID_EMAIL, TEST_VALID_USERNAME, TEST_VALID_PASSWORD,
-                                                 TEST_VALID_PASSWORD );
+                TEST_VALID_PASSWORD );
 
         // WHEN
         var registeredAccountDO = sut.registerNewAccount( registrationDO );
@@ -106,9 +106,9 @@ class AuthServiceTest {
         // GIVEN
         var accountDO = getDummyAccountDO();
         var token = new VerificationTokenDO( TEST_TOKEN_ID, TEST_TOKEN_UNIQUE_ID, EMAIL_CONFIRMATION_TOKEN, accountDO,
-                                             TEST_TOKEN, Instant
-                                                     .now()
-                                                     .plus( 15, MINUTES ), true );
+                TEST_TOKEN, Instant
+                .now()
+                .plus( 15, MINUTES ), true );
         TEST_TOKEN_DATABASE.add( token );
 
         // THEN
@@ -123,9 +123,9 @@ class AuthServiceTest {
         var accountDO = getDummyAccountDO();
         TEST_ACCOUNT_DATABASE.add( accountDO );
         var token = new VerificationTokenDO( TEST_TOKEN_ID, TEST_TOKEN_UNIQUE_ID, EMAIL_CONFIRMATION_TOKEN, accountDO,
-                                             TEST_TOKEN, Instant
-                                                     .now()
-                                                     .minus( 15, MINUTES ), true );
+                TEST_TOKEN, Instant
+                .now()
+                .minus( 15, MINUTES ), true );
         TEST_TOKEN_DATABASE.add( token );
 
         // THEN

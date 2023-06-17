@@ -1,5 +1,6 @@
 package com.github.pplociennik.auth.business.mailing.domain.map;
 
+
 import com.github.pplociennik.auth.business.mailing.domain.model.EmailConfirmationDataDO;
 import com.github.pplociennik.auth.business.mailing.domain.model.WelcomeEmailDataDO;
 import com.github.pplociennik.auth.common.mailing.dto.EmailConfirmationDataDto;
