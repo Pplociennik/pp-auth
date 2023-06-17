@@ -50,40 +50,13 @@ class AuthenticationValidator {
     private static final Pattern PASSWORD_PATTERN = compile(
             "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$&+,:;=?@#|'<>.^*()%!-]).{8,128}$" );
     private static final Pattern EMAIL_PATTERN = compile( "[a-zA-Z0-9!#$%&'*+-\\/=?^_`{|}~]+@[a-z0-9-]{2,}\\.[a-z]{2,}",
-                                                          Pattern.CASE_INSENSITIVE );
+            Pattern.CASE_INSENSITIVE );
     private final AuthenticationValidationRepository authenticationValidationRepository;
 
     @Autowired
     AuthenticationValidator(
             @NonNull AuthenticationValidationRepository aAuthenticationValidationRepository ) {
         authenticationValidationRepository = aAuthenticationValidationRepository;
-    }
-
-    void validateRegistration( @NonNull RegistrationDO aRegistrationDO ) {
-
-        Validator
-                .of( aRegistrationDO )
-                .validate( Objects::nonNull, AUTHENTICATION_NO_REGISTRATION_DATA )
-                .validate( RegistrationDO::getUsername, this::checkIfUsernameCorrect,
-                           AUTHENTICATION_USERNAME_NOT_MATCHING_PATTERN )
-                .validate( RegistrationDO::getPassword, this::checkIfPasswordCorrect,
-                           AUTHENTICATION_PASSWORD_NOT_MATCHING_PATTERN )
-                .validate( RegistrationDO::getEmail, this::checkIfEmailCorrect,
-                           AUTHENTICATION_EMAIL_NOT_MATCHING_PATTERN )
-                .validate( this::checkIfPasswordsEqual, AUTHENTICATION_PASSWORDS_NOT_EQUAL )
-                .validate( RegistrationDO::getUsername, this::checkIfUsernameNotExists,
-                           AUTHENTICATION_USERNAME_ALREADY_IN_USE )
-                .validate( RegistrationDO::getEmail, this::checkIfEmailNotExists, AUTHENTICATION_EMAIL_ALREADY_IN_USE )
-                .perform();
-    }
-
-    void validateConfirmationLinkGeneration( @NonNull String aUniqueAccountId ) {
-
-        Validator
-                .of( aUniqueAccountId )
-                .validate( Objects::nonNull, NO_DATA_PROVIDED )
-                .validate( this::checkIfAccountExistsByUniqueId, AUTHENTICATION_USER_DOES_NOT_EXIST )
-                .perform();
     }
 
     public void validateRegistrationConfirmation( @NonNull String aToken ) {
@@ -94,6 +67,38 @@ class AuthenticationValidator {
                 .validate( StringUtils::isNotBlank, NO_DATA_PROVIDED )
                 .validate( this::checkIfTokenExists, ACCOUNT_CONFIRMATION_TOKEN_NOT_FOUND )
                 .validate( this::checkIfTokenActive, ACCOUNT_CONFIRMATION_TOKEN_NOT_ACTIVE )
+                .perform();
+    }
+
+    void validateRegistration( @NonNull RegistrationDO aRegistrationDO ) {
+
+        Validator
+                .of( aRegistrationDO )
+                .validate( Objects::nonNull, AUTHENTICATION_NO_REGISTRATION_DATA )
+                .validate( RegistrationDO::getUsername, this::checkIfUsernameCorrect,
+                        AUTHENTICATION_USERNAME_NOT_MATCHING_PATTERN )
+                .validate( this::checkIfUsernameDifferentThanPassword, AUTHENTICATION_USERNAME_CANNOT_BE_IDENTICAL_TO_PASSWORD )
+                .validate( RegistrationDO::getPassword, this::checkIfPasswordCorrect,
+                        AUTHENTICATION_PASSWORD_NOT_MATCHING_PATTERN )
+                .validate( RegistrationDO::getEmail, this::checkIfEmailCorrect,
+                        AUTHENTICATION_EMAIL_NOT_MATCHING_PATTERN )
+                .validate( this::checkIfPasswordsEqual, AUTHENTICATION_PASSWORDS_NOT_EQUAL )
+                .validate( RegistrationDO::getUsername, this::checkIfUsernameNotExists,
+                        AUTHENTICATION_USERNAME_ALREADY_IN_USE )
+                .validate( RegistrationDO::getEmail, this::checkIfEmailNotExists, AUTHENTICATION_EMAIL_ALREADY_IN_USE )
+                .perform();
+    }
+
+    private boolean checkIfUsernameDifferentThanPassword( RegistrationDO aRegistrationDO ) {
+        return aRegistrationDO.getUsername().equals( aRegistrationDO.getPassword() );
+    }
+
+    void validateConfirmationLinkGeneration( @NonNull String aUniqueAccountId ) {
+
+        Validator
+                .of( aUniqueAccountId )
+                .validate( Objects::nonNull, NO_DATA_PROVIDED )
+                .validate( this::checkIfAccountExistsByUniqueId, AUTHENTICATION_USER_DOES_NOT_EXIST )
                 .perform();
     }
 
@@ -120,8 +125,8 @@ class AuthenticationValidator {
         var usernameOrEmail = aLoginDO.getUsernameOrEmail();
 
         return checkIfMatches( usernameOrEmail, EMAIL_PATTERN )
-               ? checkIfEmailExists( usernameOrEmail )
-               : checkIfUsernameExists( usernameOrEmail );
+                ? checkIfEmailExists( usernameOrEmail )
+                : checkIfUsernameExists( usernameOrEmail );
     }
 
     private boolean checkIfAccountExistsByUniqueId( String aUniqueAccountIdentifier ) {
@@ -129,7 +134,7 @@ class AuthenticationValidator {
     }
 
     private boolean checkIfNotEmpty( String aText ) {
-        return ! Objects.equals( aText, "" );
+        return !Objects.equals( aText, "" );
     }
 
     private boolean checkIfTokenExists( String aToken ) {
@@ -146,12 +151,12 @@ class AuthenticationValidator {
 
     private boolean checkIfEmailNotExists( String aEmail ) {
         requireNonNull( aEmail );
-        return ! authenticationValidationRepository.checkIfEmailExists( aEmail );
+        return !authenticationValidationRepository.checkIfEmailExists( aEmail );
     }
 
     private boolean checkIfUsernameNotExists( String aUsername ) {
         requireNonNull( aUsername );
-        return ! authenticationValidationRepository.checkIfUsernameExists( aUsername );
+        return !authenticationValidationRepository.checkIfUsernameExists( aUsername );
     }
 
     private boolean checkIfEmailExists( String aEmail ) {
