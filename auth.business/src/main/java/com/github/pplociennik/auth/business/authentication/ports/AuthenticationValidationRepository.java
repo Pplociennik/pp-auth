@@ -39,6 +39,7 @@ public interface AuthenticationValidationRepository {
      *
      * @param aUsername
      *         a username;
+     *
      * @return true if the specified username is already present in the database.
      */
     boolean checkIfUsernameExists( @NonNull String aUsername );
@@ -48,6 +49,7 @@ public interface AuthenticationValidationRepository {
      *
      * @param aEmail
      *         an email address
+     *
      * @return true if the specified username is already present in the database.
      */
     boolean checkIfEmailExists( @NonNull String aEmail );
@@ -57,7 +59,9 @@ public interface AuthenticationValidationRepository {
      *
      * @param aToken
      *         a token to be checked
+     *
      * @return true if the specified token is active, false otherwise.
+     *
      * @throws NullPointerException
      *         if the parameter is null.
      */
@@ -68,26 +72,20 @@ public interface AuthenticationValidationRepository {
      *
      * @param aToken
      *         a token to be checked
+     *
      * @return true if the specified token exists in the database. False otherwise.
+     *
      * @throws NullPointerException
      *         if the parameter is null.
      */
     boolean checkIfTokenExists( @NonNull String aToken );
 
     /**
-     * Returns true if there is an account in the database having the specified unique object identifier.
-     *
-     * @param aUniqueAccountIdentifier
-     *         a unique object identifier.
-     * @return true if the account exists in the database, false otherwise.
-     */
-    boolean checkIfAccountExistsByUniqueId( @NonNull String aUniqueAccountIdentifier );
-
-    /**
      * Returns an account by email address.
      *
      * @param aEmail
      *         an email address.
+     *
      * @return an account linked to the specified email address.
      */
     AccountDO findByEmail( @NonNull String aEmail );
@@ -97,6 +95,7 @@ public interface AuthenticationValidationRepository {
      *
      * @param aUsername
      *         a username.
+     *
      * @return an account linked to the specified username.
      */
     AccountDO findByUsername( @NonNull String aUsername );

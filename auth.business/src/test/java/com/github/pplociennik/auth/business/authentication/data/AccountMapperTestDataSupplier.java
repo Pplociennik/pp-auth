@@ -82,7 +82,6 @@ public class AccountMapperTestDataSupplier {
         var authority = new Authority();
         authority.setAuthoritiesOwner( aOwner );
         authority.setName( AUTH_USER_ROLE.getName() );
-        authority.setUniqueObjectIdentifier( TEST_AUTHORITY_UNIQUE_IDENTIFIER );
 
         return Set.of( authority );
     }

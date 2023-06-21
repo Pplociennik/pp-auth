@@ -45,24 +45,17 @@ public interface AccountDao extends JpaRepository< Account, Long >, CrudReposito
      *
      * @param aEmailAddress
      *         an email address
+     *
      * @return an {@link Account} object
      */
     Optional< Account > getAccountByEmailAddress( String aEmailAddress );
-
-    /**
-     * Returns an {@link Account} linked to the given unique identifier.
-     *
-     * @param aUniqueIdentifier
-     *         an unique identifier
-     * @return an {@link Account} object
-     */
-    Optional< Account > getAccountByUniqueObjectIdentifier( @NonNull String aUniqueIdentifier );
 
     /**
      * Returns an {@link Account} linked to the given username.
      *
      * @param aUsername
      *         a Username.
+     *
      * @return an {@link Account} object.
      */
     Optional< Account > findAccountByUsername( String aUsername );
@@ -72,6 +65,7 @@ public interface AccountDao extends JpaRepository< Account, Long >, CrudReposito
      *
      * @param aEmailAddress
      *         an email address.
+     *
      * @return an {@link Account} object.
      */
     Optional< Account > findAccountByEmailAddress( @NonNull String aEmailAddress );
@@ -81,23 +75,17 @@ public interface AccountDao extends JpaRepository< Account, Long >, CrudReposito
      *
      * @param aId
      *         an id.
+     *
      * @return an {@link Account} object.
      */
     Optional< Account > findAccountById( @NonNull long aId );
-
-    /**
-     * Returns a {@link Account} with the specified unique object identifier.
-     *
-     * @param aUniqueObjectIdentifier an unique object identifier.
-     * @return an optional {@link Account} object if it exists in the database;
-     */
-    Optional< Account > findAccountByUniqueObjectIdentifier( @NonNull String aUniqueObjectIdentifier );
 
     /**
      * Checks if there is already a username in the database with the specified username.
      *
      * @param aUsername
      *         a username
+     *
      * @return true if the username is already present in the database.
      */
     boolean existsAccountByUsername( String aUsername );
@@ -107,6 +95,7 @@ public interface AccountDao extends JpaRepository< Account, Long >, CrudReposito
      *
      * @param aEmail
      *         an email address
+     *
      * @return true if there is already an email in the database with the specified email.
      */
     boolean existsAccountByEmailAddress( String aEmail );

@@ -9,7 +9,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.FluentQuery;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -41,16 +40,6 @@ public class InMemoryAccountDao implements AccountDao {
     }
 
     @Override
-    public Optional< Account > getAccountByUniqueObjectIdentifier( String aUniqueIdentifier ) {
-        return database
-                .stream()
-                .filter( account -> account
-                        .getUniqueObjectIdentifier()
-                        .equals( aUniqueIdentifier ) )
-                .findAny();
-    }
-
-    @Override
     public Optional< Account > findAccountByUsername( String aUsername ) {
         return database
                 .stream()
@@ -75,14 +64,6 @@ public class InMemoryAccountDao implements AccountDao {
         return database
                 .stream()
                 .filter( account -> account.getId() == aId )
-                .findAny();
-    }
-
-    @Override
-    public Optional< Account > findAccountByUniqueObjectIdentifier( String aUniqueObjectIdentifier ) {
-        return database
-                .stream()
-                .filter( account -> Objects.equals( account.getUniqueObjectIdentifier(), aUniqueObjectIdentifier ) )
                 .findAny();
     }
 

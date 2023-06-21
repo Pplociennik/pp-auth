@@ -36,7 +36,7 @@ import lombok.Getter;
  */
 @Getter
 @Builder
-@EqualsAndHashCode( callSuper = false )
+@EqualsAndHashCode(callSuper = false)
 public class RegistrationDto extends BaseAbstractExtendableDto {
 
     private String email;

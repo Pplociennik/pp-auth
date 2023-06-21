@@ -10,8 +10,6 @@ import org.springframework.lang.NonNull;
 
 import static com.github.pplociennik.auth.business.authentication.domain.map.VerificationTokenMapper.mapToDomain;
 import static com.github.pplociennik.auth.business.authentication.domain.map.VerificationTokenMapper.mapToEntity;
-import static com.github.pplociennik.auth.business.shared.system.ObjectsSpecifierDefinition.verificationTokenTypeSpecifier;
-import static com.github.pplociennik.commons.utility.identifier.UniqueIdentifierGenerator.generateIdentifier;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -51,9 +49,6 @@ class VerificationTokenRepositoryImpl implements VerificationTokenRepository {
                 .orElseThrow( () -> new IllegalArgumentException( "User not found!" ) );
 
         var verificationTokenEntity = mapToEntity( aVerificationToken, owner );
-        var identifier = generateIdentifier( verificationTokenEntity, verificationTokenTypeSpecifier() );
-        verificationTokenEntity.setUniqueObjectIdentifier( identifier );
-
 
         return mapToDomain( verificationTokenDao.saveAndFlush( verificationTokenEntity ) );
     }

@@ -34,18 +34,17 @@ class OnRegistrationCompleteListener implements ApplicationListener< OnRegistrat
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void onApplicationEvent( OnRegistrationCompleteEvent event ) {
+    public void onApplicationEvent( @NonNull OnRegistrationCompleteEvent aEvent ) {
 
-        requireNonNull( event );
+        requireNonNull( aEvent );
 
-        var locale = event.getLocale();
-        var source = event.getSource();
+        var locale = aEvent.getLocale();
+        var source = aEvent.getSource();
 
         var confirmationLinkData = getSourceOfTheProperType( source, ConfirmationLinkGenerationDto.class );
 
         var recipientAddress = confirmationLinkData.getEmailAddress();
-        var uniqueAccountId = confirmationLinkData.getUniqueObjectIdentifier();
-        var confirmationLink = authenticationFacade.createNewAccountConfirmationLink( uniqueAccountId );
+        var confirmationLink = authenticationFacade.createNewAccountConfirmationLink( recipientAddress );
 
         var emailData = new EmailConfirmationDataDto( recipientAddress, confirmationLink, locale );
         emailFacade.sendEmailConfirmationRequest( MailingMapper.mapToDO( emailData ) );

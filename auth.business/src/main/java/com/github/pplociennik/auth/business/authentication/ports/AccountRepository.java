@@ -55,6 +55,7 @@ public interface AccountRepository {
      *
      * @param aAccount
      *         an account to be updated.
+     *
      * @return updated account.
      */
     AccountDO update( @NonNull AccountDO aAccount );
@@ -64,6 +65,7 @@ public interface AccountRepository {
      *
      * @param aUsername
      *         a username.
+     *
      * @return a user account.
      */
     AccountDO findAccountByUsername( @NonNull String aUsername );
@@ -73,6 +75,7 @@ public interface AccountRepository {
      *
      * @param aEmail
      *         an email address.
+     *
      * @return a user account.
      */
     AccountDO findAccountByEmailAddress( @NonNull String aEmail );
@@ -82,23 +85,17 @@ public interface AccountRepository {
      *
      * @param aUsernameOrEmail
      *         a username or email.
+     *
      * @return a user account.
      */
     AccountDO findAccountByUsernameOrEmail( @NonNull String aUsernameOrEmail );
-
-    /**
-     * Returns an account with the specified unique identifier if it exists in the database.
-     *
-     * @param aUniqueIdentifier an unique identifier.
-     * @return the user account.
-     */
-    AccountDO findAccountByUniqueIdentifier( @NonNull String aUniqueIdentifier );
 
     /**
      * Returns true if an account with the specified username exists in the database.
      *
      * @param aUsername
      *         a username.
+     *
      * @return TRUE is the account exists and FALSE if it does not.
      */
     boolean existsAccountByUsername( @NonNull String aUsername );
@@ -108,6 +105,7 @@ public interface AccountRepository {
      *
      * @param aEmail
      *         an email address.
+     *
      * @return TRUE if the account exists and FALSE if it does noe.
      */
     boolean existsAccountByEmailAddress( @NonNull String aEmail );

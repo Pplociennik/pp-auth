@@ -91,15 +91,15 @@ public class AuthenticationFacade {
     /**
      * Returns a confirmation link for the specified account.
      *
-     * @param aUniqueAccountIdentifier
+     * @param aEmailAddress
      *         the account for which the confirmation link is going to be generated.
      *
      * @return the confirmation link as a {@link String}.
      */
-    public String createNewAccountConfirmationLink( @NonNull String aUniqueAccountIdentifier ) {
-        requireNonNull( aUniqueAccountIdentifier );
-        validationService.validateConfirmationLinkGeneration( aUniqueAccountIdentifier );
-        return authService.generateConfirmationLink( aUniqueAccountIdentifier );
+    public String createNewAccountConfirmationLink( @NonNull String aEmailAddress ) {
+        requireNonNull( aEmailAddress );
+        validationService.validateConfirmationLinkGeneration( aEmailAddress );
+        return authService.generateConfirmationLink( aEmailAddress );
     }
 
     /**

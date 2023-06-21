@@ -16,7 +16,6 @@ import java.util.Objects;
 @NoArgsConstructor
 @Builder
 public class AuthorityDO {
-    private String uniqueObjectIdentifier;
     private String authorityName;
     private AccountDO owner;
 

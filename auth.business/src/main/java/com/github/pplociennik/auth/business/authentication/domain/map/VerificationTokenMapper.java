@@ -23,14 +23,13 @@ public class VerificationTokenMapper {
 
         return VerificationTokenDO
                 .builder()
-                .uniqueObjectIdentifier( aVerificationToken.getUniqueObjectIdentifier() )
                 .token( aVerificationToken.getToken() )
                 .id( aVerificationToken.getId() )
                 .type( aVerificationToken.getType() )
                 .expirationDate( getInstant( aVerificationToken.getExpirationDate() ) )
                 .zoneId( aVerificationToken
-                                 .getExpirationDate()
-                                 .getZone() )
+                        .getExpirationDate()
+                        .getZone() )
                 .owner( AccountMapper.mapToDomain( aVerificationToken.getOwner() ) )
                 .isActive( aVerificationToken.isActive() )
                 .build();
@@ -40,7 +39,6 @@ public class VerificationTokenMapper {
         requireNonNull( aVerificationToken );
 
         var token = new VerificationToken();
-        token.setUniqueObjectIdentifier( aVerificationToken.getUniqueObjectIdentifier() );
         token.setToken( aVerificationToken.getToken() );
         token.setExpirationDate(
                 getZonedExpirationDate( aVerificationToken.getExpirationDate(), aVerificationToken.getZoneId() ) );

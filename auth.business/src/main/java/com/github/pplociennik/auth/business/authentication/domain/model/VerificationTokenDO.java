@@ -21,7 +21,6 @@ import java.time.ZoneId;
 public class VerificationTokenDO {
 
     private long id;
-    private String uniqueObjectIdentifier;
     private AuthVerificationTokenType type;
     private AccountDO owner;
     private String token;
@@ -30,16 +29,15 @@ public class VerificationTokenDO {
     private boolean isActive;
 
     public VerificationTokenDO(
-            long aId, String aUniqueObjectIdentifier, AuthVerificationTokenType aType, AccountDO aOwner, String aToken,
+            long aId, AuthVerificationTokenType aType, AccountDO aOwner, String aToken,
             Instant aExpirationDate, boolean aIsActive ) {
-        this( aId, aUniqueObjectIdentifier, aType, aOwner, aToken, aExpirationDate, ZoneId.systemDefault(), aIsActive );
+        this( aId, aType, aOwner, aToken, aExpirationDate, ZoneId.systemDefault(), aIsActive );
     }
 
     public VerificationTokenDO(
-            long aId, String aUniqueObjectIdentifier, AuthVerificationTokenType aType, AccountDO aOwner, String aToken,
+            long aId, AuthVerificationTokenType aType, AccountDO aOwner, String aToken,
             Instant aExpirationDate, ZoneId aZoneId, boolean aIsActive ) {
         id = aId;
-        uniqueObjectIdentifier = aUniqueObjectIdentifier;
         type = aType;
         owner = aOwner;
         token = aToken;

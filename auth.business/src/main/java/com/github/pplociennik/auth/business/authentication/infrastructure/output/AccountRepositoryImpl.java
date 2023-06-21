@@ -32,7 +32,6 @@ import com.github.pplociennik.auth.db.entity.authentication.Account;
 import com.github.pplociennik.auth.db.entity.authorization.Authority;
 import com.github.pplociennik.auth.db.repository.authentication.AccountDao;
 import com.github.pplociennik.auth.db.repository.authentication.AuthorityDao;
-import com.github.pplociennik.commons.utility.CustomCollectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 
@@ -43,11 +42,8 @@ import java.util.stream.Collectors;
 import static com.github.pplociennik.auth.business.authentication.domain.map.AccountMapper.mapToDomain;
 import static com.github.pplociennik.auth.business.authentication.domain.map.AccountMapper.mapToEntity;
 import static com.github.pplociennik.auth.business.shared.authorization.RolesDefinition.AUTH_USER_ROLE;
-import static com.github.pplociennik.auth.business.shared.system.ObjectsSpecifierDefinition.accountTypeSpecifier;
-import static com.github.pplociennik.auth.business.shared.system.ObjectsSpecifierDefinition.authorityTypeSpecifier;
 import static com.github.pplociennik.auth.common.lang.AuthResExcMsgTranslationKey.ACCOUNT_CONFIRMATION_USER_NOT_EXISTS;
 import static com.github.pplociennik.commons.utility.CustomCollectors.toSingleton;
-import static com.github.pplociennik.commons.utility.identifier.UniqueIdentifierGenerator.generateIdentifier;
 import static java.util.Objects.requireNonNull;
 import static java.util.regex.Pattern.compile;
 
@@ -59,7 +55,7 @@ import static java.util.regex.Pattern.compile;
 class AccountRepositoryImpl implements AccountRepository {
 
     private static final Pattern EMAIL_PATTERN = compile( "[a-zA-Z0-9!#$%&'*+-\\/=?^_`{|}~]+@[a-z0-9-]{2,}\\.[a-z]{2,}",
-                                                          Pattern.CASE_INSENSITIVE );
+            Pattern.CASE_INSENSITIVE );
 
     private static final Set< String > BASE_USER_AUTHORITIES = Set.of( AUTH_USER_ROLE.getName() );
 
@@ -80,8 +76,6 @@ class AccountRepositoryImpl implements AccountRepository {
         requireNonNull( aAccount );
 
         var account = mapToEntity( aAccount );
-        var identifier = generateIdentifier( account, accountTypeSpecifier() );
-        account.setUniqueObjectIdentifier( identifier );
         return mapToDomain( accountDao.saveAndFlush( account ) );
     }
 
@@ -90,8 +84,6 @@ class AccountRepositoryImpl implements AccountRepository {
         requireNonNull( aAccount );
 
         var account = mapToEntity( aAccount );
-        var identifier = generateIdentifier( account, accountTypeSpecifier() );
-        account.setUniqueObjectIdentifier( identifier );
         var authorities = createBaseAuthoritiesForAccount( account );
         account.setAuthorities( authorities );
         return mapToDomain( accountDao.saveAndFlush( account ) );
@@ -101,7 +93,7 @@ class AccountRepositoryImpl implements AccountRepository {
     public AccountDO update( @NonNull AccountDO aAccount ) {
         requireNonNull( aAccount );
 
-        var toBeUpdated = accountDao.getAccountByUniqueObjectIdentifier( aAccount.getUniqueObjectIdentifier() );
+        var toBeUpdated = accountDao.findAccountById( aAccount.getId() );
         return toBeUpdated
                 .map( forUpdate -> updateAccount( forUpdate, aAccount ) )
                 .stream()
@@ -139,18 +131,8 @@ class AccountRepositoryImpl implements AccountRepository {
     public AccountDO findAccountByUsernameOrEmail( @NonNull String aUsernameOrEmail ) {
         requireNonNull( aUsernameOrEmail );
         return checkIfMatches( aUsernameOrEmail, EMAIL_PATTERN )
-               ? findAccountByEmailAddress( aUsernameOrEmail )
-               : findAccountByUsername( aUsernameOrEmail );
-    }
-
-    @Override
-    public AccountDO findAccountByUniqueIdentifier( @NonNull String aUniqueIdentifier ) {
-        requireNonNull( aUniqueIdentifier );
-        var account = accountDao.findAccountByUniqueObjectIdentifier( aUniqueIdentifier );
-        return account
-                .map( AccountMapper::mapToDomain )
-                .stream()
-                .collect( toSingleton() );
+                ? findAccountByEmailAddress( aUsernameOrEmail )
+                : findAccountByUsername( aUsernameOrEmail );
     }
 
     /**
@@ -190,16 +172,13 @@ class AccountRepositoryImpl implements AccountRepository {
         return mapToDomain( enabledAccount );
     }
 
-    private Set<Authority> createBaseAuthoritiesForAccount(Account aAccount ) {
+    private Set< Authority > createBaseAuthoritiesForAccount( Account aAccount ) {
         return BASE_USER_AUTHORITIES
                 .stream()
                 .map( authorityName -> {
                     var authority = new Authority();
                     authority.setName( authorityName );
                     authority.setAuthoritiesOwner( aAccount );
-
-                    var identifier = generateIdentifier( authority, authorityTypeSpecifier() );
-                    authority.setUniqueObjectIdentifier( identifier );
                     return authority;
                 } )
                 .collect( Collectors.toSet() );
