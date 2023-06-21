@@ -25,9 +25,11 @@
 package com.github.pplociennik.auth.api.controller;
 
 import auth.dto.AuthenticatedUserDto;
+import auth.dto.ConfirmationLinkRequestDto;
 import auth.dto.LoginDto;
 import auth.dto.RegistrationDto;
 import com.github.pplociennik.auth.business.authentication.AuthenticationFacade;
+import com.github.pplociennik.auth.business.authentication.domain.map.ConfirmationLinkRequestMapper;
 import com.github.pplociennik.auth.business.authentication.domain.map.LoginMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -46,7 +48,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
  *
  * @author Created by: Pplociennik at 26.10.2021 18:11
  */
-@RestController(value = AUTH_CONTROLLER_MAPPING_VALUE)
+@RestController( value = AUTH_CONTROLLER_MAPPING_VALUE )
 class AuthController {
 
     private final AuthenticationFacade authenticationFacade;
@@ -61,10 +63,9 @@ class AuthController {
      *
      * @param aRegistrationDto
      *         data necessary for new account's creation.
-     *
      * @return {@link HttpStatus}
      */
-    @PostMapping(path = AUTH_CONTROLLER_FULL_REGISTRATION_MAPPING_VALUE, consumes = APPLICATION_JSON_VALUE)
+    @PostMapping( path = AUTH_CONTROLLER_FULL_REGISTRATION_MAPPING_VALUE, consumes = APPLICATION_JSON_VALUE )
     HttpStatus registerNewUserAccount( @RequestBody RegistrationDto aRegistrationDto ) {
         var registrationDO = mapToDO( aRegistrationDto );
         authenticationFacade.registerNewAccount( registrationDO );
@@ -76,7 +77,6 @@ class AuthController {
      *
      * @param aLoginDto
      *         data necessary for user's authentication.
-     *
      * @return authentication data of the authenticated user
      */
     @PostMapping(
@@ -94,12 +94,25 @@ class AuthController {
      *
      * @param aToken
      *         a token being used for account confirmation. Being send automatically via an email message.
-     *
      * @return {@link HttpStatus}
      */
-    @PostMapping(path = AUTH_CONTROLLER_ACCOUNT_CONFIRMATION_MAPPING_VALUE)
+    @PostMapping( path = AUTH_CONTROLLER_ACCOUNT_CONFIRMATION_MAPPING_VALUE )
     HttpStatus confirmRegistration( @RequestParam String aToken ) {
         authenticationFacade.confirmRegistration( aToken );
+        return HttpStatus.ACCEPTED;
+    }
+
+    /**
+     * Generates and sends new account confirmation link for the user.
+     *
+     * @param aDto
+     *         the data necessary for the link's generation.
+     * @return {@link HttpStatus}
+     */
+    @PostMapping( path = AUTH_CONTROLLER_CONFIRMATION_LINK_SEND_MAPPING_VALUE )
+    HttpStatus sendAccountConfirmationRequest( @RequestBody ConfirmationLinkRequestDto aDto ) {
+        var confirmationLinkRequestDO = ConfirmationLinkRequestMapper.mapToDomain( aDto );
+        authenticationFacade.generateAndSendNewConfirmationLink( confirmationLinkRequestDO );
         return HttpStatus.ACCEPTED;
     }
 }

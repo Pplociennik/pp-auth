@@ -2,6 +2,7 @@ package com.github.pplociennik.auth.business.authentication.domain.map;
 
 import auth.dto.AuthenticatedUserDto;
 import auth.dto.LoginDto;
+import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
 import com.github.pplociennik.auth.business.authentication.domain.model.LoginDO;
 import org.springframework.security.core.Authentication;
 
@@ -20,9 +21,10 @@ public class LoginMapper {
         return new LoginDO( aLoginDto.getUsernameOrEmail(), aLoginDto.getPassword() );
     }
 
-    public static AuthenticatedUserDto mapToAuthenticatedUserDto( Authentication aAuthenticationObject, String aSessionId ) {
+    public static AuthenticatedUserDto mapToAuthenticatedUserDto( AccountDO aAccount, Authentication aAuthenticationObject, String aSessionId ) {
         var principal = ( ( String ) aAuthenticationObject.getPrincipal() );
         var token = ( ( String ) aAuthenticationObject.getCredentials() );
-        return new AuthenticatedUserDto( aSessionId, principal, token );
+        var isEnabled = aAccount.isEnabled();
+        return new AuthenticatedUserDto( aSessionId, principal, token, isEnabled );
     }
 }

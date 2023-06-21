@@ -1,10 +1,12 @@
 package com.github.pplociennik.auth.business.authentication.testimpl;
 
+import auth.AuthVerificationTokenType;
 import com.github.pplociennik.auth.business.authentication.domain.model.VerificationTokenDO;
 import com.github.pplociennik.auth.business.authentication.ports.VerificationTokenRepository;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * In memory implementation of the {@link VerificationTokenRepository}.
@@ -40,6 +42,24 @@ public class InMemoryVerificationTokenRepository implements VerificationTokenRep
                         .equals( aToken ) )
                 .findAny()
                 .orElse( null );
+    }
+
+    /**
+     * Returns all the tokens of the specified type currently active for the specified user.
+     *
+     * @param aAccountId
+     *         the account id.
+     * @param aTokenType
+     *         the type of the tokens to be found.
+     *
+     * @return a list of the tokens.
+     */
+    @Override
+    public List< VerificationTokenDO > findAllActiveByAccountIdAndType( Long aAccountId, AuthVerificationTokenType aTokenType ) {
+        return database.stream()
+                .filter( token -> token.getId() == aAccountId )
+                .filter( token -> token.getType() == aTokenType )
+                .collect( Collectors.toList() );
     }
 
     @Override

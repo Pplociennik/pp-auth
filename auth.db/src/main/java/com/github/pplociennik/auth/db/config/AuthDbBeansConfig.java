@@ -25,8 +25,11 @@
 package com.github.pplociennik.auth.db.config;
 
 import com.github.pplociennik.auth.db.entity.authentication.Account;
+import com.github.pplociennik.auth.db.entity.authentication.VerificationToken;
 import com.github.pplociennik.auth.db.entity.authorization.Authority;
 import com.github.pplociennik.auth.db.repository.authentication.AccountDao;
+import com.github.pplociennik.auth.db.repository.authentication.AuthorityDao;
+import com.github.pplociennik.auth.db.repository.authentication.VerificationTokenDao;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -37,7 +40,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  * @author Created by: Pplociennik at 03.02.2022 18:26
  */
 @Configuration
-@EnableJpaRepositories( basePackageClasses = { AccountDao.class } )
-@EntityScan( basePackageClasses = { Account.class, Authority.class } )
+@EnableJpaRepositories(basePackageClasses = { AccountDao.class, AuthorityDao.class, VerificationTokenDao.class })
+@EntityScan(basePackageClasses = { Account.class, Authority.class, VerificationToken.class })
 public class AuthDbBeansConfig {
 }

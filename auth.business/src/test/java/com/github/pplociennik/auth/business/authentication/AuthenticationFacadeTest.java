@@ -76,9 +76,9 @@ class AuthenticationFacadeTest {
     private InMemoryVerificationTokenRepository verificationTokenRepository;
     private SystemPropertiesProvider propertiesProvider;
     private InMemoryTimeService timeService;
-    @Mock(answer = Answers.RETURNS_SMART_NULLS)
+    @Mock( answer = Answers.RETURNS_SMART_NULLS )
     private SessionService sessionService;
-    @Mock(answer = Answers.RETURNS_SMART_NULLS)
+    @Mock( answer = Answers.RETURNS_SMART_NULLS )
     private AuthenticationManager authenticationManager;
     private AuthenticationFacade sut;
 
@@ -240,6 +240,7 @@ class AuthenticationFacadeTest {
                     .emailAddress( "test@email.com" )
                     .build();
             accountRepository.setDatabase( List.of( accountDO ) );
+            validationRepository.setDatabase( List.of( accountDO ) );
             validationRepository.setEmailExists( true );
             when( propertiesProvider.getPropertyValue( GLOBAL_CLIENT_URL ) ).thenReturn( EXPECTED_CLIENT_URL );
 

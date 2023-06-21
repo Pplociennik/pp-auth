@@ -99,15 +99,21 @@ class AuthenticationValidator {
                 .of( aEmailAddress )
                 .validate( Objects::nonNull, NO_DATA_PROVIDED )
                 .validate( this::checkIfEmailExists, AUTHENTICATION_USER_DOES_NOT_EXIST )
+                .validate( this::checkIfUserNotEnabled, ACCOUNT_CONFIRMATION_ACCOUNT_ALREADY_CONFIRMED )
                 .perform();
+    }
+
+    private boolean checkIfUserNotEnabled( String aEmailAddress ) {
+        var account = authenticationValidationRepository.findByEmail( aEmailAddress );
+        return !account.isEnabled();
     }
 
     void validateLoginData( LoginDO aLoginDO ) {
         Validator
                 .of( aLoginDO )
                 .validate( Objects::nonNull, NO_DATA_PROVIDED )
-                .validate( LoginDO::getUsernameOrEmail, this::checkIfNotEmpty, AUTHENTICATION_USERNAME_OR_EMAIL_EMPTY )
-                .validate( LoginDO::getPassword, this::checkIfNotEmpty, AUTHENTICATION_PASSWORD_EMPTY )
+                .validate( LoginDO::getUsernameOrEmail, this::checkIfNotBlank, AUTHENTICATION_USERNAME_OR_EMAIL_EMPTY )
+                .validate( LoginDO::getPassword, this::checkIfNotBlank, AUTHENTICATION_PASSWORD_EMPTY )
                 .perform();
     }
 
@@ -115,9 +121,9 @@ class AuthenticationValidator {
         Validator
                 .of( aLoginDO )
                 .validate( Objects::nonNull, NO_DATA_PROVIDED )
-                .validate( LoginDO::getUsernameOrEmail, this::checkIfNotEmpty, INCORRECT_DATA )
+                .validate( LoginDO::getUsernameOrEmail, this::checkIfNotBlank, INCORRECT_DATA )
                 .validate( this::checkIfAccountExists, AUTHENTICATION_USER_DOES_NOT_EXIST )
-                .validate( LoginDO::getPassword, this::checkIfNotEmpty, INCORRECT_DATA )
+                .validate( LoginDO::getPassword, this::checkIfNotBlank, INCORRECT_DATA )
                 .perform();
     }
 
@@ -129,8 +135,8 @@ class AuthenticationValidator {
                 : checkIfUsernameExists( usernameOrEmail );
     }
 
-    private boolean checkIfNotEmpty( String aText ) {
-        return !Objects.equals( aText, "" );
+    private boolean checkIfNotBlank( String aText ) {
+        return !aText.isBlank();
     }
 
     private boolean checkIfTokenExists( String aToken ) {

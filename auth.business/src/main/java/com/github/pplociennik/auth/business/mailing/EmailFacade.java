@@ -4,7 +4,6 @@ import com.github.pplociennik.auth.business.mailing.domain.model.EmailConfirmati
 import com.github.pplociennik.auth.business.mailing.domain.model.WelcomeEmailDataDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
-import org.springframework.scheduling.annotation.Async;
 
 import static com.github.pplociennik.auth.business.mailing.EmailContentDataCreationStrategy.EMAIL_CONFIRMATION_MESSAGE;
 import static com.github.pplociennik.auth.business.mailing.EmailContentDataCreationStrategy.WELCOME_EMAIL_MESSAGE;
@@ -42,7 +41,6 @@ public class EmailFacade {
      * @param aDataDO
      *         a domain object containing the information necessary for preparing and sending message.
      */
-    @Async
     public void sendWelcomeEmail( @NonNull WelcomeEmailDataDO aDataDO ) {
         emailService.send( aDataDO, WELCOME_EMAIL_MESSAGE, WELCOME_EMAIL_SUBJECT, true );
     }

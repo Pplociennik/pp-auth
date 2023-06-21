@@ -19,7 +19,7 @@ class ListenersBeanConfig {
     private final AuthenticationFacade authenticationFacade;
     private final EmailFacade emailFacade;
 
-    ListenersBeanConfig( @NonNull AuthenticationFacade aAuthenticationFacade, @NonNull EmailFacade aEmailFacade ) {
+    ListenersBeanConfig( AuthenticationFacade aAuthenticationFacade, @NonNull EmailFacade aEmailFacade ) {
         authenticationFacade = requireNonNull( aAuthenticationFacade );
         emailFacade = requireNonNull( aEmailFacade );
     }

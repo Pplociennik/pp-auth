@@ -324,11 +324,12 @@ class AuthenticationValidatorTest {
         void shouldThrowValidationExceptionWithAProperMessage_whenAccountDoesNotExist() {
 
             // GIVEN
-            validationRepository.setEmailExists( false );
             var accountDO = AccountDO
                     .builder()
                     .emailAddress( TEST_VALID_EMAIL )
                     .build();
+            validationRepository.setEmailExists( false );
+            validationRepository.add( accountDO );
 
             // WHEN
             // THEN
@@ -341,11 +342,12 @@ class AuthenticationValidatorTest {
         void shouldSucceed_whenAccountExists() {
 
             // GIVEN
-            validationRepository.setEmailExists( true );
             var accountDO = AccountDO
                     .builder()
                     .emailAddress( TEST_VALID_EMAIL )
                     .build();
+            validationRepository.setEmailExists( true );
+            validationRepository.add( accountDO );
 
             // WHEN
             // THEN

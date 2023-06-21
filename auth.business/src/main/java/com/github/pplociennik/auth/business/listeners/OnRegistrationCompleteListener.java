@@ -1,6 +1,6 @@
 package com.github.pplociennik.auth.business.listeners;
 
-import auth.dto.ConfirmationLinkGenerationDto;
+import auth.dto.ConfirmationLinkRequestDto;
 import com.github.pplociennik.auth.business.authentication.AuthenticationFacade;
 import com.github.pplociennik.auth.business.mailing.EmailFacade;
 import com.github.pplociennik.auth.business.mailing.domain.map.MailingMapper;
@@ -26,14 +26,13 @@ class OnRegistrationCompleteListener implements ApplicationListener< OnRegistrat
     private final EmailFacade emailFacade;
 
     @Autowired
-    OnRegistrationCompleteListener(
-            @NonNull AuthenticationFacade aAuthenticationFacade, @NonNull EmailFacade aEmailFacade ) {
+    OnRegistrationCompleteListener( AuthenticationFacade aAuthenticationFacade, @NonNull EmailFacade aEmailFacade ) {
         authenticationFacade = requireNonNull( aAuthenticationFacade );
         emailFacade = requireNonNull( aEmailFacade );
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional( propagation = Propagation.REQUIRED )
     public void onApplicationEvent( @NonNull OnRegistrationCompleteEvent aEvent ) {
 
         requireNonNull( aEvent );
@@ -41,7 +40,7 @@ class OnRegistrationCompleteListener implements ApplicationListener< OnRegistrat
         var locale = aEvent.getLocale();
         var source = aEvent.getSource();
 
-        var confirmationLinkData = getSourceOfTheProperType( source, ConfirmationLinkGenerationDto.class );
+        var confirmationLinkData = getSourceOfTheProperType( source, ConfirmationLinkRequestDto.class );
 
         var recipientAddress = confirmationLinkData.getEmailAddress();
         var confirmationLink = authenticationFacade.createNewAccountConfirmationLink( recipientAddress );

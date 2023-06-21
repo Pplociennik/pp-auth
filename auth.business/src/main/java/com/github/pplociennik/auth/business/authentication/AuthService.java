@@ -24,7 +24,9 @@
 
 package com.github.pplociennik.auth.business.authentication;
 
+import auth.AuthVerificationTokenType;
 import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
+import com.github.pplociennik.auth.business.authentication.domain.model.ConfirmationLinkRequestDO;
 import com.github.pplociennik.auth.business.authentication.domain.model.RegistrationDO;
 import com.github.pplociennik.auth.business.authentication.domain.model.VerificationTokenDO;
 import com.github.pplociennik.auth.business.authentication.ports.AccountRepository;
@@ -37,6 +39,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -45,6 +48,7 @@ import static com.github.pplociennik.auth.business.shared.system.SystemPropertie
 import static com.github.pplociennik.auth.common.lang.AuthResExcMsgTranslationKey.ACCOUNT_CONFIRMATION_TOKEN_EXPIRED;
 import static com.github.pplociennik.auth.common.lang.AuthResExcMsgTranslationKey.ACCOUNT_CONFIRMATION_USER_NOT_EXISTS;
 import static com.github.pplociennik.commons.utility.CustomObjects.requireNonEmpty;
+import static com.github.pplociennik.commons.utility.CustomObjects.validateNonNull;
 import static java.time.Instant.now;
 import static java.util.Objects.requireNonNull;
 
@@ -76,6 +80,21 @@ class AuthService {
     }
 
     /**
+     * Closes all tokens of the specified type currently active for the user.
+     *
+     * @param aConfirmationLinkRequestDO
+     *         the user data necessary for closure.
+     * @param aTokenType
+     *         the type of the tokens to be closed.
+     */
+    void closeExistingTokensIfAny( @NonNull ConfirmationLinkRequestDO aConfirmationLinkRequestDO, @NonNull AuthVerificationTokenType aTokenType ) {
+        validateNonNull( aConfirmationLinkRequestDO, aTokenType );
+        var account = accountRepository.findAccountByEmailAddress( aConfirmationLinkRequestDO.getEmailAddress() );
+        var tokensToBeClosed = tokenRepository.findAllActiveByAccountIdAndType( account.getId(), aTokenType );
+        closeTokens( tokensToBeClosed );
+    }
+
+    /**
      * Creates a new {@link Account} entry in the database containing a hashed password.
      *
      * @param aRegistrationDO
@@ -97,19 +116,16 @@ class AuthService {
      *
      * @param aEmailAddress
      *         an email address of the account for which the token is being generated.
-     *
      * @return a confirmation link needed to be sent via email message.
      */
     String generateConfirmationLink( @NonNull String aEmailAddress ) {
         requireNonNull( aEmailAddress );
 
-        final var parameter = "aToken";
-
         var accountDO = accountRepository.findAccountByEmailAddress( aEmailAddress );
+        var clientUrl = propertiesProvider.getPropertyValue( GLOBAL_CLIENT_URL );
         var verificationToken = tokenResolver.resolveUniqueToken( accountDO, EMAIL_CONFIRMATION_TOKEN );
-        var url = propertiesProvider.getPropertyValue( GLOBAL_CLIENT_URL );
 
-        return url + "/?" + parameter + "=" + verificationToken.getToken();
+        return ConfirmationLinkCreationUtil.createConfirmationLink( clientUrl, verificationToken );
     }
 
     /**
@@ -136,20 +152,25 @@ class AuthService {
         return enabledAccount;
     }
 
+    private void closeTokens( List< VerificationTokenDO > aTokensToBeClosed ) {
+        aTokensToBeClosed
+                .forEach( token -> {
+                    token.setActive( Boolean.FALSE );
+                    tokenRepository.update( token );
+                } );
+    }
+
     private AccountDO createNewAccount( @NonNull RegistrationDO aRegistrationDO, @NonNull String aHashedPassword ) {
         requireNonNull( aRegistrationDO );
         requireNonNull( aHashedPassword );
 
-        var newAccount = AccountDO
+        return AccountDO
                 .builder()
                 .username( aRegistrationDO.getUsername() )
                 .password( aHashedPassword )
                 .emailAddress( aRegistrationDO.getEmail() )
                 .creationDate( timeService.getCurrentSystemDateTime() )
                 .build();
-
-        return newAccount;
-
     }
 
     private void deactivateToken( VerificationTokenDO aVerificationToken ) {

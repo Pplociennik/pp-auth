@@ -1,5 +1,6 @@
 package com.github.pplociennik.auth.business.authentication.infrastructure.output;
 
+import auth.AuthVerificationTokenType;
 import com.github.pplociennik.auth.business.authentication.domain.map.VerificationTokenMapper;
 import com.github.pplociennik.auth.business.authentication.domain.model.VerificationTokenDO;
 import com.github.pplociennik.auth.business.authentication.ports.VerificationTokenRepository;
@@ -8,8 +9,12 @@ import com.github.pplociennik.auth.db.repository.authentication.VerificationToke
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static com.github.pplociennik.auth.business.authentication.domain.map.VerificationTokenMapper.mapToDomain;
 import static com.github.pplociennik.auth.business.authentication.domain.map.VerificationTokenMapper.mapToEntity;
+import static com.github.pplociennik.commons.utility.CustomObjects.validateNonNull;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -37,6 +42,28 @@ class VerificationTokenRepositoryImpl implements VerificationTokenRepository {
         return verificationToken
                 .map( VerificationTokenMapper::mapToDomain )
                 .orElse( null );
+    }
+
+    /**
+     * Returns all the tokens of the specified type currently active for the specified user.
+     *
+     * @param aAccountId
+     *         the account id.
+     * @param aTokenType
+     *         the type of the tokens to be found.
+     *
+     * @return a list of the tokens.
+     */
+    @Override
+    public List< VerificationTokenDO > findAllActiveByAccountIdAndType( @NonNull Long aAccountId, @NonNull AuthVerificationTokenType aTokenType ) {
+        validateNonNull( aAccountId, aTokenType );
+        var tokensOwner = accountDao.findAccountById( aAccountId );
+        return tokensOwner.stream()
+                .map( owner -> verificationTokenDao.findAllByTypeAndOwnerAndActive( aTokenType, owner, Boolean.TRUE ) )
+                .collect( Collectors.toList() )
+                .stream().flatMap( List::stream )
+                .map( VerificationTokenMapper::mapToDomain )
+                .collect( Collectors.toList() );
     }
 
     @Override

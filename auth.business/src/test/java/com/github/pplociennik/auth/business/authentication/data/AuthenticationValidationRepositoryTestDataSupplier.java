@@ -9,7 +9,7 @@ import com.github.pplociennik.auth.business.authentication.domain.model.AccountD
  */
 public class AuthenticationValidationRepositoryTestDataSupplier {
 
-    public AccountDO prepareAccount_1() {
+    public static AccountDO prepareAccount_1() {
 
         var account = new AccountDO();
         account.setAccountNonExpired( true );
@@ -22,7 +22,7 @@ public class AuthenticationValidationRepositoryTestDataSupplier {
         return account;
     }
 
-    public AccountDO prepareAccount_2() {
+    public static AccountDO prepareAccount_2() {
 
         var account = new AccountDO();
         account.setAccountNonExpired( true );
@@ -35,7 +35,7 @@ public class AuthenticationValidationRepositoryTestDataSupplier {
         return account;
     }
 
-    public AccountDO prepareAccount_3() {
+    public static AccountDO prepareAccount_3() {
 
         var account = new AccountDO();
         account.setAccountNonExpired( true );

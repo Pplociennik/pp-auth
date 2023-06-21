@@ -17,4 +17,5 @@ public class AuthenticatedUserDto {
     private String sessionId;
     private String principal;
     private String token;
+    private boolean enabled;
 }

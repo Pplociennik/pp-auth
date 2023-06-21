@@ -27,6 +27,7 @@ package com.github.pplociennik.auth.business.authentication;
 import auth.dto.AccountDto;
 import auth.dto.AuthenticatedUserDto;
 import com.github.pplociennik.auth.business.authentication.domain.map.LoginMapper;
+import com.github.pplociennik.auth.business.authentication.domain.model.ConfirmationLinkRequestDO;
 import com.github.pplociennik.auth.business.authentication.domain.model.LoginDO;
 import com.github.pplociennik.auth.business.authentication.domain.model.RegistrationDO;
 import com.github.pplociennik.auth.business.authentication.ports.AccountRepository;
@@ -38,10 +39,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import static com.github.pplociennik.auth.business.authentication.AuthenticationPublishableEventsSupplier.ON_ACCOUNT_CONFIRMATION_FINISHED;
-import static com.github.pplociennik.auth.business.authentication.AuthenticationPublishableEventsSupplier.ON_REGISTRATION_FINISHED;
-import static com.github.pplociennik.auth.business.authentication.domain.map.AccountMapper.mapToConfirmationLinkGenerationDto;
+import static auth.AuthVerificationTokenType.EMAIL_CONFIRMATION_TOKEN;
+import static com.github.pplociennik.auth.business.authentication.AuthenticationPublishableEventsSupplier.*;
 import static com.github.pplociennik.auth.business.authentication.domain.map.AccountMapper.mapToDto;
+import static com.github.pplociennik.auth.business.authentication.domain.map.ConfirmationLinkRequestMapper.mapToConfirmationLinkRequestDto;
 import static com.github.pplociennik.commons.utility.CustomObjects.requireNonEmpty;
 import static java.util.Objects.requireNonNull;
 
@@ -83,7 +84,7 @@ public class AuthenticationFacade {
         requireNonNull( aRegistrationDO );
         validationService.validateRegistration( aRegistrationDO );
         var registeredAccount = authService.registerNewAccount( aRegistrationDO );
-        var confirmationLinkData = mapToConfirmationLinkGenerationDto( registeredAccount );
+        var confirmationLinkData = mapToConfirmationLinkRequestDto( registeredAccount );
         systemEventsPublisher.publishEvent( ON_REGISTRATION_FINISHED, confirmationLinkData );
         return mapToDto( registeredAccount );
     }
@@ -93,12 +94,12 @@ public class AuthenticationFacade {
      *
      * @param aEmailAddress
      *         the account for which the confirmation link is going to be generated.
-     *
      * @return the confirmation link as a {@link String}.
      */
     public String createNewAccountConfirmationLink( @NonNull String aEmailAddress ) {
         requireNonNull( aEmailAddress );
         validationService.validateConfirmationLinkGeneration( aEmailAddress );
+        authService.closeExistingTokensIfAny( new ConfirmationLinkRequestDO( aEmailAddress ), EMAIL_CONFIRMATION_TOKEN );
         return authService.generateConfirmationLink( aEmailAddress );
     }
 
@@ -107,7 +108,6 @@ public class AuthenticationFacade {
      *
      * @param aToken
      *         the verification token.
-     *
      * @throws NullPointerException
      *         when the token is null or empty.
      */
@@ -136,6 +136,17 @@ public class AuthenticationFacade {
                 .setAuthentication( authenticationObject );
 
         var sessionId = sessionService.getCurrentSessionId();
-        return LoginMapper.mapToAuthenticatedUserDto( authenticationObject, sessionId );
+        return LoginMapper.mapToAuthenticatedUserDto( account, authenticationObject, sessionId );
+    }
+
+    /**
+     * Generates a confirmation link for the Account and sends it via an email.
+     *
+     * @param aConfirmationLinkRequestDO
+     *         the data necessary for the confirmation link to be created and sent.
+     */
+    public void generateAndSendNewConfirmationLink( @NonNull ConfirmationLinkRequestDO aConfirmationLinkRequestDO ) {
+        requireNonNull( aConfirmationLinkRequestDO );
+        systemEventsPublisher.publishEvent( ON_CONFIRMATION_LINK_REQUEST, aConfirmationLinkRequestDO );
     }
 }
