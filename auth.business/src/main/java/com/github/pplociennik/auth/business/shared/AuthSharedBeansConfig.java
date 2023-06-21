@@ -30,13 +30,13 @@ class AuthSharedBeansConfig {
     }
 
     @Bean
-    SystemPropertiesProvider environmentPropertiesProvider() {
+    SystemPropertiesProvider systemPropertiesProvider() {
         return new SystemPropertiesProvider( environment );
     }
 
     @Bean
     TimeService timeService() {
-        return new SystemTimeServiceImpl( environmentPropertiesProvider() );
+        return new SystemTimeServiceImpl( systemPropertiesProvider() );
     }
 
     @Bean

@@ -31,13 +31,11 @@ import org.springframework.lang.NonNull;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static com.github.pplociennik.auth.business.shared.authorization.RolesDefinition.AUTH_USER_ROLE;
-import static com.github.pplociennik.commons.utility.CustomCollectors.toSingleton;
 import static java.util.Objects.requireNonNull;
 import static java.util.regex.Pattern.compile;
 
@@ -49,7 +47,7 @@ import static java.util.regex.Pattern.compile;
 public class InMemoryAccountRepository implements AccountRepository {
 
     private static final Pattern EMAIL_PATTERN = compile( "[a-zA-Z0-9!#$%&'*+-\\/=?^_`{|}~]+@[a-z0-9-]{2,}\\.[a-z]{2,}",
-                                                          Pattern.CASE_INSENSITIVE );
+            Pattern.CASE_INSENSITIVE );
 
     private static final Set< String > BASE_USER_AUTHORITIES = Set.of( AUTH_USER_ROLE.getName() );
 
@@ -133,14 +131,6 @@ public class InMemoryAccountRepository implements AccountRepository {
     }
 
     @Override
-    public AccountDO findAccountByUniqueIdentifier( String aUniqueIdentifier ) {
-        return database
-                .stream()
-                .filter( account -> Objects.equals( account.getUniqueObjectIdentifier(), aUniqueIdentifier ) )
-                .collect( toSingleton() );
-    }
-
-    @Override
     public boolean existsAccountByUsername( @NonNull String aUsername ) {
         requireNonNull( aUsername );
         return existsAccountByUsername;
@@ -167,8 +157,6 @@ public class InMemoryAccountRepository implements AccountRepository {
                     authority.setAuthorityName( authorityName );
                     authority.setOwner( aAccount );
 
-                    var identifier = "TEST_AUTHORITY_IDENTIFIER_" + aAccount.getUsername();
-                    authority.setUniqueObjectIdentifier( identifier );
                     return authority;
                 } )
                 .collect( Collectors.toSet() );
@@ -177,8 +165,8 @@ public class InMemoryAccountRepository implements AccountRepository {
 
     private boolean matchesUsernameOrEmail( AccountDO aAccount, String aUsernameOrEmail ) {
         var toBeCompared = checkIfMatches( aUsernameOrEmail, EMAIL_PATTERN )
-                           ? aAccount.getEmailAddress()
-                           : aAccount.getUsername();
+                ? aAccount.getEmailAddress()
+                : aAccount.getUsername();
 
         return toBeCompared.equals( aUsernameOrEmail );
     }

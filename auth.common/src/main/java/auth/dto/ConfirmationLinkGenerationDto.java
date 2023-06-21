@@ -12,9 +12,8 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode( callSuper = false )
+@EqualsAndHashCode(callSuper = false)
 public class ConfirmationLinkGenerationDto extends BaseAbstractExtendableDto {
 
     private String emailAddress;
-    private String uniqueObjectIdentifier;
 }

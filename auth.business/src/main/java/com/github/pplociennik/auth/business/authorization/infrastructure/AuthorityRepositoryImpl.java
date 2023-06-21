@@ -4,7 +4,6 @@ import com.github.pplociennik.auth.business.authorization.domain.map.AuthorityMa
 import com.github.pplociennik.auth.business.authorization.domain.model.AuthorityDO;
 import com.github.pplociennik.auth.business.authorization.ports.AuthorityRepository;
 import com.github.pplociennik.auth.db.repository.authentication.AuthorityDao;
-import com.github.pplociennik.commons.utility.identifier.UniqueIdentifierGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 
@@ -12,7 +11,6 @@ import java.util.Set;
 
 import static com.github.pplociennik.auth.business.authorization.domain.map.AuthorityMapper.mapToDomain;
 import static com.github.pplociennik.auth.business.authorization.domain.map.AuthorityMapper.mapToEntity;
-import static com.github.pplociennik.auth.business.shared.system.ObjectsSpecifierDefinition.authorityTypeSpecifier;
 import static com.github.pplociennik.commons.utility.CustomObjects.requireNonEmpty;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toUnmodifiableSet;
@@ -55,9 +53,6 @@ class AuthorityRepositoryImpl implements AuthorityRepository {
     public AuthorityDO persist( @NonNull AuthorityDO aAuthority ) {
         requireNonNull( aAuthority );
         var authorityEntity = mapToEntity( aAuthority );
-
-        var identifier = UniqueIdentifierGenerator.generateIdentifier( authorityEntity, authorityTypeSpecifier() );
-        authorityEntity.setUniqueObjectIdentifier( identifier );
         var persistedObject = authorityDao.saveAndFlush( authorityEntity );
 
         return mapToDomain( persistedObject );

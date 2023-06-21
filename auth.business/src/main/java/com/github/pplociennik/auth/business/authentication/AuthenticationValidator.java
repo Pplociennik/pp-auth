@@ -93,12 +93,12 @@ class AuthenticationValidator {
         return !aRegistrationDO.getUsername().equals( aRegistrationDO.getPassword() );
     }
 
-    void validateConfirmationLinkGeneration( @NonNull String aUniqueAccountId ) {
+    void validateConfirmationLinkGeneration( @NonNull String aEmailAddress ) {
 
         Validator
-                .of( aUniqueAccountId )
+                .of( aEmailAddress )
                 .validate( Objects::nonNull, NO_DATA_PROVIDED )
-                .validate( this::checkIfAccountExistsByUniqueId, AUTHENTICATION_USER_DOES_NOT_EXIST )
+                .validate( this::checkIfEmailExists, AUTHENTICATION_USER_DOES_NOT_EXIST )
                 .perform();
     }
 
@@ -127,10 +127,6 @@ class AuthenticationValidator {
         return checkIfMatches( usernameOrEmail, EMAIL_PATTERN )
                 ? checkIfEmailExists( usernameOrEmail )
                 : checkIfUsernameExists( usernameOrEmail );
-    }
-
-    private boolean checkIfAccountExistsByUniqueId( String aUniqueAccountIdentifier ) {
-        return authenticationValidationRepository.checkIfAccountExistsByUniqueId( aUniqueAccountIdentifier );
     }
 
     private boolean checkIfNotEmpty( String aText ) {

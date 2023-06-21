@@ -56,7 +56,6 @@ class AuthenticationValidatorTest {
     private static final String TEST_VALID_PASSWORD = "TestPass1!";
     private static final String TEST_NOT_EQUAL_PASSWORD = "TestPassDifferent1!";
     private static final String TEST_VALID_EMAIL = "testEmail@gmail.com";
-    private static final String TEST_UNIQUE_ACCOUNT_OBJECT_ID = "Account#000000#000000#ValidUserName";
     private static final String TEST_VALID_EMAIL_SPEC_CHARS = "test#ema!il$^%@testdomain.com";
     private static final String TEST_VALID_EMAIL_NUMBERS = "testemail9548@testdomain.com";
     private static final String TEST_VALID_EMAIL_PERMITTED_SPEC_CHAR_DOMAIN = "testemail@test-domain.com";
@@ -95,7 +94,7 @@ class AuthenticationValidatorTest {
             // GIVEN
             validationRepository.setUsernameExists( true );
             var registrationDO = new RegistrationDO( TEST_VALID_EMAIL, TEST_OCCUPIED_USERNAME, TEST_VALID_PASSWORD,
-                                                     TEST_VALID_PASSWORD );
+                    TEST_VALID_PASSWORD );
 
             // WHEN
             // THEN
@@ -109,7 +108,7 @@ class AuthenticationValidatorTest {
             // GIVEN
             validationRepository.setEmailExists( true );
             var registrationDO = new RegistrationDO( TEST_OCCUPIED_EMAIL, TEST_VALID_USERNAME, TEST_VALID_PASSWORD,
-                                                     TEST_VALID_PASSWORD );
+                    TEST_VALID_PASSWORD );
 
             // WHEN
             // THEN
@@ -122,7 +121,7 @@ class AuthenticationValidatorTest {
 
             // GIVEN
             var registrationDO = new RegistrationDO( TEST_VALID_EMAIL, TEST_INVALID_USERNAME, TEST_VALID_PASSWORD,
-                                                     TEST_VALID_PASSWORD );
+                    TEST_VALID_PASSWORD );
 
             // WHEN
             // THEN
@@ -135,7 +134,7 @@ class AuthenticationValidatorTest {
 
             // GIVEN
             var registrationDO = new RegistrationDO( TEST_VALID_EMAIL, TEST_VALID_USERNAME, TEST_INVALID_PASSWORD,
-                                                     TEST_VALID_PASSWORD );
+                    TEST_VALID_PASSWORD );
 
             // WHEN
             // THEN
@@ -148,7 +147,7 @@ class AuthenticationValidatorTest {
 
             // GIVEN
             var registrationDO = new RegistrationDO( TEST_VALID_EMAIL, TEST_VALID_USERNAME, TEST_VALID_PASSWORD,
-                                                     TEST_NOT_EQUAL_PASSWORD );
+                    TEST_NOT_EQUAL_PASSWORD );
 
             // WHEN
             // THEN
@@ -173,7 +172,7 @@ class AuthenticationValidatorTest {
 
             // GIVEN
             var registrationDO = new RegistrationDO( TEST_VALID_EMAIL, StringUtils.EMPTY, TEST_VALID_PASSWORD,
-                                                     TEST_VALID_PASSWORD );
+                    TEST_VALID_PASSWORD );
 
             // WHEN
             // THEN
@@ -186,7 +185,7 @@ class AuthenticationValidatorTest {
 
             // GIVEN
             var registrationDO = new RegistrationDO( StringUtils.EMPTY, TEST_VALID_USERNAME, TEST_VALID_PASSWORD,
-                                                     TEST_VALID_PASSWORD );
+                    TEST_VALID_PASSWORD );
 
             // WHEN
             // THEN
@@ -199,7 +198,7 @@ class AuthenticationValidatorTest {
 
             // GIVEN
             var registrationDO = new RegistrationDO( TEST_VALID_EMAIL, TEST_VALID_USERNAME, StringUtils.EMPTY,
-                                                     TEST_VALID_PASSWORD );
+                    TEST_VALID_PASSWORD );
 
             // WHEN
             // THEN
@@ -212,7 +211,7 @@ class AuthenticationValidatorTest {
 
             // GIVEN
             var registrationDO = new RegistrationDO( TEST_VALID_EMAIL, TEST_VALID_USERNAME, TEST_VALID_PASSWORD,
-                                                     StringUtils.EMPTY );
+                    StringUtils.EMPTY );
 
             // WHEN
             // THEN
@@ -221,12 +220,17 @@ class AuthenticationValidatorTest {
         }
 
         @ParameterizedTest
-        @ValueSource( strings = { TEST_VALID_EMAIL, TEST_VALID_EMAIL_NUMBERS, TEST_VALID_EMAIL_SPEC_CHARS, TEST_VALID_EMAIL_PERMITTED_SPEC_CHAR_DOMAIN } )
+        @ValueSource(
+                strings = {
+                        TEST_VALID_EMAIL, TEST_VALID_EMAIL_NUMBERS, TEST_VALID_EMAIL_SPEC_CHARS,
+                        TEST_VALID_EMAIL_PERMITTED_SPEC_CHAR_DOMAIN
+                }
+        )
         void shouldNotFail_whenThereIsCorrectEmailAddressAndTheRestOfDataValid( String aEmailAddress ) {
 
             // GIVEN
             var registrationDO = new RegistrationDO( aEmailAddress, TEST_VALID_USERNAME, TEST_VALID_PASSWORD,
-                                                     TEST_VALID_PASSWORD );
+                    TEST_VALID_PASSWORD );
 
             // WHEN
             // THEN
@@ -234,12 +238,17 @@ class AuthenticationValidatorTest {
         }
 
         @ParameterizedTest
-        @ValueSource( strings = { TEST_INVALID_EMAIL, TEST_INVALID_EMAIL_DOMAIN_SPACE, TEST_INVALID_EMAIL_LOCAL_SPACE, TEST_INVALID_EMAIL_TOO_LESS_CHARS_DOMAIN, TEST_INVALID_EMAIL_NOT_PERMITTED_SPEC_CHAR_DOMAIN } )
+        @ValueSource(
+                strings = {
+                        TEST_INVALID_EMAIL, TEST_INVALID_EMAIL_DOMAIN_SPACE, TEST_INVALID_EMAIL_LOCAL_SPACE,
+                        TEST_INVALID_EMAIL_TOO_LESS_CHARS_DOMAIN, TEST_INVALID_EMAIL_NOT_PERMITTED_SPEC_CHAR_DOMAIN
+                }
+        )
         void shouldThrowValidationException_whenEmailInvalid( String aEmailAddress ) {
 
             // GIVEN
             var registrationDO = new RegistrationDO( aEmailAddress, TEST_VALID_USERNAME, TEST_VALID_PASSWORD,
-                                                     TEST_VALID_PASSWORD );
+                    TEST_VALID_PASSWORD );
 
             // WHEN
             // THEN
@@ -267,7 +276,7 @@ class AuthenticationValidatorTest {
 
                 // GIVEN
                 var registrationDO = new RegistrationDO( TEST_VALID_EMAIL, null, TEST_VALID_PASSWORD,
-                                                         TEST_VALID_PASSWORD );
+                        TEST_VALID_PASSWORD );
 
                 // WHEN
                 // THEN
@@ -280,7 +289,7 @@ class AuthenticationValidatorTest {
 
                 // GIVEN
                 var registrationDO = new RegistrationDO( null, TEST_VALID_USERNAME, TEST_VALID_PASSWORD,
-                                                         TEST_VALID_PASSWORD );
+                        TEST_VALID_PASSWORD );
 
                 // WHEN
                 // THEN
@@ -293,7 +302,7 @@ class AuthenticationValidatorTest {
 
                 // GIVEN
                 var registrationDO = new RegistrationDO( TEST_VALID_EMAIL, TEST_VALID_USERNAME, null,
-                                                         TEST_VALID_PASSWORD );
+                        TEST_VALID_PASSWORD );
 
                 // WHEN
                 // THEN
@@ -319,30 +328,28 @@ class AuthenticationValidatorTest {
             var accountDO = AccountDO
                     .builder()
                     .emailAddress( TEST_VALID_EMAIL )
-                    .uniqueObjectIdentifier( TEST_UNIQUE_ACCOUNT_OBJECT_ID )
                     .build();
 
             // WHEN
             // THEN
             var message = getLocalizedMessage( AUTHENTICATION_USER_DOES_NOT_EXIST, ENGLISH );
             assertSuppressedValidationMessagesContain(
-                    () -> sut.validateConfirmationLinkGeneration( accountDO.getUniqueObjectIdentifier() ), message );
+                    () -> sut.validateConfirmationLinkGeneration( accountDO.getEmailAddress() ), message );
         }
 
         @Test
         void shouldSucceed_whenAccountExists() {
 
             // GIVEN
-            validationRepository.setAccountExistsByUniqueId( true );
+            validationRepository.setEmailExists( true );
             var accountDO = AccountDO
                     .builder()
                     .emailAddress( TEST_VALID_EMAIL )
-                    .uniqueObjectIdentifier( TEST_UNIQUE_ACCOUNT_OBJECT_ID )
                     .build();
 
             // WHEN
             // THEN
-            sut.validateConfirmationLinkGeneration( accountDO.getUniqueObjectIdentifier() );
+            sut.validateConfirmationLinkGeneration( accountDO.getEmailAddress() );
         }
 
         @Nested
@@ -380,7 +387,7 @@ class AuthenticationValidatorTest {
             // THEN
             var message = getLocalizedMessage( ACCOUNT_CONFIRMATION_TOKEN_NOT_ACTIVE, ENGLISH );
             assertSuppressedValidationMessagesContain( () -> sut.validateRegistrationConfirmation( givenToken ),
-                                                       message );
+                    message );
         }
 
         @Test

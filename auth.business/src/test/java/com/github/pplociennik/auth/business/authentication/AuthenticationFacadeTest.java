@@ -66,8 +66,6 @@ class AuthenticationFacadeTest {
 
     private static final ZoneId TEST_ZONE_ID = ZoneId.of( "UTC" );
     private static final ZonedDateTime TEST_CURRENT_TIME = ZonedDateTime.now( TEST_ZONE_ID );
-    private static final String TEST_ACCOUNT_UNIQUE_IDENTIFIER = "Account#000000#000000#TestUser";
-
     private AuthService authService;
     private AuthenticationValidator validator;
     private PasswordEncoder encoder;
@@ -240,14 +238,13 @@ class AuthenticationFacadeTest {
             var accountDO = AccountDO
                     .builder()
                     .emailAddress( "test@email.com" )
-                    .uniqueObjectIdentifier( TEST_ACCOUNT_UNIQUE_IDENTIFIER )
                     .build();
             accountRepository.setDatabase( List.of( accountDO ) );
-            validationRepository.setAccountExistsByUniqueId( true );
+            validationRepository.setEmailExists( true );
             when( propertiesProvider.getPropertyValue( GLOBAL_CLIENT_URL ) ).thenReturn( EXPECTED_CLIENT_URL );
 
             // WHEN
-            var result = sut.createNewAccountConfirmationLink( accountDO.getUniqueObjectIdentifier() );
+            var result = sut.createNewAccountConfirmationLink( accountDO.getEmailAddress() );
 
             // THEN
             final var EXPECTED_URL_PART = "http://localhost:8080/?aToken=";

@@ -45,9 +45,6 @@
             <column name="ID" type="BIGINT">
                 <constraints primaryKey="true" nullable="false" unique="true"/>
             </column>
-            <column name="UNIQUE_OBJECT_IDENTIFIER" type="VARCHAR(100)">
-                <constraints nullable="false" unique="true"/>
-            </column>
             <column name="USERNAME" type="VARCHAR(25)">
                 <constraints nullable="false" unique="true"/>
             </column>
@@ -90,9 +87,6 @@
         <createTable tableName="AUTH_ACCOUNTS">
             <column name="ID" type="BIGINT">
                 <constraints primaryKey="true" nullable="false" unique="true"/>
-            </column>
-            <column name="UNIQUE_OBJECT_IDENTIFIER" type="VARCHAR(100)">
-                <constraints nullable="false" unique="true"/>
             </column>
             <column name="USERNAME" type="VARCHAR(25)">
                 <constraints nullable="false" unique="true"/>
@@ -139,9 +133,6 @@
             <column name="ID" type="BIGINT">
                 <constraints primaryKey="true" nullable="false" unique="true"/>
             </column>
-            <column name="UNIQUE_OBJECT_IDENTIFIER" type="VARCHAR(100)">
-                <constraints nullable="false" unique="true"/>
-            </column>
             <column name="TOKEN_TYPE" type="VARCHAR(25)">
                 <constraints nullable="false"/>
             </column>
@@ -174,9 +165,6 @@
         <createTable tableName="AUTH_TOKENS">
             <column name="ID" type="BIGINT">
                 <constraints primaryKey="true" nullable="false" unique="true"/>
-            </column>
-            <column name="UNIQUE_OBJECT_IDENTIFIER" type="VARCHAR(100)">
-                <constraints nullable="false" unique="true"/>
             </column>
             <column name="TOKEN_TYPE" type="VARCHAR(25)">
                 <constraints nullable="false"/>
@@ -215,9 +203,6 @@
             <column name="ID" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" unique="true"/>
             </column>
-            <column name="UNIQUE_OBJECT_IDENTIFIER" type="VARCHAR(100)">
-                <constraints nullable="false" unique="true"/>
-            </column>
             <column name="AUTHORITY_NAME" type="VARCHAR(15)">
                 <constraints nullable="false"/>
             </column>
@@ -242,9 +227,6 @@
         <createTable tableName="AUTH_AUTHORITIES">
             <column name="ID" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" unique="true"/>
-            </column>
-            <column name="UNIQUE_OBJECT_IDENTIFIER" type="VARCHAR(100)">
-                <constraints nullable="false" unique="true"/>
             </column>
             <column name="AUTHORITY_NAME" type="VARCHAR(15)">
                 <constraints nullable="false"/>

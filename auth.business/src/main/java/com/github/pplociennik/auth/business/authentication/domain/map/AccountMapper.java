@@ -39,8 +39,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static com.github.pplociennik.auth.business.shared.system.ObjectsSpecifierDefinition.authorityTypeSpecifier;
-import static com.github.pplociennik.commons.utility.identifier.UniqueIdentifierGenerator.generateIdentifier;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.*;
 
@@ -57,8 +55,8 @@ public class AccountMapper {
             return null;
         }
         return new AccountSecurityCoreDO( aAccount.getUsername(), aAccount.getPassword(), aAccount.isEnabled(),
-                                          aAccount.isAccountNonExpired(), aAccount.isCredentialsNonExpired(),
-                                          aAccount.isAccountNonLocked(), getAuthorities( aAccount.getAuthorities() ) );
+                aAccount.isAccountNonExpired(), aAccount.isCredentialsNonExpired(),
+                aAccount.isAccountNonLocked(), getAuthorities( aAccount.getAuthorities() ) );
     }
 
     public static Account mapToEntity( AccountDO aAccountDO ) {
@@ -78,7 +76,6 @@ public class AccountMapper {
         account.setAuthorities( authorities );
         account.setEnabled( aAccountDO.isEnabled() );
 
-        account.setUniqueObjectIdentifier( aAccountDO.getUniqueObjectIdentifier() );
         account.setCreationDate( aAccountDO.getCreationDate() );
         account.setLastModification( aAccountDO.getLastModificationDate() );
 
@@ -97,7 +94,6 @@ public class AccountMapper {
         var accountDO = AccountDO
                 .builder()
                 .id( aAccount.getId() )
-                .uniqueObjectIdentifier( aAccount.getUniqueObjectIdentifier() )
                 .accountNonExpired( aAccount.isAccountNonExpired() )
                 .accountNonLocked( aAccount.isAccountNonLocked() )
                 .enabled( aAccount.isEnabled() )
@@ -118,21 +114,8 @@ public class AccountMapper {
 
     public static ConfirmationLinkGenerationDto mapToConfirmationLinkGenerationDto( AccountDO aAccountDO ) {
         var emailAddress = aAccountDO.getEmailAddress();
-        var uniqueIdentifier = aAccountDO.getUniqueObjectIdentifier();
 
-        return new ConfirmationLinkGenerationDto( emailAddress, uniqueIdentifier );
-    }
-
-    private static Set< AuthorityDO > mapAuthoritiesToDomain(
-            Set< Authority > aAuthorities ) {
-        return aAuthorities
-                .stream()
-                .map( aAuthority -> AuthorityDO
-                        .builder()
-                        .authorityName( aAuthority.getName() )
-                        .uniqueObjectIdentifier( aAuthority.getUniqueObjectIdentifier() )
-                        .build() )
-                .collect( toSet() );
+        return new ConfirmationLinkGenerationDto( emailAddress );
     }
 
     public static AccountDO mapToDomain( AccountDto aDto ) {
@@ -171,12 +154,21 @@ public class AccountMapper {
                 .build();
     }
 
+    private static Set< AuthorityDO > mapAuthoritiesToDomain(
+            Set< Authority > aAuthorities ) {
+        return aAuthorities
+                .stream()
+                .map( aAuthority -> AuthorityDO
+                        .builder()
+                        .authorityName( aAuthority.getName() )
+                        .build() )
+                .collect( toSet() );
+    }
+
     private static void updateAuthoritiesSetAccount(
             Set< Authority > aAuthorities, Account aAccount ) {
         aAuthorities.forEach( aAuthority -> {
             aAuthority.setAuthoritiesOwner( aAccount );
-            var identifier = generateIdentifier( aAuthority, authorityTypeSpecifier() );
-            aAuthority.setUniqueObjectIdentifier( identifier );
         } );
     }
 
@@ -192,7 +184,6 @@ public class AccountMapper {
                 .map( authority -> {
                     var result = new Authority();
                     result.setName( authority.getAuthorityName() );
-                    result.setUniqueObjectIdentifier( authority.getUniqueObjectIdentifier() );
 
                     return result;
                 } )

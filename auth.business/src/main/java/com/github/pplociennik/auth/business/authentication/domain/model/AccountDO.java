@@ -49,11 +49,6 @@ public class AccountDO {
     private long id;
 
     /**
-     * An unique object identifier.
-     */
-    private String uniqueObjectIdentifier;
-
-    /**
      * An email address.
      */
     private String emailAddress;

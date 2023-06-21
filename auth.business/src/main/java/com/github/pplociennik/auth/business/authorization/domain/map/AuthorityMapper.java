@@ -21,7 +21,6 @@ public class AuthorityMapper {
     public static AuthorityDO mapToDomain( Authority aAuthority ) {
         return AuthorityDO
                 .builder()
-                .uniqueObjectIdentifier( aAuthority.getUniqueObjectIdentifier() )
                 .authorityName( aAuthority.getName() )
                 .owner( AccountMapper.mapToDomain( aAuthority.getAuthoritiesOwner() ) )
                 .build();
@@ -55,7 +54,6 @@ public class AuthorityMapper {
 
     public static Authority mapToEntity( AuthorityDO aAuthorityDO ) {
         var authority = new Authority();
-        authority.setUniqueObjectIdentifier( aAuthorityDO.getUniqueObjectIdentifier() );
         authority.setName( aAuthorityDO.getAuthorityName() );
         authority.setAuthoritiesOwner( AccountMapper.mapToEntity( aAuthorityDO.getOwner() ) );
 

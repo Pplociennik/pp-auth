@@ -90,13 +90,6 @@ class AuthenticationValidationRepositoryImpl implements AuthenticationValidation
         return verificationToken != null;
     }
 
-    @Override
-    public boolean checkIfAccountExistsByUniqueId( @NonNull String aUniqueAccountIdentifier ) {
-        requireNonNull( aUniqueAccountIdentifier );
-        var account = accountRepository.findAccountByUniqueIdentifier( aUniqueAccountIdentifier );
-        return account != null;
-    }
-
     /**
      * {@inheritDoc}
      */

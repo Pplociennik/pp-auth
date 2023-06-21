@@ -45,7 +45,6 @@ public class InMemoryAuthenticationValidationRepository implements Authenticatio
     private boolean emailExists;
     private boolean isTokenActive;
     private boolean tokenExists;
-    private boolean accountExistsByUniqueId;
 
     public InMemoryAuthenticationValidationRepository( List< AccountDO > aDatabase ) {
         database = aDatabase;
@@ -79,10 +78,6 @@ public class InMemoryAuthenticationValidationRepository implements Authenticatio
         tokenExists = aTokenExists;
     }
 
-    public void setAccountExistsByUniqueId( boolean aAccountExistsByUniqueId ) {
-        accountExistsByUniqueId = aAccountExistsByUniqueId;
-    }
-
     @Override
     public boolean checkIfUsernameExists( @NonNull String aUsername ) {
         requireNonNull( aUsername );
@@ -105,11 +100,6 @@ public class InMemoryAuthenticationValidationRepository implements Authenticatio
     @Override
     public boolean checkIfTokenExists( String aToken ) {
         return tokenExists;
-    }
-
-    @Override
-    public boolean checkIfAccountExistsByUniqueId( String aUniqueAccountIdentifier ) {
-        return accountExistsByUniqueId;
     }
 
     @Override
