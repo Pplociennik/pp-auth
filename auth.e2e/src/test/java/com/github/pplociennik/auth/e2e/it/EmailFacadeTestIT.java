@@ -2,7 +2,6 @@ package com.github.pplociennik.auth.e2e.it;
 
 import com.github.pplociennik.auth.business.mailing.EmailFacade;
 import com.github.pplociennik.auth.business.mailing.domain.map.MailingMapper;
-import com.github.pplociennik.auth.e2e.config.EmailFacadeTestContextConfiguration;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
 import jakarta.mail.internet.MimeMessage;
@@ -10,6 +9,7 @@ import org.junit.jupiter.api.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -21,9 +21,9 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Created by: Pplociennik at 14.06.2022 17:25
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = EmailFacadeTestContextConfiguration.class)
-@TestPropertySource("classpath:application-test.properties")
+@RunWith( SpringRunner.class )
+@SpringBootTest( classes = ContextConfiguration.class )
+@TestPropertySource( "classpath:application-test.properties" )
 class EmailFacadeTestIT {
 
     private static final String SENDER_ADDRESS = "sender@address.com";
@@ -47,7 +47,7 @@ class EmailFacadeTestIT {
     class sendingEmails {
 
         @Test
-        @Disabled("Disabled until the post server and async testing will be up.")
+        @Disabled( "Disabled until the post server and async testing will be up." )
         void shouldSendEmailConfirmationRequestMessage() {
 
             // GIVEN

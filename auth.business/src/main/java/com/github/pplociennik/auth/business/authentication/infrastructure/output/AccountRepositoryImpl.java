@@ -76,7 +76,7 @@ class AccountRepositoryImpl implements AccountRepository {
         requireNonNull( aAccount );
 
         var account = mapToEntity( aAccount );
-        return mapToDomain( accountDao.saveAndFlush( account ) );
+        return mapToDomain( accountDao.save( account ) );
     }
 
     @Override
@@ -86,7 +86,7 @@ class AccountRepositoryImpl implements AccountRepository {
         var account = mapToEntity( aAccount );
         var authorities = createBaseAuthoritiesForAccount( account );
         account.setAuthorities( authorities );
-        return mapToDomain( accountDao.saveAndFlush( account ) );
+        return mapToDomain( accountDao.save( account ) );
     }
 
     @Override
@@ -189,7 +189,7 @@ class AccountRepositoryImpl implements AccountRepository {
         requireNonNull( aToBeUpdated );
 
         aToBeUpdated.setLastLoginDate( aAccount.getLastLoginDate() );
-        accountDao.saveAndFlush( aToBeUpdated );
+        accountDao.save( aToBeUpdated );
 
         return mapToDomain( aToBeUpdated );
     }

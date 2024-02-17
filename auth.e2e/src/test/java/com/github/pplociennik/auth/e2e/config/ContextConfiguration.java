@@ -11,5 +11,5 @@ import org.springframework.context.annotation.Import;
  */
 @Configuration
 @Import( DefaultStaticSecurityConfiguration.class )
-public class EmailFacadeTestContextConfiguration {
+class ContextConfiguration {
 }
