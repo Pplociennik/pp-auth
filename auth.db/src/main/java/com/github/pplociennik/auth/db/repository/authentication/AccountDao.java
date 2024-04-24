@@ -26,6 +26,7 @@ package com.github.pplociennik.auth.db.repository.authentication;
 
 import com.github.pplociennik.auth.db.entity.authentication.Account;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
@@ -45,7 +46,6 @@ public interface AccountDao extends JpaRepository< Account, Long >, CrudReposito
      *
      * @param aEmailAddress
      *         an email address
-     *
      * @return an {@link Account} object
      */
     Optional< Account > getAccountByEmailAddress( String aEmailAddress );
@@ -55,7 +55,6 @@ public interface AccountDao extends JpaRepository< Account, Long >, CrudReposito
      *
      * @param aUsername
      *         a Username.
-     *
      * @return an {@link Account} object.
      */
     Optional< Account > findAccountByUsername( String aUsername );
@@ -65,7 +64,6 @@ public interface AccountDao extends JpaRepository< Account, Long >, CrudReposito
      *
      * @param aEmailAddress
      *         an email address.
-     *
      * @return an {@link Account} object.
      */
     Optional< Account > findAccountByEmailAddress( @NonNull String aEmailAddress );
@@ -75,7 +73,6 @@ public interface AccountDao extends JpaRepository< Account, Long >, CrudReposito
      *
      * @param aId
      *         an id.
-     *
      * @return an {@link Account} object.
      */
     Optional< Account > findAccountById( @NonNull long aId );
@@ -85,9 +82,9 @@ public interface AccountDao extends JpaRepository< Account, Long >, CrudReposito
      *
      * @param aUsername
      *         a username
-     *
      * @return true if the username is already present in the database.
      */
+    @Query( "select 1 from Account aAccount where aAccount.username = ?1" )
     boolean existsAccountByUsername( String aUsername );
 
     /**
@@ -95,9 +92,9 @@ public interface AccountDao extends JpaRepository< Account, Long >, CrudReposito
      *
      * @param aEmail
      *         an email address
-     *
      * @return true if there is already an email in the database with the specified email.
      */
+    @Query( "select 1 from Account aAccount where aAccount.emailAddress = ?1" )
     boolean existsAccountByEmailAddress( String aEmail );
 
 }

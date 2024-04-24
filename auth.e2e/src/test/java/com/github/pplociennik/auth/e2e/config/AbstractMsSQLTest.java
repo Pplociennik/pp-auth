@@ -3,6 +3,8 @@ package com.github.pplociennik.auth.e2e.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -22,6 +24,7 @@ import org.testcontainers.junit.jupiter.Container;
 @EnableAutoConfiguration
 @org.springframework.test.context.ContextConfiguration( classes = ContextConfiguration.class )
 @TestPropertySource( locations = "classpath:application-test.properties" )
+//@AutoConfigureTestDatabase( connection = EmbeddedDatabaseConnection.H2 )
 public abstract class AbstractMsSQLTest {
 
     private static final String DOCKER_IMAGE_TAG = "latest";
@@ -45,6 +48,6 @@ public abstract class AbstractMsSQLTest {
         aDynamicPropertyRegistry.add( "spring.datasource.driverClassName", container::getDriverClassName );
         aDynamicPropertyRegistry.add( "spring.datasource.username", container::getUsername );
         aDynamicPropertyRegistry.add( "spring.datasource.password", container::getPassword );
-        aDynamicPropertyRegistry.add( "spring.jpa.hibernate.ddl-auto", () -> "create" );
+//        aDynamicPropertyRegistry.add( "spring.jpa.hibernate.ddl-auto", () -> "create" );
     }
 }
