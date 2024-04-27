@@ -45,7 +45,7 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
  */
 @Configuration
 @EnableWebSecurity
-@Import( { SpringModulesConfiguration.class, AclMethodSecurityConfiguration.class } )
+@Import( { AclMethodSecurityConfiguration.class } )
 class SecurityConfiguration {
 
     private static final String[] AUTH_WHITELIST = { EMPTY };
@@ -61,7 +61,7 @@ class SecurityConfiguration {
 
         return aHttp
                 .securityMatcher( ROOT_URI, AUTH_LOGIN_URI, AUTH_LOGOUT_URI, AUTH_REGISTRATION_URI,
-                                  AUTH_ACCOUNT_CONFIRMATION_URI )
+                        AUTH_ACCOUNT_CONFIRMATION_URI )
                 .authorizeHttpRequests( authorize -> authorize
                         .anyRequest()
                         .permitAll() )
