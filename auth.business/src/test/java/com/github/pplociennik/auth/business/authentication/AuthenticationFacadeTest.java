@@ -26,11 +26,9 @@ package com.github.pplociennik.auth.business.authentication;
 
 import auth.dto.AccountDto;
 import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
-import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryAccountRepository;
-import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryAuthenticationValidationRepository;
-import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryTimeService;
-import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryVerificationTokenRepository;
+import com.github.pplociennik.auth.business.authentication.testimpl.*;
 import com.github.pplociennik.auth.business.shared.events.SystemEventsPublisher;
+import com.github.pplociennik.auth.business.shared.system.JwtService;
 import com.github.pplociennik.auth.business.shared.system.SystemPropertiesProvider;
 import com.github.pplociennik.commons.utility.LanguageUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -78,6 +76,7 @@ class AuthenticationFacadeTest {
     @Mock( answer = Answers.RETURNS_SMART_NULLS )
     private AuthenticationManager authenticationManager;
     private AuthenticationFacade sut;
+    private JwtService jwtService;
 
     @BeforeEach
     void prepare() {
@@ -89,14 +88,19 @@ class AuthenticationFacadeTest {
         preparePropertiesProvider();
         prepareTokenRepository();
         prepareTokenResolver();
+        prepreJwtService();
 
         authService = new AuthService( encoder, accountRepository, tokenResolver, verificationTokenRepository,
                 propertiesProvider, timeService );
         validator = new AuthenticationValidator( validationRepository );
 
         sut = new AuthenticationFacade( authService, validator, eventPublisher, authenticationManager,
-                accountRepository );
+                accountRepository, jwtService );
         LanguageUtil.setLocale( Locale.ENGLISH );
+    }
+
+    private void prepreJwtService() {
+        jwtService = new InMemoryJwtService();
     }
 
     private void prepareTimeService() {
