@@ -24,11 +24,16 @@
 
 package com.github.pplociennik.auth.core.configuration;
 
+import com.github.pplociennik.commons.audit.AuditAwareImpl;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.annotation.*;
+import org.springframework.data.domain.AuditorAware;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableAsync;
+
+import java.time.Instant;
 
 /**
  * A class defining default security configuration. Should be imported in Spring's configuration class if there's a need
@@ -42,11 +47,17 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EnableAsync( proxyTargetClass = true )
 @EnableAspectJAutoProxy( proxyTargetClass = true )
 @Import( { SpringModulesConfiguration.class, SecurityConfiguration.class } )
+@EnableJpaAuditing( auditorAwareRef = "auditAwareImpl" )
 public class DefaultStaticSecurityConfiguration {
 
     @Bean
     ServletWebServerFactory servletWebServerFactory() {
         return new TomcatServletWebServerFactory();
+    }
+
+    @Bean
+    AuditorAware< Instant > auditAwareImpl() {
+        return new AuditAwareImpl();
     }
 
 }

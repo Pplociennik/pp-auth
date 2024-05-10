@@ -25,9 +25,7 @@
 package auth.dto;
 
 import com.github.pplociennik.commons.dto.BaseAbstractExtendableDto;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.*;
 
 /**
  * A Data Transfer Object representing data being used during the registration process.
@@ -36,7 +34,10 @@ import lombok.Getter;
  */
 @Getter
 @Builder
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode( callSuper = false )
+@AllArgsConstructor
+@NoArgsConstructor
+@Setter
 public class RegistrationDto extends BaseAbstractExtendableDto {
 
     private String email;
