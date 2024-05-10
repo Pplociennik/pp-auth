@@ -24,18 +24,17 @@
 
 package com.github.pplociennik.auth.api.controller;
 
-import auth.dto.AuthenticatedUserDto;
+import auth.dto.AuthenticatedJWTDto;
 import auth.dto.LoginDto;
+import auth.dto.PasswordChangeRequestDto;
 import auth.dto.RegistrationDto;
 import com.github.pplociennik.auth.business.authentication.AuthenticationFacade;
 import com.github.pplociennik.auth.business.authentication.domain.map.LoginMapper;
+import com.github.pplociennik.commons.dto.ResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static com.github.pplociennik.auth.api.controller.ApiMappingsConstants.*;
 import static com.github.pplociennik.auth.business.authentication.domain.map.RegistrationMapper.mapToDO;
@@ -46,7 +45,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
  *
  * @author Created by: Pplociennik at 26.10.2021 18:11
  */
-@RestController(value = AUTH_CONTROLLER_MAPPING_VALUE)
+@RestController( value = AUTH_CONTROLLER_URL )
 class AuthController {
 
     private final AuthenticationFacade authenticationFacade;
@@ -61,10 +60,9 @@ class AuthController {
      *
      * @param aRegistrationDto
      *         data necessary for new account's creation.
-     *
      * @return {@link HttpStatus}
      */
-    @PostMapping(path = AUTH_CONTROLLER_FULL_REGISTRATION_MAPPING_VALUE, consumes = APPLICATION_JSON_VALUE)
+    @PostMapping( path = AUTH_CONTROLLER_FULL_REGISTRATION_URL, consumes = APPLICATION_JSON_VALUE )
     HttpStatus registerNewUserAccount( @RequestBody RegistrationDto aRegistrationDto ) {
         var registrationDO = mapToDO( aRegistrationDto );
         authenticationFacade.registerNewAccount( registrationDO );
@@ -76,14 +74,13 @@ class AuthController {
      *
      * @param aLoginDto
      *         data necessary for user's authentication.
-     *
      * @return authentication data of the authenticated user
      */
     @PostMapping(
-            path = AUTH_CONTROLLER_LOGIN_MAPPING_VALUE, consumes = APPLICATION_JSON_VALUE,
+            path = AUTH_CONTROLLER_LOGIN_URL, consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE
     )
-    ResponseEntity< AuthenticatedUserDto > login( @RequestBody LoginDto aLoginDto ) {
+    ResponseEntity< AuthenticatedJWTDto > login( @RequestBody LoginDto aLoginDto ) {
         var loginDO = LoginMapper.mapToDomain( aLoginDto );
         var authenticatedUser = authenticationFacade.authenticateAccount( loginDO );
         return new ResponseEntity<>( authenticatedUser, HttpStatus.ACCEPTED );
@@ -94,12 +91,20 @@ class AuthController {
      *
      * @param aToken
      *         a token being used for account confirmation. Being send automatically via an email message.
-     *
      * @return {@link HttpStatus}
      */
-    @PostMapping(path = AUTH_CONTROLLER_ACCOUNT_CONFIRMATION_MAPPING_VALUE)
+    @PostMapping( path = AUTH_CONTROLLER_ACCOUNT_CONFIRMATION_URL )
     HttpStatus confirmRegistration( @RequestParam String aToken ) {
         authenticationFacade.confirmRegistration( aToken );
         return HttpStatus.ACCEPTED;
+    }
+
+    @PatchMapping(
+            name = AUTH_CONTROLLER_PASSWORD_CHANGE_URL,
+            consumes = APPLICATION_JSON_VALUE,
+            produces = APPLICATION_JSON_VALUE
+    )
+    ResponseEntity< ResponseDto > changeAccountPassword( @RequestBody PasswordChangeRequestDto aRequestDto ) {
+        return null;
     }
 }

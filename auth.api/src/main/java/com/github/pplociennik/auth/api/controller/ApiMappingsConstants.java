@@ -34,10 +34,12 @@ import static java.lang.String.format;
 class ApiMappingsConstants {
 
     // ### AuthController ---
-    public static final String AUTH_CONTROLLER_MAPPING_VALUE = "/auth";
-    public static final String AUTH_CONTROLLER_FULL_REGISTRATION_MAPPING_VALUE = AUTH_CONTROLLER_MAPPING_VALUE + "/register";
-    public static final String AUTH_CONTROLLER_LOGIN_MAPPING_VALUE = AUTH_CONTROLLER_MAPPING_VALUE + "/login";
-    public static final String AUTH_CONTROLLER_ACCOUNT_CONFIRMATION_MAPPING_VALUE = AUTH_CONTROLLER_MAPPING_VALUE + "/confirmAccount";
+    public static final String AUTH_CONTROLLER_URL = "/auth";
+    public static final String AUTH_CONTROLLER_FULL_REGISTRATION_URL = AUTH_CONTROLLER_URL + "/register";
+    public static final String AUTH_CONTROLLER_LOGIN_URL = AUTH_CONTROLLER_URL + "/login";
+    public static final String AUTH_CONTROLLER_ACCOUNT_CONFIRMATION_URL = AUTH_CONTROLLER_URL + "/confirmAccount";
+
+    public static final String AUTH_CONTROLLER_PASSWORD_CHANGE_URL = AUTH_CONTROLLER_URL + "/changePassword";
 
     private ApiMappingsConstants() {
         throw new RuntimeException( format( "The class \"%s\" is not instantiable!", this ) );

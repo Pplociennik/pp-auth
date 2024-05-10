@@ -22,6 +22,12 @@ public enum SystemProperties implements SystemProperty {
 
     GLOBAL_EMAILS_SENDING( "pp.auth.global.emails.sending", "true", "false" ),
 
+    // -- JWT related properties.
+
+    GLOBAL_JWT_SECRET( "pp.auth.global.jwt.secret" ),
+
+    GLOBAL_JWT_EXPIRATION_TIME( "pp.auth.global.jwt.expiration-time" ),
+
     // -- Mailing properties.
 
     MAILING_SENDER_ADDRESS( "spring.mail.username" ),
@@ -33,17 +39,17 @@ public enum SystemProperties implements SystemProperty {
     private final String name;
     private final Set< String > possibleValues;
 
+    SystemProperties( String aName, String... aPossibleValues ) {
+        name = aName;
+        possibleValues = getAsSet( aPossibleValues );
+    }
+
+    // ### Private helper methods ###
+
     private static Set< String > getAsSet( String[] aPossibleValues ) {
         return Stream
                 .of( aPossibleValues )
                 .filter( Objects::nonNull )
                 .collect( Collectors.toSet() );
-    }
-
-    // ### Private helper methods ###
-
-    SystemProperties( String aName, String... aPossibleValues ) {
-        name = aName;
-        possibleValues = getAsSet( aPossibleValues );
     }
 }

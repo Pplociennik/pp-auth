@@ -31,7 +31,6 @@ import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryAuth
 import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryTimeService;
 import com.github.pplociennik.auth.business.authentication.testimpl.InMemoryVerificationTokenRepository;
 import com.github.pplociennik.auth.business.shared.events.SystemEventsPublisher;
-import com.github.pplociennik.auth.business.shared.system.SessionService;
 import com.github.pplociennik.auth.business.shared.system.SystemPropertiesProvider;
 import com.github.pplociennik.commons.utility.LanguageUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -76,9 +75,7 @@ class AuthenticationFacadeTest {
     private InMemoryVerificationTokenRepository verificationTokenRepository;
     private SystemPropertiesProvider propertiesProvider;
     private InMemoryTimeService timeService;
-    @Mock(answer = Answers.RETURNS_SMART_NULLS)
-    private SessionService sessionService;
-    @Mock(answer = Answers.RETURNS_SMART_NULLS)
+    @Mock( answer = Answers.RETURNS_SMART_NULLS )
     private AuthenticationManager authenticationManager;
     private AuthenticationFacade sut;
 
@@ -98,7 +95,7 @@ class AuthenticationFacadeTest {
         validator = new AuthenticationValidator( validationRepository );
 
         sut = new AuthenticationFacade( authService, validator, eventPublisher, authenticationManager,
-                accountRepository, sessionService );
+                accountRepository );
         LanguageUtil.setLocale( Locale.ENGLISH );
     }
 

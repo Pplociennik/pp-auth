@@ -12,9 +12,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class AuthenticatedUserDto {
+public class AuthenticatedJWTDto {
 
-    private String sessionId;
-    private String principal;
-    private String token;
+    private String authenticatedAccountToken;
 }

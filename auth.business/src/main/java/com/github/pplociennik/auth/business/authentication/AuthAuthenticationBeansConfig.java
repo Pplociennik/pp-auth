@@ -28,7 +28,7 @@ import com.github.pplociennik.auth.business.authentication.ports.AccountReposito
 import com.github.pplociennik.auth.business.authentication.ports.AuthenticationValidationRepository;
 import com.github.pplociennik.auth.business.authentication.ports.VerificationTokenRepository;
 import com.github.pplociennik.auth.business.shared.events.SystemEventsPublisher;
-import com.github.pplociennik.auth.business.shared.system.SessionService;
+import com.github.pplociennik.auth.business.shared.system.JwtService;
 import com.github.pplociennik.auth.business.shared.system.SystemPropertiesProvider;
 import com.github.pplociennik.auth.business.shared.system.TimeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +53,7 @@ class AuthAuthenticationBeansConfig {
     private final TimeService timeService;
     private final SystemPropertiesProvider propertiesProvider;
     private final SystemEventsPublisher systemEventsPublisher;
-    private final SessionService sessionService;
+    private final JwtService jwtService;
 
     @Autowired
     AuthAuthenticationBeansConfig(
@@ -61,7 +61,7 @@ class AuthAuthenticationBeansConfig {
             AuthenticationValidationRepository aAuthenticationValidationRepository, PasswordEncoder aEncoder,
             VerificationTokenRepository aVerificationTokenRepository, AuthenticationManager aAuthenticationManager,
             TimeService aTimeService, SystemPropertiesProvider aPropertiesProvider,
-            SystemEventsPublisher aSystemEventsPublisher, SessionService aSessionService ) {
+            SystemEventsPublisher aSystemEventsPublisher, JwtService jwtService ) {
         accountRepository = aAccountRepository;
         authenticationValidationRepository = aAuthenticationValidationRepository;
         encoder = aEncoder;
@@ -70,13 +70,13 @@ class AuthAuthenticationBeansConfig {
         timeService = aTimeService;
         propertiesProvider = aPropertiesProvider;
         systemEventsPublisher = aSystemEventsPublisher;
-        sessionService = aSessionService;
+        this.jwtService = jwtService;
     }
 
     @Bean
     AuthenticationFacade authenticationFacade() {
         return new AuthenticationFacade( authService(), authenticationValidator(), systemEventsPublisher,
-                authenticationManager, accountRepository, sessionService );
+                authenticationManager, accountRepository, jwtService );
     }
 
     @Bean

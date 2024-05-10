@@ -25,13 +25,14 @@
 package com.github.pplociennik.auth.business.authentication;
 
 import auth.dto.AccountDto;
-import auth.dto.AuthenticatedUserDto;
+import auth.dto.AuthenticatedJWTDto;
 import com.github.pplociennik.auth.business.authentication.domain.map.LoginMapper;
+import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
 import com.github.pplociennik.auth.business.authentication.domain.model.LoginDO;
 import com.github.pplociennik.auth.business.authentication.domain.model.RegistrationDO;
 import com.github.pplociennik.auth.business.authentication.ports.AccountRepository;
 import com.github.pplociennik.auth.business.shared.events.SystemEventsPublisher;
-import com.github.pplociennik.auth.business.shared.system.SessionService;
+import com.github.pplociennik.auth.business.shared.system.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -57,19 +58,19 @@ public class AuthenticationFacade {
     private final SystemEventsPublisher systemEventsPublisher;
     private final AuthenticationManager authenticationManager;
     private final AccountRepository accountRepository;
-    private final SessionService sessionService;
+    private final JwtService jwtService;
 
     @Autowired
     public AuthenticationFacade(
             AuthService aAuthService, AuthenticationValidator aValidationService,
             SystemEventsPublisher aSystemEventsPublisher, AuthenticationManager aAuthenticationManager,
-            AccountRepository aAccountRepository, SessionService aSessionService ) {
+            AccountRepository aAccountRepository, JwtService aJwtService ) {
         authService = aAuthService;
         validationService = aValidationService;
         systemEventsPublisher = aSystemEventsPublisher;
         authenticationManager = aAuthenticationManager;
         accountRepository = aAccountRepository;
-        sessionService = aSessionService;
+        jwtService = aJwtService;
     }
 
     /**
@@ -93,7 +94,6 @@ public class AuthenticationFacade {
      *
      * @param aEmailAddress
      *         the account for which the confirmation link is going to be generated.
-     *
      * @return the confirmation link as a {@link String}.
      */
     public String createNewAccountConfirmationLink( @NonNull String aEmailAddress ) {
@@ -107,7 +107,6 @@ public class AuthenticationFacade {
      *
      * @param aToken
      *         the verification token.
-     *
      * @throws NullPointerException
      *         when the token is null or empty.
      */
@@ -124,7 +123,7 @@ public class AuthenticationFacade {
      * @param aLoginDO
      *         a login data.
      */
-    public AuthenticatedUserDto authenticateAccount( @NonNull LoginDO aLoginDO ) {
+    public AuthenticatedJWTDto authenticateAccount( @NonNull LoginDO aLoginDO ) {
         requireNonNull( aLoginDO );
         validationService.validateLoginData( aLoginDO );
         var account = accountRepository.findAccountByUsernameOrEmail( aLoginDO.getUsernameOrEmail() );
@@ -134,8 +133,9 @@ public class AuthenticationFacade {
         SecurityContextHolder
                 .getContext()
                 .setAuthentication( authenticationObject );
+        AccountDO authenticatedAccount = accountRepository.findAccountByUsername( ( ( String ) authenticationObject.getPrincipal() ) );
+        String authenticatedJWT = jwtService.generateToken( authenticatedAccount );
 
-        var sessionId = sessionService.getCurrentSessionId();
-        return LoginMapper.mapToAuthenticatedUserDto( authenticationObject, sessionId );
+        return LoginMapper.mapToAuthenticatedUserDto( authenticatedJWT );
     }
 }
