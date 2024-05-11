@@ -26,15 +26,16 @@ package com.github.pplociennik.auth.api.controller;
 
 import auth.dto.AuthenticatedJWTDto;
 import auth.dto.LoginDto;
-import auth.dto.PasswordChangeRequestDto;
 import auth.dto.RegistrationDto;
 import com.github.pplociennik.auth.business.authentication.AuthenticationFacade;
 import com.github.pplociennik.auth.business.authentication.domain.map.LoginMapper;
-import com.github.pplociennik.commons.dto.ResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import static com.github.pplociennik.auth.api.controller.ApiMappingsConstants.*;
 import static com.github.pplociennik.auth.business.authentication.domain.map.RegistrationMapper.mapToDO;
@@ -97,14 +98,5 @@ class AuthController {
     HttpStatus confirmRegistration( @RequestParam String aToken ) {
         authenticationFacade.confirmRegistration( aToken );
         return HttpStatus.ACCEPTED;
-    }
-
-    @PatchMapping(
-            name = AUTH_CONTROLLER_PASSWORD_CHANGE_URL,
-            consumes = APPLICATION_JSON_VALUE,
-            produces = APPLICATION_JSON_VALUE
-    )
-    ResponseEntity< ResponseDto > changeAccountPassword( @RequestBody PasswordChangeRequestDto aRequestDto ) {
-        return null;
     }
 }
