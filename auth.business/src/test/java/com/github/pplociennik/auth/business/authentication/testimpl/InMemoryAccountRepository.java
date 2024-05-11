@@ -27,6 +27,7 @@ package com.github.pplociennik.auth.business.authentication.testimpl;
 import com.github.pplociennik.auth.business.authentication.domain.model.AccountDO;
 import com.github.pplociennik.auth.business.authentication.ports.AccountRepository;
 import com.github.pplociennik.auth.business.authorization.domain.model.AuthorityDO;
+import com.github.pplociennik.commons.utility.CustomCollectors;
 import org.springframework.lang.NonNull;
 
 import java.util.LinkedList;
@@ -147,6 +148,22 @@ public class InMemoryAccountRepository implements AccountRepository {
         requireNonNull( aAccountToBeConfirmed );
         return null;
         // TODO: add tests and fix this!!!
+    }
+
+    /**
+     * Returns an account with the specified identifier if it exists in the database.
+     *
+     * @param aIdentifier
+     *         the identifier of the account.
+     * @return a user account.
+     */
+    @Override
+    public AccountDO findAccountById( @NonNull Long aIdentifier ) {
+        requireNonNull( aIdentifier );
+        return database
+                .stream()
+                .filter( accountDO -> accountDO.getId() == aIdentifier )
+                .collect( CustomCollectors.toSingleton() );
     }
 
     private void createBaseTestAuthoritiesForAccount( AccountDO aAccount ) {
