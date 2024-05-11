@@ -172,6 +172,22 @@ class AccountRepositoryImpl implements AccountRepository {
         return mapToDomain( enabledAccount );
     }
 
+    /**
+     * Returns an account with the specified identifier if it exists in the database.
+     *
+     * @param aIdentifier
+     *         the identifier of the account.
+     * @return a user account.
+     */
+    @Override
+    public AccountDO findAccountById( @NonNull Long aIdentifier ) {
+        requireNonNull( aIdentifier );
+        var account = accountDao.findAccountById( aIdentifier );
+        return account
+                .map( AccountMapper::mapToDomain )
+                .orElse( null );
+    }
+
     private Set< Authority > createBaseAuthoritiesForAccount( Account aAccount ) {
         return BASE_USER_AUTHORITIES
                 .stream()

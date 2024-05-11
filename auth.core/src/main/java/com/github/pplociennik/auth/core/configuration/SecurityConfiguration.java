@@ -24,13 +24,23 @@
 
 package com.github.pplociennik.auth.core.configuration;
 
+import com.github.pplociennik.auth.core.configuration.filter.JwtTokenFilter;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import static com.github.pplociennik.auth.business.shared.authorization.RolesDefinition.AUTH_ADMIN_ROLE;
 import static com.github.pplociennik.auth.business.shared.authorization.RolesDefinition.AUTH_USER_ROLE;
@@ -46,18 +56,49 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 @Configuration
 @EnableWebSecurity
 @Import( { AclMethodSecurityConfiguration.class } )
+@EnableMethodSecurity( prePostEnabled = true, securedEnabled = true, jsr250Enabled = true )
 class SecurityConfiguration {
 
     private static final String[] AUTH_WHITELIST = { EMPTY };
-    private static final int MAXIMUM_SESSIONS_NR = 3;
+
+    @Autowired
+    private JwtTokenFilter jwtTokenFilter;
+
+    // Used by Spring Security if CORS is enabled.
+    @Bean
+    public CorsFilter corsFilter() {
+        UrlBasedCorsConfigurationSource source =
+                new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials( true );
+        config.addAllowedOrigin( "*" );
+        config.addAllowedHeader( "*" );
+        config.addAllowedMethod( "*" );
+        source.registerCorsConfiguration( "/**", config );
+        return new CorsFilter( source );
+    }
 
     @Bean
     @Order( 1 )
     SecurityFilterChain authFilterChain( HttpSecurity aHttp ) throws Exception {
 
+        // Set session management to stateless
+        aHttp.sessionManagement( ( sessionManagement ) -> sessionManagement.sessionCreationPolicy( SessionCreationPolicy.STATELESS ) );
+
+        // Set unauthorized requests exception handler
         aHttp
-                .sessionManagement()
-                .maximumSessions( MAXIMUM_SESSIONS_NR );
+                .exceptionHandling( ( exceptionHandling ) -> exceptionHandling.authenticationEntryPoint( ( request, response, ex ) -> {
+                    response.sendError(
+                            HttpServletResponse.SC_UNAUTHORIZED,
+                            ex.getMessage()
+                    );
+                } ) );
+
+        // Add JWT token filter
+        aHttp.addFilterBefore(
+                jwtTokenFilter,
+                UsernamePasswordAuthenticationFilter.class
+        );
 
         return aHttp
                 .securityMatcher( ROOT_URI, AUTH_LOGIN_URI, AUTH_LOGOUT_URI, AUTH_REGISTRATION_URI,
@@ -65,8 +106,7 @@ class SecurityConfiguration {
                 .authorizeHttpRequests( authorize -> authorize
                         .anyRequest()
                         .permitAll() )
-                .csrf()
-                .disable()
+                .csrf( AbstractHttpConfigurer::disable )
                 .build();
     }
 
@@ -78,8 +118,7 @@ class SecurityConfiguration {
                 .authorizeHttpRequests( authorize -> authorize
                         .anyRequest()
                         .hasRole( AUTH_ADMIN_ROLE.getName() ) )
-                .csrf()
-                .disable()
+                .csrf( AbstractHttpConfigurer::disable )
                 .build();
     }
 
@@ -91,8 +130,7 @@ class SecurityConfiguration {
                 .authorizeHttpRequests( authorize -> authorize
                         .anyRequest()
                         .hasAnyRole( AUTH_ADMIN_ROLE.getName(), AUTH_USER_ROLE.getName() ) )
-                .csrf()
-                .disable()
+                .csrf( AbstractHttpConfigurer::disable )
                 .build();
     }
 
@@ -104,8 +142,7 @@ class SecurityConfiguration {
                 .authorizeHttpRequests( authorize -> authorize
                         .anyRequest()
                         .permitAll() )
-                .csrf()
-                .disable()
+                .csrf( AbstractHttpConfigurer::disable )
                 .build();
     }
 
@@ -115,8 +152,7 @@ class SecurityConfiguration {
                 .authorizeHttpRequests( authorize -> authorize
                         .anyRequest()
                         .authenticated() )
-                .csrf()
-                .disable()
+                .csrf( AbstractHttpConfigurer::disable )
                 .build();
     }
 
