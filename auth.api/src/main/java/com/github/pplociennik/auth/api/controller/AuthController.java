@@ -32,10 +32,7 @@ import com.github.pplociennik.auth.business.authentication.domain.map.LoginMappe
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static com.github.pplociennik.auth.api.controller.ApiMappingsConstants.*;
 import static com.github.pplociennik.auth.business.authentication.domain.map.RegistrationMapper.mapToDO;
@@ -47,6 +44,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
  * @author Created by: Pplociennik at 26.10.2021 18:11
  */
 @RestController( value = AUTH_CONTROLLER_URL )
+@CrossOrigin( origins = "*", allowedHeaders = "*" )
 class AuthController {
 
     private final AuthenticationFacade authenticationFacade;
