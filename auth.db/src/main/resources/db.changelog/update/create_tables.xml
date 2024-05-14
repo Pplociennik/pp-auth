@@ -54,10 +54,15 @@
             <column name="PASSWORD" type="CHAR(60)">
                 <constraints nullable="false"/>
             </column>
-            <column name="CREATION_DATE" type="${DATE_TIME_WITH_ZONE}">
+            <column name="CREATED_AT" type="${DATE_TIME_WITH_ZONE}">
                 <constraints nullable="false"/>
             </column>
-            <column name="LAST_MODIFICATION" type="${DATE_TIME_WITH_ZONE}">
+            <column name="CREATED_BY" type="${DATE_TIME_WITH_ZONE}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="LAST_MODIFIED_AT" type="${DATE_TIME_WITH_ZONE}">
+            </column>
+            <column name="LAST_MODIFIED_BY" type="${DATE_TIME_WITH_ZONE}">
             </column>
             <column name="LAST_LOGIN_DATE" type="${DATE_TIME_WITH_ZONE}"/>
             <column name="ENABLED" type="BOOLEAN">
@@ -73,7 +78,7 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-        <comment>Creates a table AUTH_USERS for authentication data storing.
+        <comment>Creates a table AUTH_ACCOUNTS for authentication data storing.
         </comment>
     </changeSet>
 
@@ -94,13 +99,18 @@
             <column name="EMAIL" type="VARCHAR(30)">
                 <constraints nullable="false" unique="true"/>
             </column>
-            <column name="PASSWORD" type="CHAR(76)">
+            <column name="PASSWORD" type="CHAR(60)">
                 <constraints nullable="false"/>
             </column>
-            <column name="CREATION_DATE" type="${DATE_TIME_WITH_ZONE}">
+            <column name="CREATED_AT" type="${DATE_TIME_WITH_ZONE}">
                 <constraints nullable="false"/>
             </column>
-            <column name="LAST_MODIFICATION" type="${DATE_TIME_WITH_ZONE}">
+            <column name="CREATED_BY" type="${DATE_TIME_WITH_ZONE}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="LAST_MODIFIED_AT" type="${DATE_TIME_WITH_ZONE}">
+            </column>
+            <column name="LAST_MODIFIED_BY" type="${DATE_TIME_WITH_ZONE}">
             </column>
             <column name="LAST_LOGIN_DATE" type="${DATE_TIME_WITH_ZONE}"/>
             <column name="ENABLED" type="BOOLEAN">
@@ -116,7 +126,7 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-        <comment>Creates a table AUTH_USERS for authentication data storing.
+        <comment>Creates a table AUTH_ACCOUNTS for authentication data storing.
         </comment>
     </changeSet>
 
