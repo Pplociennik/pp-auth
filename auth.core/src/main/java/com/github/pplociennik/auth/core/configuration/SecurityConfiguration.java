@@ -27,6 +27,7 @@ package com.github.pplociennik.auth.core.configuration;
 import com.github.pplociennik.auth.core.configuration.filter.JwtTokenFilter;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -67,13 +68,16 @@ class SecurityConfiguration {
     @Autowired
     private JwtTokenFilter jwtTokenFilter;
 
+    @Value( "pp.auth.global.allowed-origins" )
+    private String allowedOrigins;
+
     // Used by Spring Security if CORS is enabled.
     @Bean
     public FilterRegistrationBean platformCorsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration configAutenticacao = new CorsConfiguration();
         configAutenticacao.setAllowCredentials( true );
-        configAutenticacao.setAllowedOriginPatterns( Collections.singletonList( "*" ) );
+        configAutenticacao.setAllowedOriginPatterns( Collections.singletonList( allowedOrigins ) );
         configAutenticacao.addAllowedHeader( "Authorization" );
         configAutenticacao.addAllowedHeader( "Content-Type" );
         configAutenticacao.addAllowedHeader( "Accept" );
