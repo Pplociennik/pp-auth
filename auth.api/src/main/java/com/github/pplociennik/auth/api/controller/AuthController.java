@@ -44,7 +44,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
  * @author Created by: Pplociennik at 26.10.2021 18:11
  */
 @RestController( value = AUTH_CONTROLLER_URL )
-@CrossOrigin( origins = "*", allowedHeaders = "*" )
+@CrossOrigin( originPatterns = "*" )
 class AuthController {
 
     private final AuthenticationFacade authenticationFacade;
