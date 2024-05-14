@@ -27,6 +27,7 @@ package com.github.pplociennik.auth.core.configuration;
 import com.github.pplociennik.auth.core.configuration.filter.JwtTokenFilter;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -41,6 +42,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+
+import java.util.Collections;
 
 import static com.github.pplociennik.auth.business.shared.authorization.RolesDefinition.AUTH_ADMIN_ROLE;
 import static com.github.pplociennik.auth.business.shared.authorization.RolesDefinition.AUTH_USER_ROLE;
@@ -66,16 +69,25 @@ class SecurityConfiguration {
 
     // Used by Spring Security if CORS is enabled.
     @Bean
-    public CorsFilter corsFilter() {
-        UrlBasedCorsConfigurationSource source =
-                new UrlBasedCorsConfigurationSource();
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials( true );
-        config.addAllowedOrigin( "*" );
-        config.addAllowedHeader( "*" );
-        config.addAllowedMethod( "*" );
-        source.registerCorsConfiguration( "/**", config );
-        return new CorsFilter( source );
+    public FilterRegistrationBean platformCorsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration configAutenticacao = new CorsConfiguration();
+        configAutenticacao.setAllowCredentials( true );
+        configAutenticacao.setAllowedOriginPatterns( Collections.singletonList( "*" ) );
+        configAutenticacao.addAllowedHeader( "Authorization" );
+        configAutenticacao.addAllowedHeader( "Content-Type" );
+        configAutenticacao.addAllowedHeader( "Accept" );
+        configAutenticacao.addAllowedMethod( "POST" );
+        configAutenticacao.addAllowedMethod( "GET" );
+        configAutenticacao.addAllowedMethod( "DELETE" );
+        configAutenticacao.addAllowedMethod( "PUT" );
+        configAutenticacao.addAllowedMethod( "OPTIONS" );
+        configAutenticacao.setMaxAge( 3600L );
+        source.registerCorsConfiguration( "/**", configAutenticacao );
+
+        FilterRegistrationBean bean = new FilterRegistrationBean( new CorsFilter( source ) );
+        bean.setOrder( -110 );
+        return bean;
     }
 
     @Bean
