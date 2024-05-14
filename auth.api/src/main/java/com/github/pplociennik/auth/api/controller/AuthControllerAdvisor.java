@@ -213,7 +213,7 @@ class AuthControllerAdvisor extends ResponseEntityExceptionHandler {
      */
     @ExceptionHandler( Exception.class )
     ResponseEntity< ResponseEntityExceptionParams > handleUnexpectedException( Exception aException ) {
-        var message = LanguageUtil.getLocalizedMessage( UNEXPECTED_EXCEPTION, arrayOf( aException.getMessage() ) );
+        var message = LanguageUtil.getLocalizedMessage( UNEXPECTED_EXCEPTION );
 
         var params = new ResponseEntityExceptionParams();
         params.setTimestamp( LocalDateTime.now() );
