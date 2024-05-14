@@ -68,7 +68,7 @@ class SecurityConfiguration {
     @Autowired
     private JwtTokenFilter jwtTokenFilter;
 
-    @Value( "pp.auth.global.allowed-origins" )
+    @Value( "${pp.auth.global.allowed-origins}" )
     private String allowedOrigins;
 
     // Used by Spring Security if CORS is enabled.
