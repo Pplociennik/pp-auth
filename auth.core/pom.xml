@@ -58,4 +58,40 @@
         </dependency>
     </dependencies>
 
+    <profiles>
+        <!-- build docker image -->
+        <profile>
+            <id>withDockerImage</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-maven-plugin</artifactId>
+                        <configuration>
+                            <mainClass>com.github.pplociennik.auth.core.runner.Runner</mainClass>
+                            <image>
+                                <name>${project.groupId}/${project.parent.artifactId}:${project.version}</name>
+                            </image>
+                            <jvmArguments>-Dspring.profiles.active=qa</jvmArguments>
+                            <includeSystemScope>true</includeSystemScope>
+                            <!--        Image with curl installed                -->
+                            <runImage>buildpack-deps:jammy-curl</runImage>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>build-image</id>
+                                <goals>
+                                    <goal>build-image</goal>
+                                </goals>
+                                <phase>package</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
