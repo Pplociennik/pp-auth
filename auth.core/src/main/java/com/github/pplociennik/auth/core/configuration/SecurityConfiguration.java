@@ -35,7 +35,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import static com.github.pplociennik.auth.business.shared.authorization.RolesDefinition.AUTH_ADMIN_ROLE;
 import static com.github.pplociennik.auth.business.shared.authorization.RolesDefinition.AUTH_USER_ROLE;
 import static com.github.pplociennik.auth.core.configuration.AuthSecurityConstants.*;
-import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 
 /**
@@ -48,7 +47,7 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 @Import( { SpringModulesConfiguration.class, AclMethodSecurityConfiguration.class } )
 class SecurityConfiguration {
 
-    private static final String[] AUTH_WHITELIST = { EMPTY };
+    private static final String[] AUTH_WHITELIST = { "/actuator/**" };
     private static final int MAXIMUM_SESSIONS_NR = 3;
 
     @Bean
@@ -61,7 +60,7 @@ class SecurityConfiguration {
 
         return aHttp
                 .securityMatcher( ROOT_URI, AUTH_LOGIN_URI, AUTH_LOGOUT_URI, AUTH_REGISTRATION_URI,
-                                  AUTH_ACCOUNT_CONFIRMATION_URI )
+                        AUTH_ACCOUNT_CONFIRMATION_URI )
                 .authorizeHttpRequests( authorize -> authorize
                         .anyRequest()
                         .permitAll() )

@@ -38,7 +38,7 @@ import org.springframework.context.annotation.Import;
  */
 @Log4j2
 @SpringBootApplication( exclude = { SecurityAutoConfiguration.class, ManagementWebSecurityAutoConfiguration.class } )
-@Import( RunnerConfig.class )
+@Import( { RunnerConfig.class, EurekaClientConfig.class } )
 public class Runner {
 
     public static void main( String[] args ) {
