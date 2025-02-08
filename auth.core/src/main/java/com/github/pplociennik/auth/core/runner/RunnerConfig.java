@@ -26,10 +26,13 @@ package com.github.pplociennik.auth.core.runner;
 
 import com.github.pplociennik.auth.core.configuration.DefaultStaticSecurityConfiguration;
 import com.github.pplociennik.auth.core.configuration.lang.SystemLangTranslateConfiguration;
+import com.github.pplociennik.commons.audit.DefaultAuditor;
 import org.springdoc.core.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.AuditorAware;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 /**
  * A test configuration for Auth runner.
@@ -37,19 +40,21 @@ import org.springframework.context.annotation.Import;
  * @author Created by: Pplociennik at 03.02.2022 19:07
  */
 @Configuration
+@EnableJpaAuditing( auditorAwareRef = "auditorProvider" )
 @Import( { DefaultStaticSecurityConfiguration.class, SystemLangTranslateConfiguration.class } ) // Using default configuration for testing
 class RunnerConfig {
 
-    @Configuration
-    public class OpenApiUiConfig {
-        // TODO: fix swagger
-        @Bean
-        public GroupedOpenApi api() {
-            return GroupedOpenApi
-                    .builder()
-                    .group( "pp.auth-all" )
-                    .pathsToMatch( "/*" )
-                    .build();
-        }
+    @Bean
+    public GroupedOpenApi api() {
+        return GroupedOpenApi
+                .builder()
+                .group( "pp.auth-all" )
+                .pathsToMatch( "/*" )
+                .build();
+    }
+
+    @Bean
+    AuditorAware< String > auditorProvider() {
+        return new DefaultAuditor();
     }
 }

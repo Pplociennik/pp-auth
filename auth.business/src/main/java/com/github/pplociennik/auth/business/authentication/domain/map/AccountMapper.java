@@ -76,9 +76,6 @@ public class AccountMapper {
         account.setAuthorities( authorities );
         account.setEnabled( aAccountDO.isEnabled() );
 
-        account.setCreationDate( aAccountDO.getCreationDate() );
-        account.setLastModification( aAccountDO.getLastModificationDate() );
-
         updateAuthoritiesSetAccount( authorities, account );
 
         return account;
@@ -102,8 +99,6 @@ public class AccountMapper {
                 .password( aAccount.getPassword() )
                 .credentialsNonExpired( aAccount.isCredentialsNonExpired() )
                 .authorities( authorities )
-                .creationDate( aAccount.getCreationDate() )
-                .lastModificationDate( aAccount.getLastModification() )
                 .lastLoginDate( aAccount.getLastLoginDate() )
                 .build();
 
