@@ -36,8 +36,9 @@ eureka:
 spring:
   application:
     name: "auth"
-  profiles:
-    active: "@spring.profiles.active@"
+  config:
+    import:
+      - "configserver:http://configserver:8071/"
 
 management:
   endpoints:

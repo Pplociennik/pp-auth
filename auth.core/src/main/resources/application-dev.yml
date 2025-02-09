@@ -24,20 +24,21 @@
 server:
   port: 8711
 
-eureka:
-  instance:
-    preferIpAddress: true
-  client:
-    registerWithEureka: true
-    fetchRegistry: true
-    serviceUrl:
-      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE}
+#eureka:
+#  instance:
+#    preferIpAddress: true
+#  client:
+#    registerWithEureka: true
+#    fetchRegistry: true
+#    serviceUrl:
+#      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE}
 
 spring:
   application:
     name: "auth"
-  profiles:
-    active: "@spring.profiles.active@"
+  config:
+    import:
+      - "configserver:http://localhost:8071/"
 
 management:
   endpoints:

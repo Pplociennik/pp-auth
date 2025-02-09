@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.netflix.eureka.EurekaClientConfigBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 
 /**
@@ -23,6 +24,7 @@ class EurekaClientConfig {
     }
 
     @Bean
+    @Profile( "!dev" )
     public EurekaClientConfigBean eurekaClientConfigBean() {
         EurekaClientConfigBean config = new EurekaClientConfigBean();
         config.getServiceUrl().put( "defaultZone", environment.getProperty( EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE_PROPERTY ) );

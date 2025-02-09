@@ -79,6 +79,10 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-config</artifactId>
+        </dependency>
 
         <!--    Additional libraries    -->
 
@@ -116,12 +120,6 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
-        </dependency>
-
-        <!--     Eureka       -->
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
 
         <!--   Micrometer     -->
@@ -187,6 +185,11 @@
                     <groupId>com.mysql</groupId>
                     <artifactId>mysql-connector-j</artifactId>
                     <scope>runtime</scope>
+                </dependency>
+                <!--     Eureka       -->
+                <dependency>
+                    <groupId>org.springframework.cloud</groupId>
+                    <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
                 </dependency>
             </dependencies>
         </profile>
